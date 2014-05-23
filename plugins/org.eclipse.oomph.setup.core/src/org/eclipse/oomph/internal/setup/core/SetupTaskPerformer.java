@@ -7,7 +7,8 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
- *    Julian Enoch - Add support for secure context variables
+ *    Ericsson AB (Julian Enoch) - Bug 425815 - Add support for secure context variables
+ *    Ericsson AB (Julian Enoch) - Bug 434525 - Allow prompted variables to be pre-populated
  */
 package org.eclipse.oomph.internal.setup.core;
 
@@ -1154,6 +1155,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
             VariableTask contextVariableTask = (VariableTask)setupTask;
             if (key.equals(contextVariableTask.getName()))
             {
+              contextVariableTask.setDefault(expandString(contextVariableTask.getDefault()));
               unresolvedVariables.add(contextVariableTask);
               found = true;
               break;

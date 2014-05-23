@@ -1664,13 +1664,22 @@ public interface SetupPackage extends EPackage
   int VARIABLE_TASK__CHOICES = SETUP_TASK_FEATURE_COUNT + 5;
 
   /**
+   * The feature id for the '<em><b>Default</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VARIABLE_TASK__DEFAULT = SETUP_TASK_FEATURE_COUNT + 6;
+
+  /**
    * The number of structural features of the '<em>Variable Task</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VARIABLE_TASK_FEATURE_COUNT = SETUP_TASK_FEATURE_COUNT + 6;
+  int VARIABLE_TASK_FEATURE_COUNT = SETUP_TASK_FEATURE_COUNT + 7;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3200,6 +3209,17 @@ public interface SetupPackage extends EPackage
   EReference getVariableTask_Choices();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.setup.VariableTask#getDefault <em>Default</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Default</em>'.
+   * @see org.eclipse.oomph.setup.VariableTask#getDefault()
+   * @see #getVariableTask()
+   * @generated
+   */
+  EAttribute getVariableTask_Default();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.oomph.setup.SetupTask <em>Task</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4321,6 +4341,14 @@ public interface SetupPackage extends EPackage
      * @generated
      */
     EReference VARIABLE_TASK__CHOICES = eINSTANCE.getVariableTask_Choices();
+
+    /**
+     * The meta object literal for the '<em><b>Default</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute VARIABLE_TASK__DEFAULT = eINSTANCE.getVariableTask_Default();
 
     /**
      * The meta object literal for the '{@link org.eclipse.oomph.setup.impl.SetupTaskImpl <em>Task</em>}' class.

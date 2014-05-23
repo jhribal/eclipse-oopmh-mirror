@@ -46,6 +46,7 @@ import java.util.List;
  *   <li>{@link org.eclipse.oomph.setup.impl.VariableTaskImpl#isStorePromptedValue <em>Store Prompted Value</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.impl.VariableTaskImpl#getLabel <em>Label</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.impl.VariableTaskImpl#getChoices <em>Choices</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.impl.VariableTaskImpl#getDefault <em>Default</em>}</li>
  * </ul>
  * </p>
  *
@@ -162,6 +163,26 @@ public class VariableTaskImpl extends SetupTaskImpl implements VariableTask
    * @ordered
    */
   protected EList<VariableChoice> choices;
+
+  /**
+   * The default value of the '{@link #getDefault() <em>Default</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDefault()
+   * @generated
+   * @ordered
+   */
+  protected static final String DEFAULT_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDefault() <em>Default</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDefault()
+   * @generated
+   * @ordered
+   */
+  protected String default_ = DEFAULT_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -303,6 +324,31 @@ public class VariableTaskImpl extends SetupTaskImpl implements VariableTask
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getDefault()
+  {
+    return default_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDefault(String newDefault)
+  {
+    String oldDefault = default_;
+    default_ = newDefault;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, SetupPackage.VARIABLE_TASK__DEFAULT, oldDefault, default_));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public boolean isStorePromptedValue()
   {
     return storePromptedValue;
@@ -361,6 +407,8 @@ public class VariableTaskImpl extends SetupTaskImpl implements VariableTask
         return getLabel();
       case SetupPackage.VARIABLE_TASK__CHOICES:
         return getChoices();
+      case SetupPackage.VARIABLE_TASK__DEFAULT:
+        return getDefault();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -395,6 +443,9 @@ public class VariableTaskImpl extends SetupTaskImpl implements VariableTask
         getChoices().clear();
         getChoices().addAll((Collection<? extends VariableChoice>)newValue);
         return;
+      case SetupPackage.VARIABLE_TASK__DEFAULT:
+        setDefault((String)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -427,6 +478,9 @@ public class VariableTaskImpl extends SetupTaskImpl implements VariableTask
       case SetupPackage.VARIABLE_TASK__CHOICES:
         getChoices().clear();
         return;
+      case SetupPackage.VARIABLE_TASK__DEFAULT:
+        setDefault(DEFAULT_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -453,6 +507,8 @@ public class VariableTaskImpl extends SetupTaskImpl implements VariableTask
         return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
       case SetupPackage.VARIABLE_TASK__CHOICES:
         return choices != null && !choices.isEmpty();
+      case SetupPackage.VARIABLE_TASK__DEFAULT:
+        return DEFAULT_EDEFAULT == null ? default_ != null : !DEFAULT_EDEFAULT.equals(default_);
     }
     return super.eIsSet(featureID);
   }
@@ -481,6 +537,8 @@ public class VariableTaskImpl extends SetupTaskImpl implements VariableTask
     result.append(storePromptedValue);
     result.append(", label: ");
     result.append(label);
+    result.append(", default: ");
+    result.append(default_);
     result.append(')');
     return result.toString();
   }

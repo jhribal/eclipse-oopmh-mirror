@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Ericsson AB (Julian Enoch) - Bug 434525 - Allow prompted variables to be pre-populated
  */
 package org.eclipse.oomph.setup.ui.wizards;
 
@@ -213,6 +214,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter, Lice
       }
     }
 
+    field.setValue(variable.getDefault());
     field.setLabelText(label);
     field.setToolTip(variable.getDescription());
 

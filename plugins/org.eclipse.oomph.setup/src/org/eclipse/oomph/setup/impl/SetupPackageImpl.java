@@ -811,6 +811,16 @@ public class SetupPackageImpl extends EPackageImpl implements SetupPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getVariableTask_Default()
+  {
+    return (EAttribute)variableTaskEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getSetupTask()
   {
     return setupTaskEClass;
@@ -1614,6 +1624,7 @@ public class SetupPackageImpl extends EPackageImpl implements SetupPackage
     createEAttribute(variableTaskEClass, VARIABLE_TASK__STORE_PROMPTED_VALUE);
     createEAttribute(variableTaskEClass, VARIABLE_TASK__LABEL);
     createEReference(variableTaskEClass, VARIABLE_TASK__CHOICES);
+    createEAttribute(variableTaskEClass, VARIABLE_TASK__DEFAULT);
 
     variableChoiceEClass = createEClass(VARIABLE_CHOICE);
     createEAttribute(variableChoiceEClass, VARIABLE_CHOICE__VALUE);
@@ -1897,6 +1908,8 @@ public class SetupPackageImpl extends EPackageImpl implements SetupPackage
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getVariableTask_Choices(), getVariableChoice(), null, "choices", null, 0, -1, VariableTask.class, !IS_TRANSIENT, !IS_VOLATILE,
         IS_CHANGEABLE, IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVariableTask_Default(), ecorePackage.getEString(), "default", null, 0, 1, VariableTask.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+        !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(variableChoiceEClass, VariableChoice.class, "VariableChoice", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVariableChoice_Value(), ecorePackage.getEString(), "value", null, 1, 1, VariableChoice.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
