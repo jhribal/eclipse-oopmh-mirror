@@ -65,7 +65,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -93,11 +92,9 @@ public class ProgressPage extends SetupWizardPage
 {
   private static final SimpleDateFormat TIME = new SimpleDateFormat("HH:mm:ss");
 
-  private final ProgressLogFilter logFilter = new ProgressLogFilter();
-
-  private final Document logDocument = new Document();
-
   private final Map<SetupTask, Point> setupTaskSelections = new HashMap<SetupTask, Point>();
+
+  private TreeViewer treeViewer;
 
   private final ISelectionChangedListener treeViewerSelectionChangedListener = new ISelectionChangedListener()
   {
@@ -159,17 +156,23 @@ public class ProgressPage extends SetupWizardPage
     }
   };
 
-  private TreeViewer treeViewer;
-
   private StyledText logText;
+
+  private final Document logDocument = new Document();
+
+  private final ProgressLogFilter logFilter = new ProgressLogFilter();
 
   private SetupTask currentTask;
 
   private ProgressPageLog progressPageLog;
 
+  private boolean scrollLock;
+
   private boolean dismissAutomatically;
 
   private boolean launchAutomatically = true;
+
+  private Button scrollLockButton;
 
   private Button dismissButton;
 
@@ -227,14 +230,38 @@ public class ProgressPage extends SetupWizardPage
     logText.setFont(JFaceResources.getFont(JFaceResources.TEXT_FONT));
     logText.setEditable(false);
     logText.setLayoutData(new GridData(GridData.FILL_BOTH));
+    logText.getVerticalBar().addSelectionListener(new SelectionAdapter()
+    {
+      @Override
+      public void widgetSelected(SelectionEvent event)
+      {
+        if (event.detail == SWT.DRAG && !scrollLock)
+        {
+          scrollLockButton.setSelection(true);
+        }
+      }
+    });
 
-    GridLayout buttonLayout = new GridLayout(2, false);
+    GridLayout buttonLayout = new GridLayout(3, false);
     buttonLayout.marginHeight = 0;
     buttonLayout.marginWidth = 0;
 
     Composite buttonComposite = new Composite(mainComposite, SWT.NONE);
     buttonComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     buttonComposite.setLayout(buttonLayout);
+
+    scrollLockButton = new Button(buttonComposite, SWT.CHECK);
+    scrollLockButton.setText("Scroll Lock");
+    scrollLockButton.setToolTipText("Keep the log from scrolling to the end when new messages are added");
+    scrollLockButton.setLayoutData(new GridData());
+    scrollLockButton.addSelectionListener(new SelectionAdapter()
+    {
+      @Override
+      public void widgetSelected(SelectionEvent e)
+      {
+        scrollLock = scrollLockButton.getSelection();
+      }
+    });
 
     dismissButton = new Button(buttonComposite, SWT.CHECK);
     dismissButton.setText("Dismiss automatically");
@@ -328,29 +355,6 @@ public class ProgressPage extends SetupWizardPage
     {
       progressPageLog.cancel();
       progressPageLog = null;
-    }
-  }
-
-  private void appendText(String string)
-  {
-    try
-    {
-      logDocument.replace(logDocument.getLength(), 0, string);
-
-      Rectangle clientArea = logText.getClientArea();
-      int visibleLines = clientArea.height / logText.getLineHeight();
-      int lineCount = logText.getLineCount();
-      int topVisibleLine = lineCount - visibleLines;
-      int topIndex = logText.getTopIndex();
-      int delta = topVisibleLine - topIndex;
-      if (delta <= 2)
-      {
-        logText.setTopIndex(lineCount - 1);
-      }
-    }
-    catch (Exception ex)
-    {
-      SetupUIPlugin.INSTANCE.log(ex);
     }
   }
 
@@ -615,7 +619,13 @@ public class ProgressPage extends SetupWizardPage
    */
   private class ProgressPageLog implements ProgressLog
   {
+    private StringBuilder queue = new StringBuilder();
+
     private boolean canceled;
+
+    public ProgressPageLog()
+    {
+    }
 
     public boolean isCanceled()
     {
@@ -625,53 +635,6 @@ public class ProgressPage extends SetupWizardPage
     public void cancel()
     {
       canceled = true;
-    }
-
-    public void log(String line)
-    {
-      log(line, true);
-    }
-
-    public void log(String line, boolean filter)
-    {
-      if (isCanceled())
-      {
-        throw new OperationCanceledException();
-      }
-
-      if (filter)
-      {
-        line = logFilter.filter(line);
-      }
-
-      if (line == null)
-      {
-        return;
-      }
-
-      final String message = "[" + TIME.format(new Date()) + "] " + line + "\n";
-      UIUtil.asyncExec(new Runnable()
-      {
-        public void run()
-        {
-          if (!getWizard().canFinish())
-          {
-            appendText(message);
-          }
-        }
-      });
-    }
-
-    public void log(IStatus status)
-    {
-      String string = SetupUIPlugin.toString(status);
-      log(string, false);
-    }
-
-    public void log(Throwable t)
-    {
-      String string = SetupUIPlugin.toString(t);
-      log(string, false);
     }
 
     public void task(final SetupTask setupTask)
@@ -703,6 +666,110 @@ public class ProgressPage extends SetupWizardPage
           }
         }
       });
+    }
+
+    public void log(String line)
+    {
+      log(line, true);
+    }
+
+    public void log(IStatus status)
+    {
+      String string = SetupUIPlugin.toString(status);
+      log(string, false);
+    }
+
+    public void log(Throwable t)
+    {
+      String string = SetupUIPlugin.toString(t);
+      log(string, false);
+    }
+
+    public void log(String line, boolean filter)
+    {
+      if (isCanceled())
+      {
+        throw new OperationCanceledException();
+      }
+
+      if (filter)
+      {
+        line = logFilter.filter(line);
+      }
+
+      if (line == null)
+      {
+        return;
+      }
+
+      enqueue(new Date(), line);
+
+      final SetupWizard wizard = getWizard();
+      UIUtil.asyncExec(new Runnable()
+      {
+        public void run()
+        {
+          if (!wizard.canFinish())
+          {
+            String text = dequeue();
+            if (text != null)
+            {
+              appendText(text);
+            }
+          }
+        }
+      });
+    }
+
+    private synchronized void enqueue(Date date, String line)
+    {
+      queue.append("[");
+      queue.append(TIME.format(date));
+      queue.append("] ");
+      queue.append(line);
+      queue.append("\n");
+    }
+
+    private synchronized String dequeue()
+    {
+      if (queue.length() == 0)
+      {
+        return null;
+      }
+
+      String result = queue.toString();
+      queue = new StringBuilder();
+      return result;
+    }
+
+    private void appendText(String string)
+    {
+      try
+      {
+        int length = logDocument.getLength();
+        logDocument.replace(length, 0, string);
+
+        if (!scrollLock)
+        {
+          int lineCount = logText.getLineCount();
+          logText.setTopIndex(lineCount - 1);
+        }
+
+        // Rectangle clientArea = logText.getClientArea();
+        // int visibleLines = clientArea.height / logText.getLineHeight();
+        // int lineCount = logText.getLineCount();
+        // int topVisibleLine = lineCount - visibleLines;
+        // int topIndex = logText.getTopIndex();
+        // int delta = topVisibleLine - topIndex;
+        // if (delta <= 2)
+        // {
+        // logText.setTopIndex(lineCount - 1);
+        // }
+      }
+      catch (Exception ex)
+      {
+        SetupUIPlugin.INSTANCE.log(ex);
+      }
     }
   }
 }
