@@ -617,6 +617,8 @@ public class ProgressPage extends SetupWizardPage
   {
     private boolean canceled;
 
+    private StringBuilder messageQueue = new StringBuilder();
+
     public boolean isCanceled()
     {
       return canceled;
@@ -630,6 +632,18 @@ public class ProgressPage extends SetupWizardPage
     public void log(String line)
     {
       log(line, true);
+    }
+
+    private synchronized void setMessage(String message)
+    {
+      messageQueue.append(message);
+    }
+
+    private synchronized String emptyMessageQueue()
+    {
+      String result = messageQueue.toString();
+      messageQueue = new StringBuilder();
+      return result;
     }
 
     public void log(String line, boolean filter)
@@ -649,14 +663,18 @@ public class ProgressPage extends SetupWizardPage
         return;
       }
 
-      final String message = "[" + TIME.format(new Date()) + "] " + line + "\n";
+      setMessage("[" + TIME.format(new Date()) + "] " + line + "\n");
       UIUtil.asyncExec(new Runnable()
       {
         public void run()
         {
           if (!getWizard().canFinish())
           {
-            appendText(message);
+            String message = emptyMessageQueue();
+            if (message.length() > 0)
+            {
+              appendText(message);
+            }
           }
         }
       });
