@@ -7,7 +7,8 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
- *    Julian Enoch - Add support for secure context variables
+ *    Ericsson AB (Julian Enoch) - Bug 425815 - Add support for secure context variables
+ *    Ericsson AB (Julian Enoch) - Bug 434525 - Allow prompted variables to be pre-populated
  */
 package org.eclipse.oomph.internal.setup.core;
 
@@ -2163,14 +2164,31 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
           String value = (String)eObject.eGet(attribute);
           if (value != null)
           {
-            String newValue = expandString(value, keys);
-            if (newValue == null)
+            String newValue;
+            if ("defaultValue".equals(attribute.getName()))
             {
-              unresolvedSettings.add(((InternalEObject)eObject).eSetting(attribute));
-            }
-            else if (!value.equals(newValue))
-            {
+              // with this version of "expandString", the current attribute will not be added to "keys", if not resolved
+              newValue = expandString(value);
+
+              // if a "defaultValue" attribute is not completely resolved, then nullify it so the user will fill the associated value from clean when prompted
+              if (STRING_EXPANSION_PATTERN.matcher(newValue).find())
+              {
+                newValue = null;
+              }
+
               eObject.eSet(attribute, newValue);
+            }
+            else
+            {
+              newValue = expandString(value, keys);
+              if (newValue == null)
+              {
+                unresolvedSettings.add(((InternalEObject)eObject).eSetting(attribute));
+              }
+              else if (!value.equals(newValue))
+              {
+                eObject.eSet(attribute, newValue);
+              }
             }
           }
         }
