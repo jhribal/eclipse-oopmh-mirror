@@ -2600,7 +2600,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
     return list;
   }
 
-  private void reorderSetupTasks(EList<SetupTask> setupTasks)
+  public void reorderSetupTasks(EList<SetupTask> setupTasks)
   {
     ECollections.sort(setupTasks, new Comparator<SetupTask>()
     {
