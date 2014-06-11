@@ -48,6 +48,7 @@ import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.StatusCommand;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.CoreConfig.AutoCRLF;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Repository;
@@ -193,6 +194,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
   private Git cachedGit;
 
   private Repository cachedRepository;
+
+  private CloneCommand cloneCommand;
 
   /**
    * <!-- begin-user-doc -->
@@ -474,6 +477,16 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     return result.toString();
   }
 
+  public CloneCommand getCloneCommand()
+  {
+    return cloneCommand;
+  }
+
+  public void setCloneCommand(CloneCommand cloneCommand)
+  {
+    this.cloneCommand = cloneCommand;
+  }
+
   public boolean isNeeded(SetupTaskContext context) throws Exception
   {
     String location = getLocation();
@@ -485,6 +498,14 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     }
 
     workDirExisted = true;
+
+    String dotGitLocation = location + "/" + Constants.DOT_GIT;
+    File dotGitDir = new File(dotGitLocation);
+    if (!dotGitDir.isDirectory())
+    {
+      // .git folder doesn't exist
+      return true;
+    }
 
     if (workDir.list().length > 1)
     {
@@ -648,11 +669,16 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     }
   }
 
-  private static Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, String remoteName, String remoteURI) throws Exception
+  private Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, String remoteName, String remoteURI) throws Exception
   {
     context.log("Cloning Git repo " + remoteURI + " to " + workDir);
 
-    CloneCommand command = Git.cloneRepository();
+    CloneCommand command = cloneCommand;
+    if (command == null)
+    {
+      command = Git.cloneRepository();
+    }
+
     command.setNoCheckout(true);
     command.setURI(remoteURI);
     command.setRemote(remoteName);
