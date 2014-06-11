@@ -177,6 +177,12 @@
             id="org.eclipse.oomph.site"/>
         <requirements
             id="setups"/>
+        <requirements
+            id="org.mockito"/>
+        <requirements
+            id="org.mockito.source"/>
+        <requirements
+            id="org.hamcrest"/>
         <sourceLocators
             rootFolder="${git.clone.oomph.location}"/>
         <repositoryLists
