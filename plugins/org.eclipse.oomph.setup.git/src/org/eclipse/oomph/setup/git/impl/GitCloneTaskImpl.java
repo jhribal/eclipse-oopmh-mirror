@@ -46,6 +46,7 @@ import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.StatusCommand;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.CoreConfig.AutoCRLF;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Repository;
@@ -191,6 +192,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
   private Git cachedGit;
 
   private Repository cachedRepository;
+
+  private CloneCommand cloneCommand = Git.cloneRepository();
 
   /**
    * <!-- begin-user-doc -->
@@ -472,6 +475,16 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     return result.toString();
   }
 
+  public CloneCommand getCloneCommand()
+  {
+    return cloneCommand;
+  }
+
+  public void setCloneCommand(CloneCommand command)
+  {
+    cloneCommand = command;
+  }
+
   public boolean isNeeded(SetupTaskContext context) throws Exception
   {
     String location = getLocation();
@@ -483,6 +496,14 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     }
 
     workDirExisted = true;
+
+    String gitdirName = location + "/" + Constants.DOT_GIT;
+    File workGitDir = new File(gitdirName);
+    if (!workGitDir.isDirectory())
+    {
+      // .git folder doesn't exist
+      return true;
+    }
 
     if (workDir.list().length > 1)
     {
@@ -627,19 +648,18 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     }
   }
 
-  private static Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, String remoteName, String remoteURI) throws Exception
+  private Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, String remoteName, String remoteURI) throws Exception
   {
     context.log("Cloning Git repo " + remoteURI + " to " + workDir);
 
-    CloneCommand command = Git.cloneRepository();
-    command.setNoCheckout(true);
-    command.setURI(remoteURI);
-    command.setRemote(remoteName);
-    command.setBranchesToClone(Collections.singleton(checkoutBranch));
-    command.setDirectory(workDir);
-    command.setTimeout(60);
-    command.setProgressMonitor(new ProgressLogWrapper(context));
-    return command.call();
+    cloneCommand.setNoCheckout(true);
+    cloneCommand.setURI(remoteURI);
+    cloneCommand.setRemote(remoteName);
+    cloneCommand.setBranchesToClone(Collections.singleton(checkoutBranch));
+    cloneCommand.setDirectory(workDir);
+    cloneCommand.setTimeout(60);
+    cloneCommand.setProgressMonitor(new ProgressLogWrapper(context));
+    return cloneCommand.call();
   }
 
   private static void configureRepository(SetupTaskContext context, Repository repository, String checkoutBranch, String remoteName, String remoteURI,
