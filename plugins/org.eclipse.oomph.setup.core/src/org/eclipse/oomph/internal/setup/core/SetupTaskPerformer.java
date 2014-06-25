@@ -7,7 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
- *    Julian Enoch - Add support for secure context variables
+ *    Ericsson AB (Julian Enoch) - Bug 425815 - Add support for secure context variables
  */
 package org.eclipse.oomph.internal.setup.core;
 
