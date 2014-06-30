@@ -100,7 +100,7 @@
   <setupTask
       xsi:type="setup:EclipseIniTask"
       option="-Doomph.redirection.setups"
-      value="=http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/->${git.clone.oomph.location|uri}/setups/"
+      value="=http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/->&quot;${git.clone.oomph.location|uri}/setups/&quot;"
       vm="true"
       documentation="Redirect to the development version of the releng setup model."/>
   <setupTask
