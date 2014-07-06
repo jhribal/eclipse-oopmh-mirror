@@ -9,6 +9,7 @@
  *    Eike Stepper - initial API and implementation
  *    Ericsson AB (Julian Enoch) - Bug 425815 - Add support for secure context variables
  *    Ericsson AB (Julian Enoch) - Bug 434525 - Allow prompted variables to be pre-populated
+ *    Christian W. Damus (CEA) - Bug 438975 - Support nested variable expansion
  */
 package org.eclipse.oomph.internal.setup.core;
 
@@ -1581,7 +1582,12 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
     return expandString(string, keys, false);
   }
 
-  private String expandString(String string, Set<String> keys, boolean secure)
+  String expandString(String string, Set<String> keys, boolean secure)
+  {
+    return new StringExpander(this).expandString(string, keys, secure);
+  }
+
+  String doExpandString(String string, Set<String> keys, boolean secure)
   {
     if (string == null)
     {
