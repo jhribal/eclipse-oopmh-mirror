@@ -1293,6 +1293,15 @@
           key="/instance/org.eclipse.xtend.core.Xtend/outlet.DEFAULT_OUTPUT.cleanDirectory"
           value="true"/>
     </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        id="org.eclipse.oomph.setup.ui"
+        name="org.eclipse.oomph.setup.ui">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.oomph.setup.ui/skip.startup.tasks"
+          value="true"/>
+    </setupTask>
   </setupTask>
   <setupTask
       xsi:type="setup:VariableTask"
@@ -1355,36 +1364,40 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.m2e.feature.feature.group"/>
+          name="org.eclipse.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.logback.feature.feature.group"/>
+          name="org.eclipse.m2e.logback.feature.feature.group"/>
       <requirement
-          id="org.eclipse.xtend.sdk.feature.group"
+          name="org.eclipse.xtend.sdk.feature.group"
           versionRange="[2.5.4.v201404100756,2.5.4.v201404100756]"/>
       <requirement
-          id="org.eclipse.epp.mpc.feature.group"/>
+          name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="org.sonatype.tycho.m2e.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.emf.sdk.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.java_feature.feature.group"/>
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
+          name="org.eclipse.emf.sdk.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+          name="org.eclipse.mylyn.java_feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.hudson.feature.group"/>
+          name="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.git.feature.group"/>
+          name="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.hudson.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.git.feature.group"/>
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.7.0/N/0.7.0.201309291400/"/>
       <repository
           url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/maintenance/releases/"/>
       <repository
-          url="http://download.eclipse.org/recommenders/updates/stable"/>
+          url="http://download.eclipse.org/recommenders/updates/milestones"/>
     </setupTask>
     <setupTask
         xsi:type="maven:MavenImportTask">
@@ -1395,7 +1408,7 @@
     <setupTask
         xsi:type="pde:TargetPlatformTask"
         id=""
-        name="Target Definition for Eclipse Luna">
+        name="Target Definition for Eclipse Luna (4.4)">
       <description></description>
     </setupTask>
     <setupTask
@@ -1574,33 +1587,35 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.codesearch.feature.feature.group"/>
+          name="org.eclipse.recommenders.codesearch.feature.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.stats.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.mylyn.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.stats.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.stats.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.mylyn.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.calls.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.stats.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.hippie.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.calls.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.hippie.superclass.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.hippie.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.snippets.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.hippie.superclass.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.tracker.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.snippets.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.tweaks.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.tracker.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.vaadin.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.tweaks.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.java_feature.feature.group"/>
+          name="com.codetrails.vaadin.rcp.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.java_feature.feature.group"/>
       <repository
           url="http://download.eclipse.org/recommenders/updates/head/"/>
       <repository
@@ -1613,9 +1628,9 @@
       <targlet
           name="Examples Targlet">
         <requirement
-            id="org.eclipse.sdk.feature.group"/>
+            name="org.eclipse.sdk.feature.group"/>
         <requirement
-            id="com.example"/>
+            name="com.example"/>
         <sourceLocator
             rootFolder="${git.clone.recommenders.examples.location}"/>
         <repositoryList
@@ -1719,35 +1734,39 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.hippie.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.tracker.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.tweaks.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.hippie.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.calls.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.tracker.rcp.feature.feature.group"/>
       <requirement
-          id="com.codetrails.connect.snippets.rcp.feature.feature.group"/>
+          name="com.codetrails.connect.tweaks.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.java_feature.feature.group"/>
+          name="com.codetrails.connect.calls.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.feature.feature.group"/>
+          name="com.codetrails.connect.snippets.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.logback.feature.feature.group"/>
+          name="org.eclipse.mylyn.java_feature.feature.group"/>
       <requirement
-          id="org.eclipse.xtend.sdk.feature.group"
+          name="org.eclipse.m2e.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.m2e.logback.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.xtend.sdk.feature.group"
           versionRange="[2.5.4.v201404100756,2.5.4.v201404100756]"/>
       <requirement
-          id="org.eclipse.epp.mpc.feature.group"/>
+          name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
-          id="org.sonatype.tycho.m2e.feature.feature.group"/>
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.xtext.sdk.feature.group"
+          name="org.eclipse.xtext.sdk.feature.group"
           versionRange="[2.5.4.v201404100756,2.5.4.v201404100756]"/>
       <repository
-          url="http://download.eclipse.org/recommenders/updates/head/"/>
+          url="http://download.eclipse.org/recommenders/updates/milestones/"/>
       <repository
           url="http://download.codetrails.com/updates/connect/"/>
       <repository
@@ -1785,32 +1804,36 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.m2e.feature.feature.group"/>
+          name="org.eclipse.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.logback.feature.feature.group"/>
+          name="org.eclipse.m2e.logback.feature.feature.group"/>
       <requirement
-          id="org.eclipse.xtend.sdk.feature.group"
+          name="org.eclipse.xtend.sdk.feature.group"
           versionRange="[2.5.4.v201404100756,2.5.4.v201404100756]"/>
       <requirement
-          id="org.eclipse.epp.mpc.feature.group"/>
+          name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="org.sonatype.tycho.m2e.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.hudson.feature.group"/>
+          name="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.git.feature.group"/>
+          name="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.hudson.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.git.feature.group"/>
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.7.0/N/0.7.0.201309291400/"/>
       <repository
           url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/maintenance/releases/"/>
       <repository
-          url="http://download.eclipse.org/recommenders/updates/stable"/>
+          url="http://download.eclipse.org/recommenders/updates/milestones"/>
     </setupTask>
     <setupTask
         xsi:type="maven:MavenImportTask">
@@ -1832,7 +1855,7 @@
     </setupTask>
     <setupTask
         xsi:type="pde:TargetPlatformTask"
-        name="Target Definition for Eclipse Luna"/>
+        name="Target Definition for Eclipse Luna (4.4)"/>
     <setupTask
         xsi:type="mylyn:MylynQueriesTask"
         repositoryURL="https://bugs.eclipse.org/bugs"
@@ -1901,27 +1924,31 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.m2e.feature.feature.group"/>
+          name="org.eclipse.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.logback.feature.feature.group"/>
+          name="org.eclipse.m2e.logback.feature.feature.group"/>
       <requirement
-          id="org.eclipse.epp.mpc.feature.group"/>
+          name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="org.sonatype.tycho.m2e.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.hudson.feature.group"/>
+          name="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.git.feature.group"/>
+          name="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.hudson.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.git.feature.group"/>
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.7.0/N/0.7.0.201309291400/"/>
       <repository
-          url="http://download.eclipse.org/recommenders/updates/stable"/>
+          url="http://download.eclipse.org/recommenders/updates/milestones"/>
     </setupTask>
     <setupTask
         xsi:type="maven:MavenImportTask">
@@ -1943,7 +1970,7 @@
     </setupTask>
     <setupTask
         xsi:type="pde:TargetPlatformTask"
-        name="Target Definition for Eclipse Luna"/>
+        name="Target Definition for Eclipse Luna (4.4)"/>
     <setupTask
         xsi:type="mylyn:MylynQueriesTask"
         repositoryURL="https://bugs.eclipse.org/bugs"
@@ -2013,27 +2040,31 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.m2e.feature.feature.group"/>
+          name="org.eclipse.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.logback.feature.feature.group"/>
+          name="org.eclipse.m2e.logback.feature.feature.group"/>
       <requirement
-          id="org.eclipse.epp.mpc.feature.group"/>
+          name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="org.sonatype.tycho.m2e.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.hudson.feature.group"/>
+          name="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.git.feature.group"/>
+          name="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.hudson.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.git.feature.group"/>
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.7.0/N/0.7.0.201309291400/"/>
       <repository
-          url="http://download.eclipse.org/recommenders/updates/stable"/>
+          url="http://download.eclipse.org/recommenders/updates/milestones"/>
     </setupTask>
     <setupTask
         xsi:type="maven:MavenImportTask">
@@ -2055,7 +2086,7 @@
     </setupTask>
     <setupTask
         xsi:type="pde:TargetPlatformTask"
-        name="Target Definition for Eclipse Luna"/>
+        name="Target Definition for Eclipse Luna (4.4)"/>
     <setupTask
         xsi:type="mylyn:MylynQueriesTask"
         repositoryURL="https://bugs.eclipse.org/bugs"
@@ -2124,27 +2155,31 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.m2e.feature.feature.group"/>
+          name="org.eclipse.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.logback.feature.feature.group"/>
+          name="org.eclipse.m2e.logback.feature.feature.group"/>
       <requirement
-          id="org.eclipse.epp.mpc.feature.group"/>
+          name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="org.sonatype.tycho.m2e.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.hudson.feature.group"/>
+          name="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.git.feature.group"/>
+          name="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.hudson.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.git.feature.group"/>
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.7.0/N/0.7.0.201309291400/"/>
       <repository
-          url="http://download.eclipse.org/recommenders/updates/stable"/>
+          url="http://download.eclipse.org/recommenders/updates/milestones"/>
     </setupTask>
     <setupTask
         xsi:type="maven:MavenImportTask">
@@ -2166,7 +2201,7 @@
     </setupTask>
     <setupTask
         xsi:type="pde:TargetPlatformTask"
-        name="Target Definition for Eclipse Luna"/>
+        name="Target Definition for Eclipse Luna (4.4)"/>
     <setupTask
         xsi:type="mylyn:MylynBuildsTask"
         serverURL="https://hudson.eclipse.org/recommenders"
@@ -2236,27 +2271,31 @@
     <setupTask
         xsi:type="setup.p2:P2Task">
       <requirement
-          id="org.eclipse.m2e.feature.feature.group"/>
+          name="org.eclipse.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.m2e.logback.feature.feature.group"/>
+          name="org.eclipse.m2e.logback.feature.feature.group"/>
       <requirement
-          id="org.eclipse.epp.mpc.feature.group"/>
+          name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
-          id="org.eclipse.recommenders.rcp.feature.feature.group"/>
+          name="org.eclipse.recommenders.rcp.feature.feature.group"/>
       <requirement
-          id="org.sonatype.tycho.m2e.feature.feature.group"/>
+          name="org.eclipse.recommenders.snipmatch.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
+          name="org.eclipse.recommenders.stacktraces.rcp.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.hudson.feature.group"/>
+          name="org.eclipse.mylyn.bugzilla_feature.feature.group"/>
       <requirement
-          id="org.eclipse.mylyn.git.feature.group"/>
+          name="org.eclipse.mylyn.gerrit.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.hudson.feature.group"/>
+      <requirement
+          name="org.eclipse.mylyn.git.feature.group"/>
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.7.0/N/0.7.0.201309291400/"/>
       <repository
-          url="http://download.eclipse.org/recommenders/updates/stable"/>
+          url="http://download.eclipse.org/recommenders/updates/milestones"/>
     </setupTask>
     <setupTask
         xsi:type="maven:MavenImportTask">
@@ -2278,7 +2317,7 @@
     </setupTask>
     <setupTask
         xsi:type="pde:TargetPlatformTask"
-        name="Target Definition for Eclipse Luna"/>
+        name="Target Definition for Eclipse Luna (4.4)"/>
     <setupTask
         xsi:type="mylyn:MylynBuildsTask"
         serverURL="https://hudson.eclipse.org/recommenders"
