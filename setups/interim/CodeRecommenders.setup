@@ -1415,7 +1415,7 @@
           name="org.eclipse.m2e.logback.feature.feature.group"/>
       <requirement
           name="org.eclipse.xtend.sdk.feature.group"
-          versionRange="[2.5.4.v201404100756,2.5.4.v201404100756]"/>
+          versionRange="[2.7.0,2.8.0]"/>
       <requirement
           name="org.eclipse.epp.mpc.feature.group"/>
       <requirement
@@ -1443,7 +1443,7 @@
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.7.0/N/0.7.0.201309291400/"/>
       <repository
-          url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/maintenance/releases/"/>
+          url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
       <repository
           url="http://download.eclipse.org/recommenders/updates/milestones/"/>
       <repository
