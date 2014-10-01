@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a766b734_ce4ca01f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 857
+      },
+      "writtenOn": "2014-10-01T10:29:35Z",
+      "side": 1,
+      "message": "Is this the convention in the Oomph Gerrit? This way, Gerrit doesn\u0027t render this as Bugzilla links. :-(",
+      "revId": "f3c9180d1d30ee29d42d343feda2223cb0073fca",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a766b734_0e47b8f7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 857
+      },
+      "writtenOn": "2014-10-01T10:29:35Z",
+      "side": 1,
+      "message": "Remember to add a change ID.",
+      "revId": "f3c9180d1d30ee29d42d343feda2223cb0073fca",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
