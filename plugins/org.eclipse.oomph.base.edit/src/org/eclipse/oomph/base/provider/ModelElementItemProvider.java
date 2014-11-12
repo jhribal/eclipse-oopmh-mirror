@@ -71,7 +71,7 @@ import java.util.Map;
  * @generated
  */
 public class ModelElementItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
-    ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
+    ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource, IItemToolTipProvider
 {
   /**
    * This constructs an instance from a factory and a notifier.
@@ -164,6 +164,17 @@ public class ModelElementItemProvider extends ItemProviderAdapter implements IEd
    */
   @Override
   public String getText(Object object)
+  {
+    return getString("_UI_ModelElement_type");
+  }
+
+  /**
+   * This returns the label text for the adapted class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated not
+   */
+  public Object getToolTip(Object object)
   {
     return getString("_UI_ModelElement_type");
   }

@@ -209,4 +209,24 @@ public class ProjectItemProvider extends ScopeItemProvider
     newChildDescriptors.add(createChildParameter(SetupPackage.Literals.PROJECT__STREAMS, SetupFactory.eINSTANCE.createStream()));
   }
 
+  @Override
+  public Object getToolTip(Object object)
+  {
+    Project p = (Project)object;
+    if (p == null)
+    {
+      return null;
+    }
+
+    String label = p.getLabel();
+    String description = p.getDescription();
+
+    if (label == null || description == null)
+    {
+      return null;
+    }
+
+    return "<p><b>" + label.replaceAll("[^a-zA-Z0-9]", "") + "</b></p><p>" + description + "</p>";
+  }
+
 }

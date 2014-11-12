@@ -12,6 +12,7 @@ package org.eclipse.oomph.setup.provider;
 
 import org.eclipse.oomph.base.Annotation;
 import org.eclipse.oomph.base.BasePackage;
+import org.eclipse.oomph.base.provider.IItemToolTipProvider;
 import org.eclipse.oomph.base.util.BaseSwitch;
 import org.eclipse.oomph.setup.SetupFactory;
 import org.eclipse.oomph.setup.SetupPackage;
@@ -99,6 +100,7 @@ public class SetupItemProviderAdapterFactory extends SetupAdapterFactory impleme
     supportedTypes.add(ITreeItemContentProvider.class);
     supportedTypes.add(IItemLabelProvider.class);
     supportedTypes.add(IItemPropertySource.class);
+    supportedTypes.add(IItemToolTipProvider.class);
   }
 
   /**

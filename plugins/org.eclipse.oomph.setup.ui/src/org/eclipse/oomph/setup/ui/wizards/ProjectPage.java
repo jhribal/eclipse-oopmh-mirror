@@ -31,6 +31,8 @@ import org.eclipse.oomph.setup.provider.ProjectItemProvider;
 import org.eclipse.oomph.setup.provider.SetupItemProviderAdapterFactory;
 import org.eclipse.oomph.setup.provider.WorkspaceItemProvider;
 import org.eclipse.oomph.setup.ui.SetupUIPlugin;
+import org.eclipse.oomph.setup.ui.providers.AdapterFactoryLabelFontColorToolTipProvider;
+import org.eclipse.oomph.setup.ui.providers.HtmlTipSupport;
 import org.eclipse.oomph.ui.ButtonAnimator;
 import org.eclipse.oomph.ui.UIUtil;
 import org.eclipse.oomph.util.StringUtil;
@@ -67,7 +69,6 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.emf.edit.ui.dnd.EditingDomainViewerDropAdapter;
 import org.eclipse.emf.edit.ui.dnd.LocalTransfer;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.provider.ExtendedFontRegistry;
 
 import org.eclipse.core.resources.IFile;
@@ -156,7 +157,7 @@ public class ProjectPage extends SetupWizardPage
 
   private ComposedAdapterFactory adapterFactory;
 
-  private AdapterFactoryLabelProvider labelProvider;
+  private AdapterFactoryLabelFontColorToolTipProvider labelProvider;
 
   private CatalogSelector catalogSelector;
 
@@ -693,7 +694,7 @@ public class ProjectPage extends SetupWizardPage
     AccessUtil.setKey(filteredTree.getFilterControl(), "filter");
 
     projectViewer = filteredTree.getViewer();
-    labelProvider = new AdapterFactoryLabelProvider.FontProvider(adapterFactory, projectViewer)
+    labelProvider = new AdapterFactoryLabelFontColorToolTipProvider(adapterFactory, projectViewer)
     {
       private final Font baseFont = projectViewer.getControl().getFont();
 
@@ -714,6 +715,7 @@ public class ProjectPage extends SetupWizardPage
     };
 
     projectViewer.setLabelProvider(labelProvider);
+    HtmlTipSupport.enableFor(projectViewer);
     projectViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory)
     {
       @Override
