@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Marc-Andre Laperle (Ericsson) - Fix for bug 457505
  */
 package org.eclipse.oomph.resources;
 
@@ -37,7 +38,10 @@ public interface ProjectHandler
 
     public void handleProject(IProject project, BackendContainer backendContainer)
     {
-      projectMap.put(project, backendContainer);
+      synchronized (projectMap)
+      {
+        projectMap.put(project, backendContainer);
+      }
     }
 
     public Map<IProject, BackendContainer> getProjectMap()
