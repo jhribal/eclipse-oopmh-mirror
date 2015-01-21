@@ -79,17 +79,20 @@ public abstract class PersistentMap<E>
           public void handleKey(String key, String extraInfo) throws Exception
           {
             E element = createElement(key, extraInfo);
-            if (element instanceof AgentManagerElement)
+            if (element != null)
             {
-              AgentManagerElement agentManagerElement = (AgentManagerElement)element;
-              if (!agentManagerElement.isValid())
+              if (element instanceof AgentManagerElement)
               {
-                needsSave[0] = true;
-                return;
+                AgentManagerElement agentManagerElement = (AgentManagerElement)element;
+                if (!agentManagerElement.isValid())
+                {
+                  needsSave[0] = true;
+                  return;
+                }
               }
-            }
 
-            elements.put(key, element);
+              elements.put(key, element);
+            }
           }
         });
       }
@@ -141,8 +144,11 @@ public abstract class PersistentMap<E>
     if (element == null)
     {
       element = createElement(key, extraInfo);
-      elements.put(key, element);
-      save(key, null);
+      if (element != null)
+      {
+        elements.put(key, element);
+        save(key, null);
+      }
     }
 
     return element;
@@ -162,6 +168,9 @@ public abstract class PersistentMap<E>
     return reconcile(null, null);
   }
 
+  /**
+   * @return new element or null if no element should be created
+   */
   protected abstract E createElement(String key, String extraInfo);
 
   protected void initializeFirstTime()
@@ -291,8 +300,11 @@ public abstract class PersistentMap<E>
         if (!key.equals(removedKey) && !elements.containsKey(key))
         {
           E element = createElement(key, extraInfo);
-          elements.put(key, element);
-          changed[0] = true;
+          if (element != null)
+          {
+            elements.put(key, element);
+            changed[0] = true;
+          }
         }
       }
     });
