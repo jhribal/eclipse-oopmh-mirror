@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.p2.internal.core;
 
+import org.eclipse.oomph.util.IORuntimeException;
 import org.eclipse.oomph.util.IOUtil;
 import org.eclipse.oomph.util.OfflineMode;
 import org.eclipse.oomph.util.PropertiesUtil;
@@ -23,10 +24,10 @@ import org.eclipse.equinox.internal.p2.repository.DownloadStatus;
 import org.eclipse.equinox.internal.p2.repository.Transport;
 import org.eclipse.equinox.internal.provisional.p2.repository.IStateful;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -55,6 +56,10 @@ public class CachingTransport extends Transport
 
   public CachingTransport(Transport delegate)
   {
+    if (delegate instanceof CachingTransport)
+    {
+      throw new IllegalArgumentException("CachingTransport should not be chained.");
+    }
     this.delegate = delegate;
 
     File folder = P2CorePlugin.getUserStateFolder(new File(PropertiesUtil.USER_HOME));
@@ -65,6 +70,26 @@ public class CachingTransport extends Transport
   public File getCacheFile(URI uri)
   {
     return new File(cacheFolder, IOUtil.encodeFileName(uri.toString()));
+  }
+
+  private class StatefulFileOutputStream extends FileOutputStream implements IStateful
+  {
+    public StatefulFileOutputStream(File file) throws FileNotFoundException
+    {
+      super(file);
+    }
+
+    private IStatus status;
+
+    public IStatus getStatus()
+    {
+      return status;
+    }
+
+    public void setStatus(IStatus status)
+    {
+      this.status = status;
+    }
   }
 
   @Override
@@ -83,8 +108,7 @@ public class CachingTransport extends Transport
       {
         try
         {
-          byte[] content = IOUtil.readFile(cacheFile);
-          IOUtil.copy(new ByteArrayInputStream(content), target);
+          IOUtil.copy(new FileInputStream(cacheFile), target);
           return Status.OK_STATUS;
         }
         catch (Exception ex)
@@ -94,54 +118,43 @@ public class CachingTransport extends Transport
       }
     }
 
-    OutputStream oldTarget = target;
-
-    class StatfulByteArrayOutputStream extends ByteArrayOutputStream implements IStateful
+    if (loadingRepository)
     {
-      private IStatus status;
-
-      public IStatus getStatus()
+      File cacheFile = getCacheFile(uri);
+      StatefulFileOutputStream statefulTarget;
+      try
       {
-        return status;
-      }
+        statefulTarget = new StatefulFileOutputStream(cacheFile);
 
-      public void setStatus(IStatus status)
-      {
-        this.status = status;
-      }
-    }
-
-    StatfulByteArrayOutputStream statefulTarget = new StatfulByteArrayOutputStream();
-    target = statefulTarget;
-
-    try
-    {
-      IStatus status = delegate.download(uri, target, startPos, monitor);
-      if (status.isOK())
-      {
-        byte[] content = ((ByteArrayOutputStream)target).toByteArray();
-        IOUtil.copy(new ByteArrayInputStream(content), oldTarget);
-
-        if (loadingRepository)
+        try
         {
-          File cacheFile = getCacheFile(uri);
-          IOUtil.writeFile(cacheFile, content);
+          IStatus status = delegate.download(uri, statefulTarget, startPos, monitor);
+          if (status.isOK())
+          {
+            // files can be many megabytes large - so download them directly on the disc
+            IOUtil.copy(new FileInputStream(cacheFile), target);
 
-          DownloadStatus downloadStatus = (DownloadStatus)status;
-          long lastModified = downloadStatus.getLastModified();
-          cacheFile.setLastModified(lastModified);
+            DownloadStatus downloadStatus = (DownloadStatus)status;
+            long lastModified = downloadStatus.getLastModified();
+            cacheFile.setLastModified(lastModified);
+          }
+
+          return status;
+        }
+        finally
+        {
+          if (target instanceof IStateful)
+          {
+            ((IStateful)target).setStatus(statefulTarget.getStatus());
+          }
         }
       }
-
-      return status;
-    }
-    finally
-    {
-      if (oldTarget instanceof IStateful)
+      catch (FileNotFoundException ex)
       {
-        ((IStateful)oldTarget).setStatus(statefulTarget.getStatus());
+        throw new IORuntimeException(ex);
       }
     }
+    return delegate.download(uri, target, startPos, monitor);
   }
 
   @Override

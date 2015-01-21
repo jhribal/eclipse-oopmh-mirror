@@ -439,19 +439,27 @@ public class AgentImpl extends AgentManagerElementImpl implements Agent
     {
       profileRegistry = (LazyProfileRegistry)provisioningAgent.getService(IProfileRegistry.SERVICE_NAME);
 
-      if (!PropertiesUtil.isProperty("oomph.p2.disable.offline"))
+      originalTransport = (Transport)provisioningAgent.getService(Transport.SERVICE_NAME);
+      originalMetadataRepositoryManager = (IMetadataRepositoryManager)provisioningAgent.getService(IMetadataRepositoryManager.SERVICE_NAME);
+      originalArtifactRepositoryManager = (IArtifactRepositoryManager)provisioningAgent.getService(IArtifactRepositoryManager.SERVICE_NAME);
+
+      if (!PropertiesUtil.isProperty("oomph.p2.disable.offline")
+      // if a location is listed twice or the location to be installed in is also listed in the agents.info we may already have a CachingTransport
+          && !(originalTransport instanceof CachingTransport))
       {
-        originalTransport = (Transport)provisioningAgent.getService(Transport.SERVICE_NAME);
         cachingTransport = new CachingTransport(originalTransport);
         provisioningAgent.registerService(Transport.SERVICE_NAME, cachingTransport);
 
-        originalMetadataRepositoryManager = (IMetadataRepositoryManager)provisioningAgent.getService(IMetadataRepositoryManager.SERVICE_NAME);
         metadataRepositoryManager = new CachingRepositoryManager.Metadata(provisioningAgent, cachingTransport);
         provisioningAgent.registerService(IMetadataRepositoryManager.SERVICE_NAME, metadataRepositoryManager);
 
-        originalArtifactRepositoryManager = (IArtifactRepositoryManager)provisioningAgent.getService(IArtifactRepositoryManager.SERVICE_NAME);
         artifactRepositoryManager = new CachingRepositoryManager.Artifact(provisioningAgent, cachingTransport);
         provisioningAgent.registerService(IArtifactRepositoryManager.SERVICE_NAME, artifactRepositoryManager);
+      }
+      else
+      {
+        metadataRepositoryManager = originalMetadataRepositoryManager;
+        artifactRepositoryManager = originalArtifactRepositoryManager;
       }
 
       this.provisioningAgent = provisioningAgent;
