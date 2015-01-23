@@ -21,8 +21,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.repository.AuthenticationFailedException;
 import org.eclipse.equinox.internal.p2.repository.DownloadStatus;
+import org.eclipse.equinox.internal.p2.repository.Messages;
 import org.eclipse.equinox.internal.p2.repository.Transport;
 import org.eclipse.equinox.internal.provisional.p2.repository.IStateful;
+import org.eclipse.equinox.p2.core.ProvisionException;
+import org.eclipse.osgi.util.NLS;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -49,7 +54,9 @@ public class CachingTransport extends Transport
     }
   };
 
-  private static boolean DEBUG = false;
+  private static final long REFRESH_INTERVAL = 1000 * 60 * 60 * 24; // 24 hours
+
+  private static boolean DEBUG = true;
 
   private final Transport delegate;
 
@@ -64,15 +71,24 @@ public class CachingTransport extends Transport
 
     this.delegate = delegate;
 
-    File folder = P2CorePlugin.getUserStateFolder(new File(PropertiesUtil.USER_HOME));
-    cacheFolder = new File(folder, "cache");
+    cacheFolder = cacheFolder();
     cacheFolder.mkdirs();
+  }
+
+  /**
+   * Attention when overriding this method - is is called from the constructor.
+   */
+  protected File cacheFolder()
+  {
+    return new File(P2CorePlugin.getUserStateFolder(new File(PropertiesUtil.USER_HOME)), "cache");
   }
 
   public File getCacheFile(URI uri)
   {
     return new File(cacheFolder, IOUtil.encodeFileName(uri.toString()));
   }
+
+  private static final Map<String, Thread> downloadingThreads = new HashMap<String, Thread>();
 
   @Override
   public IStatus download(URI uri, OutputStream target, long startPos, IProgressMonitor monitor)
@@ -82,74 +98,255 @@ public class CachingTransport extends Transport
       log("  ! " + uri);
     }
 
-    if (!isLoadingRepository(uri))
-    {
-      return delegate.download(uri, target, startPos, monitor);
-    }
-
-    if (OfflineMode.isEnabled())
-    {
-      File cacheFile = getCacheFile(uri);
-      if (cacheFile.exists())
-      {
-        FileInputStream cacheInputStream = null;
-
-        try
-        {
-          cacheInputStream = new FileInputStream(cacheFile);
-          IOUtil.copy(cacheInputStream, target);
-          return Status.OK_STATUS;
-        }
-        catch (Exception ex)
-        {
-          //$FALL-THROUGH$
-        }
-        finally
-        {
-          IOUtil.closeSilent(cacheInputStream);
-        }
-      }
-    }
-
-    // If the offline mode is not enabled we must make p2 and (for later) ourselves happy.
     File cacheFile = getCacheFile(uri);
-    StatefulFileOutputStream statefulTarget = null;
-    FileInputStream cacheInputStream = null;
-
+    String key = cacheFile.getName();
+    Thread currentThread = Thread.currentThread();
+    synchronized (downloadingThreads)
+    {
+      Thread thread = null;
+      do
+      {
+        thread = downloadingThreads.get(key);
+        if (thread == null)
+        {
+          downloadingThreads.put(key, currentThread);
+        }
+        else
+        {
+          try
+          {
+            downloadingThreads.wait();
+          }
+          catch (InterruptedException ex)
+          {
+            currentThread.interrupt();
+            return Status.CANCEL_STATUS;
+          }
+        }
+      } while (thread != null);
+    }
     try
     {
-      statefulTarget = new StatefulFileOutputStream(cacheFile);
 
-      IStatus status = delegate.download(uri, statefulTarget, startPos, monitor);
-      if (status.isOK())
+      boolean loadingRepository = isLoadingRepository(uri);
+      if (loadingRepository)
       {
-        IOUtil.closeSilent(statefulTarget);
-
-        // Files can be many megabytes large, so download them directly to a file.
-        cacheInputStream = new FileInputStream(cacheFile);
-        IOUtil.copy(cacheInputStream, target);
-
-        DownloadStatus downloadStatus = (DownloadStatus)status;
-        long lastModified = downloadStatus.getLastModified();
-        cacheFile.setLastModified(lastModified);
+        Boolean fresh = isFresh(cacheFile);
+        if (fresh != null && !fresh)
+        {
+          try
+          {
+            if (DEBUG)
+            {
+              log("Check if cached version is outdated by " + uri);
+            }
+            if (getLastModified(uri, monitor) == 0)
+            {
+              fresh = true;
+            }
+            else
+            {
+              fresh = isFresh(cacheFile);
+            }
+          }
+          catch (FileNotFoundException e)
+          {
+            fresh = true;
+          }
+          catch (Exception e)
+          {
+            // failed to refresh - already is set to false, just for readability and debugging:
+            fresh = null;
+          }
+        }
+        if (Boolean.TRUE.equals(fresh))
+        {
+          try
+          {
+            if (DEBUG)
+            {
+              log("Using cached version of " + uri);
+            }
+            if (!cacheFile.exists())
+            {
+              // we know the file does not exist, as it is freshly checked
+              return new DownloadStatus(IStatus.ERROR, P2CorePlugin.INSTANCE.getSymbolicName(), ProvisionException.ARTIFACT_NOT_FOUND, NLS.bind(
+                  Messages.artifact_not_found, uri), new FileNotFoundException("Refresh interval was not reached but file could not be found the last time."));
+            }
+            FileInputStream inputStream = new FileInputStream(cacheFile);
+            try
+            {
+              IOUtil.copy(inputStream, target);
+            }
+            finally
+            {
+              inputStream.close();
+            }
+            return Status.OK_STATUS;
+          }
+          catch (Exception ex)
+          {
+            //$FALL-THROUGH$
+          }
+        }
+        else if (cacheFile.exists())
+        {
+          if (DEBUG)
+          {
+            log("Cached version of " + uri + " needs refresh.");
+          }
+        }
       }
 
-      return status;
+      if (loadingRepository)
+      {
+
+        File tmpFile = new File(cacheFile.getAbsolutePath() + ".tmp");
+        StatefulFileOutputStream statefulTarget;
+        try
+        {
+          statefulTarget = new StatefulFileOutputStream(tmpFile);
+
+          try
+          {
+            long start = System.currentTimeMillis();
+            IStatus status = delegate.download(uri, statefulTarget, startPos, monitor);
+            IOUtil.closeSilent(statefulTarget);
+            if (DEBUG)
+            {
+              log("Downloading from remote repository took " + (System.currentTimeMillis() - start) + " ms for " + uri + " (" + cacheFile.length() + " byte). "
+                  + currentThread);
+            }
+            if (status.isOK())
+            {
+              tmpFile.renameTo(cacheFile);
+              // Files can be many megabytes large, so download them directly to a file.
+              FileInputStream input = new FileInputStream(cacheFile);
+              try
+              {
+                IOUtil.copy(input, target);
+              }
+              finally
+              {
+                IOUtil.closeSilent(input);
+              }
+
+              DownloadStatus downloadStatus = (DownloadStatus)status;
+              long lastModified = downloadStatus.getLastModified();
+              if (lastModified > 0)
+              {
+                cacheFile.setLastModified(lastModified);
+              }
+              refreshed(cacheFile);
+            }
+            else
+            {
+              if (DEBUG)
+              {
+                log("Download failed removing cached version of " + uri);
+              }
+              if (!tmpFile.delete())
+              {
+                if (DEBUG)
+                {
+                  log("Deleting " + cacheFile.getAbsolutePath() + " failed. Trying to delete on exit.");
+                }
+                tmpFile.deleteOnExit();
+              }
+              if (status.getException() instanceof FileNotFoundException)
+              {
+                if (DEBUG)
+                {
+                  log("Mark as non-existent: " + uri);
+                }
+                refreshed(cacheFile);
+              }
+            }
+
+            return status;
+          }
+          finally
+          {
+            IOUtil.closeSilent(statefulTarget);
+            if (target instanceof IStateful)
+            {
+              ((IStateful)target).setStatus(statefulTarget.getStatus());
+            }
+          }
+        }
+        catch (IOException ex)
+        {
+          throw new IORuntimeException(ex);
+        }
+      }
+      long start = System.currentTimeMillis();
+      IStatus result = delegate.download(uri, target, startPos, monitor);
+      if (DEBUG)
+      {
+        DownloadStatus downloadStatus = (DownloadStatus)result;
+        log("Downloading from remote repository took " + (System.currentTimeMillis() - start) + "ms for " + uri + " (" + downloadStatus.getFileSize()
+            + " bytes, not stored). " + currentThread);
+      }
+      return result;
+    }
+    finally
+    {
+      synchronized (downloadingThreads)
+      {
+        Thread thread = downloadingThreads.remove(key);
+        if (thread != currentThread)
+        {
+          throw new IllegalStateException("The current thread should have been downloading " + key);
+        }
+        downloadingThreads.notifyAll();
+      }
+    }
+  }
+
+  /**
+   * @return TRUE if file was checked/loaded within REFRESH_INTERVAL, FALSE if it should be refreshed, null if unknown
+   */
+  Boolean isFresh(File cacheFile)
+  {
+    // FIXME: migration problem with old file layout vs. new one?
+    long refreshedDate = getRefreshedDate(cacheFile);
+    if (refreshedDate > 0)
+    {
+      boolean fresh = OfflineMode.isEnabled() || refreshedDate > now() - REFRESH_INTERVAL;
+      return fresh;
+    }
+    return null;
+  }
+
+  protected long now()
+  {
+    return System.currentTimeMillis();
+  }
+
+  private void refreshed(File cacheFile) throws IORuntimeException
+  {
+    try
+    {
+      File refreshedMarker = getRefreshedFileFor(cacheFile);
+      refreshedMarker.createNewFile();
+      refreshedMarker.setLastModified(now());
     }
     catch (IOException ex)
     {
       throw new IORuntimeException(ex);
     }
-    finally
-    {
-      if (target instanceof IStateful && statefulTarget != null)
-      {
-        ((IStateful)target).setStatus(statefulTarget.getStatus());
-      }
+  }
 
-      IOUtil.closeSilent(cacheInputStream);
-      IOUtil.closeSilent(statefulTarget);
-    }
+  private long getRefreshedDate(File cacheFile)
+  {
+    File marker = getRefreshedFileFor(cacheFile);
+    return marker.exists() ? marker.lastModified() : -1;
+  }
+
+  private File getRefreshedFileFor(File cacheFile)
+  {
+    File refreshedMarker = new File(cacheFile.getAbsolutePath() + ".refreshed");
+    return refreshedMarker;
   }
 
   @Override
@@ -172,11 +369,15 @@ public class CachingTransport extends Transport
       log("  ? " + uri);
     }
 
-    if (isLoadingRepository(uri) && OfflineMode.isEnabled())
+    if (isLoadingRepository(uri))
     {
       File cacheFile = getCacheFile(uri);
-      if (cacheFile.exists())
+      if (Boolean.TRUE.equals(isFresh(cacheFile)))
       {
+        if (!cacheFile.exists())
+        {
+          throw new FileNotFoundException("Was not found the last time and is not checked again.");
+        }
         return cacheFile.lastModified();
       }
 
@@ -186,6 +387,12 @@ public class CachingTransport extends Transport
       }
       catch (FileNotFoundException ex)
       {
+        if (DEBUG)
+        {
+          log("Mark as non-existent: " + uri);
+        }
+        refreshed(cacheFile);
+        cacheFile.delete();
         throw ex;
       }
       catch (Exception ex)
@@ -203,18 +410,41 @@ public class CachingTransport extends Transport
 
   private long delegateGetLastModified(URI uri, IProgressMonitor monitor) throws CoreException, FileNotFoundException, AuthenticationFailedException
   {
-    long lastModified = delegate.getLastModified(uri, monitor);
-
-    File cacheFile = getCacheFile(uri);
-    if (!cacheFile.exists() || cacheFile.lastModified() != lastModified)
+    long lastModified;
+    try
     {
-      return lastModified - 1;
+      long start = System.currentTimeMillis();
+      lastModified = delegate.getLastModified(uri, monitor);
+      if (DEBUG)
+      {
+        log("Head request on remote repository took " + (System.currentTimeMillis() - start) + "ms. " + Thread.currentThread());
+      }
+    }
+    catch (CoreException ex)
+    {
+      lastModified = 0;
     }
 
+    if (lastModified != 0)
+    {
+      File cacheFile = getCacheFile(uri);
+      if (!cacheFile.exists() || cacheFile.lastModified() != lastModified)
+      {
+        if (DEBUG)
+        {
+          log("Detected changed version of " + uri);
+        }
+        cacheFile.delete();
+        getRefreshedFileFor(cacheFile).delete();
+        return lastModified - 1; // this tricks p2 cache
+      }
+
+      refreshed(cacheFile);
+    }
     return lastModified;
   }
 
-  private static boolean isLoadingRepository(URI uri)
+  protected boolean isLoadingRepository(URI uri)
   {
     String location = org.eclipse.emf.common.util.URI.createURI(uri.toString()).trimSegments(1).toString();
 
@@ -229,7 +459,7 @@ public class CachingTransport extends Transport
     {
       message = "   " + message;
     }
-  
+
     System.out.println(message);
   }
 

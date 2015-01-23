@@ -276,4 +276,12 @@ public final class P2Util
   {
     public boolean matches(IVersionedId versionedId);
   }
+
+  public static void disposeAgentManager()
+  {
+    if (AgentManagerImpl.instance != null)
+    {
+      ((AgentManagerImpl)getAgentManager()).dispose();
+    }
+  }
 }

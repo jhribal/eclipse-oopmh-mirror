@@ -24,6 +24,39 @@
   <packaging>eclipse-test-plugin</packaging>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <configuration>
+          <useUIHarness>true</useUIHarness>
+          <useUIThread>false</useUIThread>
+          <forkedProcessTimeoutInSeconds>600</forkedProcessTimeoutInSeconds>
+          <product>org.eclipse.sdk.ide</product>
+          <application>org.eclipse.ui.ide.workbench</application>
+          <testSuite>org.eclipse.oomph.version.tests</testSuite>
+          <testClass>org.eclipse.oomph.version.tests.VersionBuilderTest</testClass>
+          <argLine>-Xmx256m -XX:MaxPermSize=128m</argLine>
+          <appArgLine></appArgLine>
+          <skipTests>${skip.version.tests}</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <dependency-resolution>
+            <extraRequirements>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.sdk</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+            </extraRequirements>
+          </dependency-resolution>
+        </configuration>
+      </plugin>
+    </plugins>
     <resources>
       <resource>
         <directory>.</directory>
