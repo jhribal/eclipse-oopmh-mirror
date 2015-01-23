@@ -80,7 +80,8 @@ public final class P2CorePlugin extends OomphPlugin
     @Override
     public void stop(BundleContext context) throws Exception
     {
-      ((AgentManagerImpl)P2Util.getAgentManager()).dispose();
+      // getting the AgentManager would initialize it if it does not exist, so let P2Util decide on what to do:
+      P2Util.disposeAgentManager();
       super.stop(context);
     }
   }
