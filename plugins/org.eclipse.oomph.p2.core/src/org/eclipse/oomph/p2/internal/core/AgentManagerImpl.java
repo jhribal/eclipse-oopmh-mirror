@@ -78,6 +78,17 @@ public class AgentManagerImpl implements AgentManager
       }
 
       @Override
+      protected Agent loadElement(String key, String extraInfo)
+      {
+        File location = new File(key);
+        if (AgentImpl.isValid(location))
+        {
+          return super.loadElement(key, extraInfo);
+        }
+        return null;
+      }
+
+      @Override
       protected void initializeFirstTime()
       {
         initializeFirstTime(defaultAgentLocation);
@@ -282,7 +293,6 @@ public class AgentManagerImpl implements AgentManager
     for (Object otherClient : defaults.keySet())
     {
       String clientId = (String)otherClient;
-      // skip agent locations
       if (clientId != null && !client.equals(clientId) && !clientId.endsWith(":agent"))
       {
         bundlePool = restoreBundlePool(clientId, defaults);
