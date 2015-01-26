@@ -290,22 +290,23 @@ public class AgentManagerImpl implements AgentManager
   public BundlePool getDefaultBundlePool(String client) throws P2Exception
   {
     Properties defaults = loadDefaults();
-    String location = (String)defaults.get(client);
-    if (location != null)
+    BundlePool bundlePool = restoreBundlePool(client, defaults);
+    if (bundlePool != null)
     {
-      BundlePool bundlePool = getBundlePool(location);
-      if (bundlePool != null)
-      {
-        return bundlePool;
-      }
+      return bundlePool;
     }
 
-    for (Object value : defaults.values())
+    for (Object otherClient : defaults.keySet())
     {
-      BundlePool bundlePool = getBundlePool((String)value);
-      if (bundlePool != null)
+      String clientId = (String)otherClient;
+      // skip agent locations
+      if (clientId != null && !client.equals(clientId) && !clientId.endsWith(":agent"))
       {
-        return bundlePool;
+        bundlePool = restoreBundlePool(clientId, defaults);
+        if (bundlePool != null)
+        {
+          return bundlePool;
+        }
       }
     }
 
@@ -318,10 +319,36 @@ public class AgentManagerImpl implements AgentManager
     return null;
   }
 
+  private BundlePool restoreBundlePool(String client, Properties defaults)
+  {
+    String location = defaults.getProperty(client);
+    if (location != null)
+    {
+      BundlePool bundlePool = getBundlePool(location);
+      if (bundlePool == null)
+      {
+        String agentLocation = defaults.getProperty(client + ":agent");
+        if (agentLocation != null)
+        {
+          File agentDir = new File(agentLocation);
+          Agent agent = addAgent(agentDir);
+          if (agent != null)
+          {
+            File poolDir = new File(location);
+            bundlePool = agent.addBundlePool(poolDir);
+          }
+        }
+      }
+      return bundlePool;
+    }
+    return null;
+  }
+
   public void setDefaultBundlePool(String client, BundlePool bundlePool)
   {
     Properties defaults = loadDefaults();
     defaults.put(client, bundlePool.getLocation().getAbsolutePath());
+    defaults.put(client + ":agent", bundlePool.getAgent().getLocation().getAbsolutePath());
     saveDefaults(defaults);
   }
 
@@ -333,10 +360,14 @@ public class AgentManagerImpl implements AgentManager
     for (Map.Entry<Object, Object> entry : defaults.entrySet())
     {
       String client = (String)entry.getKey();
-      String location = (String)entry.getValue();
-      if (location.equals(bundlePoolLocation))
+      // skip agent locations
+      if (client != null && !client.endsWith(":agent"))
       {
-        clients.add(client);
+        String location = (String)entry.getValue();
+        if (location.equals(bundlePoolLocation))
+        {
+          clients.add(client);
+        }
       }
     }
 
