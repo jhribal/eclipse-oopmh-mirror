@@ -84,23 +84,6 @@ public class AgentManagerImpl implements AgentManager
         initializeFirstTime(new File(userHome, "p2"));
         initializeFirstTime(new File(userHome, ".eclipse"));
         initializeFirstTime(new File(userHome, "eclipse"));
-
-        if (getElements().isEmpty())
-        {
-          addAgent(defaultAgentLocation);
-        }
-
-        if (getBundlePools().isEmpty())
-        {
-          Agent agent = getAgent(defaultAgentLocation);
-          if (agent == null)
-          {
-            agent = getAgents().iterator().next();
-          }
-
-          File poolLocation = new File(agent.getLocation(), BundlePool.DEFAULT_NAME);
-          agent.addBundlePool(poolLocation);
-        }
       }
 
       private void initializeFirstTime(File location)
@@ -310,13 +293,7 @@ public class AgentManagerImpl implements AgentManager
       }
     }
 
-    Collection<BundlePool> bundlePools = getBundlePools();
-    if (!bundlePools.isEmpty())
-    {
-      return bundlePools.iterator().next();
-    }
-
-    return null;
+    return getDefaultAgentBundlePool();
   }
 
   private BundlePool restoreBundlePool(String client, Properties defaults)
@@ -342,6 +319,27 @@ public class AgentManagerImpl implements AgentManager
       return bundlePool;
     }
     return null;
+  }
+
+  private BundlePool getDefaultAgentBundlePool()
+  {
+    File defaultPoolLocation = new File(defaultAgentLocation, BundlePool.DEFAULT_NAME);
+    BundlePool bundlePool = getBundlePool(defaultPoolLocation);
+    if (bundlePool != null)
+    {
+      return bundlePool;
+    }
+    Agent agent = addAgent(defaultAgentLocation);
+    Collection<BundlePool> bundlePools = agent.getBundlePools();
+    if (bundlePools.isEmpty())
+    {
+      bundlePool = agent.addBundlePool(defaultPoolLocation);
+    }
+    else
+    {
+      bundlePool = bundlePools.iterator().next();
+    }
+    return bundlePool;
   }
 
   public void setDefaultBundlePool(String client, BundlePool bundlePool)
