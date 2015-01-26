@@ -56,6 +56,7 @@ import org.eclipse.jgit.transport.URIish;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -696,13 +697,33 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
 
     CloneCommand command = Git.cloneRepository();
     command.setNoCheckout(true);
-    command.setURI(remoteURI);
+    command.setURI(escapeURI(remoteURI));
     command.setRemote(remoteName);
     command.setBranchesToClone(Collections.singleton(checkoutBranch));
     command.setDirectory(workDir);
     command.setTimeout(60);
     command.setProgressMonitor(new EclipseGitProgressTransformer(monitor));
     return command.call();
+  }
+
+  private static String escapeURI(String uriStr) throws Exception
+  {
+    if (uriStr == null)
+    {
+      return uriStr;
+    }
+    int atSignIndex = uriStr.lastIndexOf("@");
+    if (atSignIndex > 0)
+    {
+      String start = uriStr.substring(0, atSignIndex);
+      uriStr = start.replace("@", "%40") + uriStr.substring(atSignIndex);
+    }
+    // http://stackoverflow.com/a/25735202
+    URL newUrl = new URL(uriStr);
+    String userInfo = newUrl.getUserInfo() != null ? newUrl.getUserInfo().replace("%40", "@") : null;
+    java.net.URI uri = new java.net.URI(newUrl.getProtocol(), userInfo, newUrl.getHost(), newUrl.getPort(), newUrl.getPath(), newUrl.getQuery(),
+        newUrl.getRef());
+    return uri.toASCIIString();
   }
 
   private static void configureRepository(SetupTaskContext context, Repository repository, String checkoutBranch, String remoteName, String remoteURI,
