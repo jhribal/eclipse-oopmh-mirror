@@ -80,6 +80,17 @@ public class AgentManagerImpl implements AgentManager
       }
 
       @Override
+      protected Agent loadElement(String key, String extraInfo)
+      {
+        File location = new File(key);
+        if (AgentImpl.isValid(location))
+        {
+          return super.loadElement(key, extraInfo);
+        }
+        return null;
+      }
+
+      @Override
       protected void initializeFirstTime()
       {
         initializeFirstTime(defaultAgentLocation);
