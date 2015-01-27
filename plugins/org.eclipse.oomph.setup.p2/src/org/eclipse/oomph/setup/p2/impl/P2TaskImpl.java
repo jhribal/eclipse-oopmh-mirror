@@ -19,6 +19,7 @@ import org.eclipse.oomph.p2.core.P2Util;
 import org.eclipse.oomph.p2.core.Profile;
 import org.eclipse.oomph.p2.core.ProfileCreator;
 import org.eclipse.oomph.p2.core.ProfileTransaction;
+import org.eclipse.oomph.p2.internal.core.P2CorePlugin;
 import org.eclipse.oomph.setup.LicenseInfo;
 import org.eclipse.oomph.setup.SetupTask;
 import org.eclipse.oomph.setup.SetupTaskContext;
@@ -50,6 +51,9 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.UIServices;
 import org.eclipse.equinox.p2.engine.IProfile;
@@ -701,6 +705,10 @@ public class P2TaskImpl extends SetupTaskImpl implements P2Task
         context.log("No software updates are available");
       }
     }
+    else if (!profileChanged)
+    {
+      P2CorePlugin.INSTANCE.coreException(new Status(IStatus.ERROR, P2CorePlugin.INSTANCE.getSymbolicName(), "Bootstrap did not perform any changes."));
+    }
 
     if (eclipseIniExisted)
     {
@@ -878,7 +886,7 @@ public class P2TaskImpl extends SetupTaskImpl implements P2Task
       Confirmation confirmation = licenseConfirmer.confirm(false, licensesToIUs);
       if (!confirmation.isConfirmed())
       {
-        throw new UnsupportedOperationException("Licenses have been declined");
+        throw new OperationCanceledException("Licenses have been declined");
       }
 
       if (user != null && confirmation.isRemember())
