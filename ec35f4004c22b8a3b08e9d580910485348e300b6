@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7fb1785_1fed33b3",
+        "filename": "setups/org.eclipse.projects.setup",
+        "patchSetId": 2
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 449
+      },
+      "writtenOn": "2015-03-02T12:24:23Z",
+      "side": 1,
+      "message": "I doubt that the https would harm, but all the other links to Git use http. Do you wanna change before I merge?",
+      "revId": "ec35f4004c22b8a3b08e9d580910485348e300b6",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
