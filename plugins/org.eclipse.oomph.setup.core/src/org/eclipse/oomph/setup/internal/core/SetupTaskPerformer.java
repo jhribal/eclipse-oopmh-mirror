@@ -1754,10 +1754,15 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
       if (setupTask instanceof RedirectionTask)
       {
         RedirectionTask redirectionTask = (RedirectionTask)setupTask;
-        URI sourceURI = URI.createURI(redirectionTask.getSourceURL());
-        URI targetURI = URI.createURI(redirectionTask.getTargetURL());
+        String sourceURL = redirectionTask.getSourceURL();
+        if (sourceURL != null)
+        {
+          URI sourceURI = URI.createURI(sourceURL);
+          String targetURL = redirectionTask.getTargetURL();
+          URI targetURI = targetURL != null ? URI.createURI(targetURL) : null;
 
-        uriMap.put(sourceURI, targetURI);
+          uriMap.put(sourceURI, targetURI);
+        }
         it.remove();
       }
     }
