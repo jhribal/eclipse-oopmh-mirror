@@ -179,6 +179,16 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getGitCloneTask_CloneAllBranches()
+  {
+    return (EAttribute)gitCloneTaskEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public GitFactory getGitFactory()
   {
     return (GitFactory)getEFactoryInstance();
@@ -214,6 +224,7 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
     createEAttribute(gitCloneTaskEClass, GIT_CLONE_TASK__PUSH_URI);
     createEAttribute(gitCloneTaskEClass, GIT_CLONE_TASK__CHECKOUT_BRANCH);
     createEAttribute(gitCloneTaskEClass, GIT_CLONE_TASK__RECURSIVE);
+    createEAttribute(gitCloneTaskEClass, GIT_CLONE_TASK__CLONE_ALL_BRANCHES);
   }
 
   /**
@@ -267,6 +278,8 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getGitCloneTask_Recursive(), ecorePackage.getEBoolean(), "recursive", "false", 0, 1, GitCloneTask.class, !IS_TRANSIENT, !IS_VOLATILE,
         IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getGitCloneTask_CloneAllBranches(), ecorePackage.getEBoolean(), "cloneAllBranches", "false", 0, 1, GitCloneTask.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource("http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore");
@@ -301,8 +314,8 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
   protected void createEnablementAnnotations()
   {
     String source = "http://www.eclipse.org/oomph/setup/Enablement";
-    addAnnotation(this, source, new String[] { "variableName", "setup.git.p2", "repository", "${oomph.update.url}", "installableUnits",
-        "org.eclipse.oomph.setup.git.feature.group" });
+    addAnnotation(this, source,
+        new String[] { "variableName", "setup.git.p2", "repository", "${oomph.update.url}", "installableUnits", "org.eclipse.oomph.setup.git.feature.group" });
     addAnnotation(this, source, new String[] { "variableName", "setup.egit.p2", "repository", "http://download.eclipse.org/egit/updates", "installableUnits",
         "org.eclipse.egit.feature.group" });
   }
@@ -365,21 +378,22 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
   protected void createVariableAnnotations()
   {
     String source = "http://www.eclipse.org/oomph/setup/Variable";
-    addAnnotation(getGitCloneTask_Location(), source, new String[] { "filter", "canonical", "type", "STRING", "label", "Git clone location rule",
-        "description", "The rule for the absolute folder location where the Git clone is located", "explicitType", "FOLDER", "explicitLabel",
-        "${@id.description} Git clone location", "explicitDescription", "The absolute folder location where the ${@id.description} Git clone is located" });
+    addAnnotation(getGitCloneTask_Location(), source,
+        new String[] { "filter", "canonical", "type", "STRING", "label", "Git clone location rule", "description",
+            "The rule for the absolute folder location where the Git clone is located", "explicitType", "FOLDER", "explicitLabel",
+            "${@id.description} Git clone location", "explicitDescription", "The absolute folder location where the ${@id.description} Git clone is located" });
     addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice", new String[] { "value",
         "${installation.location/git/}${@id.remoteURI|gitRepository}", "label", "Located in a folder named \'git/<repo>\' within the installation folder" });
     addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice", new String[] { "value",
         "${workspace.location/.git/}${@id.remoteURI|gitRepository}", "label", "Located in a folder named \'.git/<repo>\' within the workspace folder" });
-    addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice", new String[] { "value",
-        "${git.container.root/}${@id.remoteURI|gitRepository}-${@id.checkoutBranch}", "label",
-        "Located in a folder named \'<repo>-<branch>\' within the root Git-container folder " });
-    addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice", new String[] { "value",
-        "${git.container.root/}${@id.remoteURI|gitRepository/}${@id.checkoutBranch}", "label",
-        "Located in a folder named \'<repo>/<branch>\' within the root Git-container folder " });
-    addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice", new String[] { "value", "${@id.location}", "label",
-        "Located in the specified absolute folder location" });
+    addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice",
+        new String[] { "value", "${git.container.root/}${@id.remoteURI|gitRepository}-${@id.checkoutBranch}", "label",
+            "Located in a folder named \'<repo>-<branch>\' within the root Git-container folder " });
+    addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice",
+        new String[] { "value", "${git.container.root/}${@id.remoteURI|gitRepository/}${@id.checkoutBranch}", "label",
+            "Located in a folder named \'<repo>/<branch>\' within the root Git-container folder " });
+    addAnnotation(getGitCloneTask_Location(), new boolean[] { true }, "Choice",
+        new String[] { "value", "${@id.location}", "label", "Located in the specified absolute folder location" });
   }
 
   /**
