@@ -9,6 +9,7 @@
  *    Eike Stepper - initial API and implementation
  *    Ericsson AB (Julian Enoch) - Bug 429520 - Support additional push URL
  *    Ericsson AB (Julian Enoch) - Bug 462008 - Support submodules while cloning a Git repo
+ *    Ericsson AB (Julian Enoch) - Bug 464417 - Ensure the Git clone has a single branch by default
  */
 package org.eclipse.oomph.setup.git.impl;
 
@@ -77,6 +78,7 @@ import java.util.Set;
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#getPushURI <em>Push URI</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#getCheckoutBranch <em>Checkout Branch</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#isRecursive <em>Recursive</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#isCloneAllBranches <em>Clone All Branches</em>}</li>
  * </ul>
  *
  * @generated
@@ -202,6 +204,26 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
    * @ordered
    */
   protected boolean recursive = RECURSIVE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isCloneAllBranches() <em>Clone All Branches</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isCloneAllBranches()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean CLONE_ALL_BRANCHES_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isCloneAllBranches() <em>Clone All Branches</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isCloneAllBranches()
+   * @generated
+   * @ordered
+   */
+  protected boolean cloneAllBranches = CLONE_ALL_BRANCHES_EDEFAULT;
 
   private boolean workDirExisted;
 
@@ -364,6 +386,31 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isCloneAllBranches()
+  {
+    return cloneAllBranches;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setCloneAllBranches(boolean newCloneAllBranches)
+  {
+    boolean oldCloneAllBranches = cloneAllBranches;
+    cloneAllBranches = newCloneAllBranches;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, GitPackage.GIT_CLONE_TASK__CLONE_ALL_BRANCHES, oldCloneAllBranches, cloneAllBranches));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getPushURI()
   {
     return pushURI;
@@ -406,6 +453,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return getCheckoutBranch();
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         return isRecursive();
+      case GitPackage.GIT_CLONE_TASK__CLONE_ALL_BRANCHES:
+        return isCloneAllBranches();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -437,6 +486,9 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return;
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         setRecursive((Boolean)newValue);
+        return;
+      case GitPackage.GIT_CLONE_TASK__CLONE_ALL_BRANCHES:
+        setCloneAllBranches((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -470,6 +522,9 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         setRecursive(RECURSIVE_EDEFAULT);
         return;
+      case GitPackage.GIT_CLONE_TASK__CLONE_ALL_BRANCHES:
+        setCloneAllBranches(CLONE_ALL_BRANCHES_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -496,6 +551,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return CHECKOUT_BRANCH_EDEFAULT == null ? checkoutBranch != null : !CHECKOUT_BRANCH_EDEFAULT.equals(checkoutBranch);
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         return recursive != RECURSIVE_EDEFAULT;
+      case GitPackage.GIT_CLONE_TASK__CLONE_ALL_BRANCHES:
+        return cloneAllBranches != CLONE_ALL_BRANCHES_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -526,6 +583,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     result.append(checkoutBranch);
     result.append(", recursive: ");
     result.append(recursive);
+    result.append(", cloneAllBranches: ");
+    result.append(cloneAllBranches);
     result.append(')');
     return result.toString();
   }
@@ -655,7 +714,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       {
         if (cachedGit == null)
         {
-          cachedGit = cloneRepository(context, workDir, checkoutBranch, remoteName, remoteURI, isRecursive(), new SubProgressMonitor(monitor, 50));
+          cachedGit = cloneRepository(context, workDir, checkoutBranch, isCloneAllBranches(), remoteName, remoteURI, isRecursive(),
+              new SubProgressMonitor(monitor, 50));
           cachedRepository = cachedGit.getRepository();
 
           if (!URI.createURI(remoteURI).isFile())
@@ -758,8 +818,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     }
   }
 
-  private static Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, String remoteName, String remoteURI, boolean recursive,
-      IProgressMonitor monitor) throws Exception
+  private static Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, boolean cloneAllBranches, String remoteName,
+      String remoteURI, boolean recursive, IProgressMonitor monitor) throws Exception
   {
     context.log("Cloning Git repo " + remoteURI + " to " + workDir);
 
@@ -767,7 +827,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     command.setNoCheckout(true);
     command.setURI(remoteURI);
     command.setRemote(remoteName);
-    command.setBranchesToClone(Collections.singleton(checkoutBranch));
+    command.setBranchesToClone(Collections.singleton("refs/heads/" + checkoutBranch));
+    command.setCloneAllBranches(cloneAllBranches);
     command.setDirectory(workDir);
     command.setTimeout(60);
     command.setProgressMonitor(new EclipseGitProgressTransformer(monitor));
