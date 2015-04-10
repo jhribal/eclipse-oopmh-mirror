@@ -27,6 +27,7 @@ import org.eclipse.oomph.setup.SetupTask;
  *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#getPushURI <em>Push URI</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#getCheckoutBranch <em>Checkout Branch</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#isRecursive <em>Recursive</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#isCloneAllBranches <em>Clone All Branches</em>}</li>
  * </ul>
  *
  * @see org.eclipse.oomph.setup.git.GitPackage#getGitCloneTask()
@@ -197,5 +198,32 @@ public interface GitCloneTask extends SetupTask
    * @generated
    */
   void setRecursive(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Clone All Branches</b></em>' attribute.
+   * The default value is <code>"false"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Clone All Branches</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Clone All Branches</em>' attribute.
+   * @see #setCloneAllBranches(boolean)
+   * @see org.eclipse.oomph.setup.git.GitPackage#getGitCloneTask_CloneAllBranches()
+   * @model default="false"
+   * @generated
+   */
+  boolean isCloneAllBranches();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.oomph.setup.git.GitCloneTask#isCloneAllBranches <em>Clone All Branches</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Clone All Branches</em>' attribute.
+   * @see #isCloneAllBranches()
+   * @generated
+   */
+  void setCloneAllBranches(boolean value);
 
 } // GitCloneTask
