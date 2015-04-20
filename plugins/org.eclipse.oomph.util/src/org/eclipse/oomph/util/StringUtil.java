@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Andreas Scharf - Enhance UX in simple installer
  */
 package org.eclipse.oomph.util;
 
@@ -240,5 +241,100 @@ public final class StringUtil
     }
 
     return uri;
+  }
+
+  /**
+   * Abbreviates the given text to be as long as the given length (including the
+   * appended ellipsis).
+   *
+   * @param text The text to abbreviate
+   * @param length The maximum length of the resulting text, ellipsis included.
+   * @param wholeWord Whether to take care for splitting the text at word
+   * boundaries only.
+   */
+  public static String ellipsis(String text, int length, boolean wholeWord)
+  {
+    if (text == null)
+    {
+      throw new IllegalArgumentException("Input string must not be null");
+    }
+
+    if (text.length() <= length)
+    {
+      return text;
+    }
+
+    int ellipsisIdx = length - 4;
+
+    if (wholeWord)
+    {
+      ellipsisIdx = findLastSpaceBetween(text, 0, ellipsisIdx);
+    }
+
+    String result = text.substring(0, ellipsisIdx);
+    result += " ...";
+    return result;
+  }
+
+  public static String wrapText(String text, int maxCharacterPerLine, boolean wholeWord)
+  {
+    int idxStart = 0;
+    int idxEnd = idxStart + maxCharacterPerLine;
+    boolean finished = false;
+
+    StringBuilder sb = new StringBuilder();
+    do
+    {
+      if (idxEnd >= text.length())
+      {
+        idxEnd = text.length();
+        finished = true;
+      }
+
+      if (!finished && wholeWord)
+      {
+        int spaceIdx = findLastSpaceBetween(text, idxStart, idxEnd);
+        if (spaceIdx > 0)
+        {
+          idxEnd = spaceIdx;
+        }
+        else
+        {
+          // No more spaces till end :(
+          idxEnd = text.length();
+          finished = true;
+        }
+      }
+
+      sb.append(text.substring(idxStart, idxEnd));
+
+      if (!finished)
+      {
+        sb.append(StringUtil.NL);
+      }
+
+      idxStart = wholeWord ? idxEnd + 1 : idxEnd;
+      idxEnd += maxCharacterPerLine;
+
+    } while (!finished);
+    return sb.toString();
+  }
+
+  public static int findLastSpaceBetween(String text, int startPosition, int maxPosition)
+  {
+    int idx = maxPosition;
+    char lastBeforeEllipsis = text.charAt(idx);
+
+    while (lastBeforeEllipsis != ' ')
+    {
+      idx--;
+      if (idx <= startPosition)
+      {
+        idx = -1;
+        break;
+      }
+      lastBeforeEllipsis = text.charAt(idx);
+    }
+    return idx;
   }
 }
