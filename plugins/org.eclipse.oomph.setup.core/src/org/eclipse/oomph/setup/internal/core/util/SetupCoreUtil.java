@@ -23,6 +23,7 @@ import org.eclipse.oomph.preferences.util.PreferencesUtil;
 import org.eclipse.oomph.setup.Scope;
 import org.eclipse.oomph.setup.internal.core.SetupContext;
 import org.eclipse.oomph.setup.internal.core.SetupCorePlugin;
+import org.eclipse.oomph.util.IOExceptionWithCause;
 import org.eclipse.oomph.util.ReflectUtil;
 import org.eclipse.oomph.util.ReflectUtil.ReflectionException;
 import org.eclipse.oomph.util.StringUtil;
@@ -56,8 +57,11 @@ import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.UIServices;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 
+import org.osgi.framework.Bundle;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +69,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -352,6 +357,30 @@ public final class SetupCoreUtil
       {
         count = 0;
       }
+    }
+  }
+
+  public static String readBundleResource(final Bundle bundle, final String name) throws IOException
+  {
+    InputStream stream = bundle.getEntry(name).openStream();
+    Scanner scanner = null;
+    try
+    {
+      scanner = new Scanner(stream, "UTF-8");
+      return scanner.hasNext() ? scanner.useDelimiter("\\A").next() : null;
+    }
+    catch (Exception ex)
+    {
+      if (stream != null)
+      {
+        stream.close();
+      }
+      if (scanner != null)
+      {
+        scanner.close();
+      }
+
+      throw new IOExceptionWithCause(ex);
     }
   }
 

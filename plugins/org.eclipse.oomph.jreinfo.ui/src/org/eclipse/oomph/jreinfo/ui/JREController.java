@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -60,6 +61,8 @@ public abstract class JREController implements ISelectionChangedListener
 
   private boolean refreshing;
 
+  private Color viewerForegroundColor;
+
   public JREController(Label label, StructuredViewer viewer, Request.Handler downloadHandler)
   {
     this.label = label;
@@ -69,6 +72,7 @@ public abstract class JREController implements ISelectionChangedListener
     if (viewer != null)
     {
       viewer.addSelectionChangedListener(this);
+      viewerForegroundColor = viewer.getControl().getForeground();
     }
   }
 
@@ -269,6 +273,7 @@ public abstract class JREController implements ISelectionChangedListener
   protected void setLabel(String text)
   {
     label.setText(text);
+    label.getParent().layout();
   }
 
   protected JREFilter createJREFilter()
@@ -290,7 +295,7 @@ public abstract class JREController implements ISelectionChangedListener
       }
       else
       {
-        control.setForeground(null);
+        control.setForeground(viewerForegroundColor);
       }
     }
   }
