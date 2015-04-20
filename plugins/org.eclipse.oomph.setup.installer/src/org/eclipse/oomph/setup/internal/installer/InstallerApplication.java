@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Andreas Scharf - Enhance UX in simple installer
  */
 package org.eclipse.oomph.setup.internal.installer;
 
@@ -14,6 +15,7 @@ import org.eclipse.oomph.jreinfo.JREManager;
 import org.eclipse.oomph.p2.core.P2Util;
 import org.eclipse.oomph.p2.core.ProfileTransaction.Resolution;
 import org.eclipse.oomph.setup.internal.core.SetupContext;
+import org.eclipse.oomph.setup.internal.installer.simple.SimpleInstallerDialog;
 import org.eclipse.oomph.setup.ui.AbstractSetupDialog;
 import org.eclipse.oomph.setup.ui.wizards.SetupWizard;
 import org.eclipse.oomph.setup.ui.wizards.SetupWizard.Installer;
@@ -63,8 +65,8 @@ public class InstallerApplication implements IApplication
     P2Util.getCurrentProvisioningAgent().registerService(UIServices.SERVICE_NAME, SetupWizard.Installer.SERVICE_UI);
 
     @SuppressWarnings("restriction")
-    IProvisioningAgent agent = (IProvisioningAgent)org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper
-        .getService(org.eclipse.equinox.internal.p2.repository.Activator.getContext(), IProvisioningAgent.SERVICE_NAME);
+    IProvisioningAgent agent = (IProvisioningAgent)org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper.getService(
+        org.eclipse.equinox.internal.p2.repository.Activator.getContext(), IProvisioningAgent.SERVICE_NAME);
     agent.registerService(UIServices.SERVICE_NAME, SetupWizard.Installer.SERVICE_UI);
 
     final InstallerUI[] installerDialog = { null };
@@ -189,7 +191,7 @@ public class InstallerApplication implements IApplication
 
       if (mode == Mode.ADVANCED)
       {
-        if (KeepInstallerDialog.canKeepInstaller())
+        if (InstallerUtil.canKeepInstaller())
         {
           Shell shell = new Shell(display);
           if (MessageDialog.openQuestion(shell, AbstractSetupDialog.SHELL_TEXT,

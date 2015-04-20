@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Andreas Scharf - Enhance UX in simple installer
  */
 package org.eclipse.oomph.setup.internal.core.util;
 
@@ -23,6 +24,8 @@ import org.eclipse.oomph.preferences.util.PreferencesUtil;
 import org.eclipse.oomph.setup.Scope;
 import org.eclipse.oomph.setup.internal.core.SetupContext;
 import org.eclipse.oomph.setup.internal.core.SetupCorePlugin;
+import org.eclipse.oomph.util.IOExceptionWithCause;
+import org.eclipse.oomph.util.IOUtil;
 import org.eclipse.oomph.util.ReflectUtil;
 import org.eclipse.oomph.util.ReflectUtil.ReflectionException;
 import org.eclipse.oomph.util.StringUtil;
@@ -56,8 +59,11 @@ import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.UIServices;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 
+import org.osgi.framework.Bundle;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,6 +71,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -351,6 +358,42 @@ public final class SetupCoreUtil
       else
       {
         count = 0;
+      }
+    }
+  }
+
+  /**
+   * Reads the content of the bundle entry with the given name within the given bundle.
+   *
+   * @param bundle The bundle containing the resource
+   * @param name The name of the bundle entry
+   *
+   * @return The content of the given bundle entry
+   */
+  public static String readBundleResource(final Bundle bundle, final String name) throws IOException
+  {
+    InputStream stream = bundle.getEntry(name).openStream();
+    Scanner scanner = null;
+    try
+    {
+      scanner = new Scanner(stream, "UTF-8");
+
+      // \\A is a 'trick' to read the whole contents of a stream with only one line
+      return scanner.hasNext() ? scanner.useDelimiter("\\A").next() : null;
+    }
+    catch (Exception ex)
+    {
+      throw new IOExceptionWithCause(ex);
+    }
+    finally
+    {
+      if (scanner != null)
+      {
+        scanner.close();
+      }
+      if (stream != null)
+      {
+        IOUtil.close(stream);
       }
     }
   }
