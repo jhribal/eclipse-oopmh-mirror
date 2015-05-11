@@ -9,6 +9,7 @@
  *    Eike Stepper - initial API and implementation
  *    Ericsson AB (Julian Enoch) - Bug 429520 - Support additional push URL
  *    Ericsson AB (Julian Enoch) - Bug 462008 - Support submodules while cloning a Git repo
+ *    Ericsson AB (Julian Enoch) - Bug 464417 - Support a single branch clone
  */
 package org.eclipse.oomph.setup.git.impl;
 
@@ -48,6 +49,7 @@ import org.eclipse.jgit.api.SubmoduleUpdateCommand;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.CoreConfig.AutoCRLF;
 import org.eclipse.jgit.lib.ReflogEntry;
 import org.eclipse.jgit.lib.Repository;
@@ -77,6 +79,7 @@ import java.util.Set;
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#getPushURI <em>Push URI</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#getCheckoutBranch <em>Checkout Branch</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#isRecursive <em>Recursive</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#isRestrictToCheckoutBranch <em>Restrict To Checkout Branch</em>}</li>
  * </ul>
  *
  * @generated
@@ -202,6 +205,26 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
    * @ordered
    */
   protected boolean recursive = RECURSIVE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isRestrictToCheckoutBranch() <em>Restrict To Checkout Branch</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isRestrictToCheckoutBranch()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean RESTRICT_TO_CHECKOUT_BRANCH_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isRestrictToCheckoutBranch() <em>Restrict To Checkout Branch</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isRestrictToCheckoutBranch()
+   * @generated
+   * @ordered
+   */
+  protected boolean restrictToCheckoutBranch = RESTRICT_TO_CHECKOUT_BRANCH_EDEFAULT;
 
   private boolean workDirExisted;
 
@@ -364,6 +387,32 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isRestrictToCheckoutBranch()
+  {
+    return restrictToCheckoutBranch;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRestrictToCheckoutBranch(boolean newRestrictToCheckoutBranch)
+  {
+    boolean oldRestrictToCheckoutBranch = restrictToCheckoutBranch;
+    restrictToCheckoutBranch = newRestrictToCheckoutBranch;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH, oldRestrictToCheckoutBranch,
+          restrictToCheckoutBranch));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getPushURI()
   {
     return pushURI;
@@ -406,6 +455,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return getCheckoutBranch();
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         return isRecursive();
+      case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
+        return isRestrictToCheckoutBranch();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -437,6 +488,9 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return;
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         setRecursive((Boolean)newValue);
+        return;
+      case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
+        setRestrictToCheckoutBranch((Boolean)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -470,6 +524,9 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         setRecursive(RECURSIVE_EDEFAULT);
         return;
+      case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
+        setRestrictToCheckoutBranch(RESTRICT_TO_CHECKOUT_BRANCH_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -496,6 +553,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return CHECKOUT_BRANCH_EDEFAULT == null ? checkoutBranch != null : !CHECKOUT_BRANCH_EDEFAULT.equals(checkoutBranch);
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
         return recursive != RECURSIVE_EDEFAULT;
+      case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
+        return restrictToCheckoutBranch != RESTRICT_TO_CHECKOUT_BRANCH_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -526,6 +585,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     result.append(checkoutBranch);
     result.append(", recursive: ");
     result.append(recursive);
+    result.append(", restrictToCheckoutBranch: ");
+    result.append(restrictToCheckoutBranch);
     result.append(')');
     return result.toString();
   }
@@ -600,7 +661,7 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       String remoteName = getRemoteName();
       String remoteURI = getRemoteURI();
       String pushURI = getPushURI();
-      configureRepository(context, repository, checkoutBranch, remoteName, remoteURI, pushURI);
+      configureRepository(context, repository, checkoutBranch, isRestrictToCheckoutBranch(), remoteName, remoteURI, pushURI);
 
       hasCheckout = repository.getAllRefs().containsKey("refs/heads/" + checkoutBranch);
       if (!hasCheckout)
@@ -655,13 +716,14 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       {
         if (cachedGit == null)
         {
-          cachedGit = cloneRepository(context, workDir, checkoutBranch, remoteName, remoteURI, isRecursive(), new SubProgressMonitor(monitor, 50));
+          cachedGit = cloneRepository(context, workDir, checkoutBranch, isRestrictToCheckoutBranch(), remoteName, remoteURI, isRecursive(),
+              new SubProgressMonitor(monitor, 50));
           cachedRepository = cachedGit.getRepository();
 
           if (!URI.createURI(remoteURI).isFile())
           {
             String pushURI = getPushURI();
-            configureRepository(context, cachedRepository, checkoutBranch, remoteName, remoteURI, pushURI);
+            configureRepository(context, cachedRepository, checkoutBranch, isRestrictToCheckoutBranch(), remoteName, remoteURI, pushURI);
           }
 
           monitor.worked(1);
@@ -758,8 +820,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     }
   }
 
-  private static Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, String remoteName, String remoteURI, boolean recursive,
-      IProgressMonitor monitor) throws Exception
+  private static Git cloneRepository(SetupTaskContext context, File workDir, String checkoutBranch, boolean restrictBranch, String remoteName, String remoteURI,
+      boolean recursive, IProgressMonitor monitor) throws Exception
   {
     context.log("Cloning Git repo " + remoteURI + " to " + workDir);
 
@@ -767,19 +829,29 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     command.setNoCheckout(true);
     command.setURI(remoteURI);
     command.setRemote(remoteName);
-    command.setBranchesToClone(Collections.singleton(checkoutBranch));
+    command.setCloneAllBranches(!restrictBranch);
+    if (restrictBranch)
+    {
+      command.setBranchesToClone(Collections.singleton(Constants.R_HEADS + checkoutBranch));
+    }
     command.setDirectory(workDir);
     command.setTimeout(60);
     command.setProgressMonitor(new EclipseGitProgressTransformer(monitor));
     return command.call();
   }
 
-  private static void configureRepository(SetupTaskContext context, Repository repository, String checkoutBranch, String remoteName, String remoteURI,
-      String pushURI) throws Exception, IOException
+  private static void configureRepository(SetupTaskContext context, Repository repository, String checkoutBranch, boolean restrictBranch, String remoteName,
+      String remoteURI, String pushURI) throws Exception, IOException
   {
     StoredConfig config = repository.getConfig();
 
     boolean changed = false;
+
+    if (restrictBranch)
+    {
+      changed |= setSingleFetchRefSpec(context, config, checkoutBranch, remoteName);
+    }
+
     changed |= configureLineEndingConversion(context, config);
     URI uri = URI.createURI(remoteURI);
 
@@ -818,6 +890,38 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     {
       config.save();
     }
+  }
+
+  /**
+   * Adjust the fetch ref spec for a single branch clone.
+   */
+  private static boolean setSingleFetchRefSpec(SetupTaskContext context, StoredConfig config, String checkoutBranch, String remoteName) throws Exception
+  {
+    for (RemoteConfig remoteConfig : RemoteConfig.getAllRemoteConfigs(config))
+    {
+      if (remoteName.equals(remoteConfig.getName()))
+      {
+        RefSpec oldRrefSpec = new RefSpec();
+        oldRrefSpec = oldRrefSpec.setForceUpdate(true);
+        oldRrefSpec = oldRrefSpec.setSourceDestination(Constants.R_HEADS + "*", Constants.R_REMOTES + remoteName + "/*");
+
+        final String src = Constants.R_HEADS + checkoutBranch;
+        final String dst = Constants.R_REMOTES + remoteName + "/" + checkoutBranch;
+        RefSpec newRefSpec = new RefSpec();
+        newRefSpec = newRefSpec.setForceUpdate(true);
+        newRefSpec = newRefSpec.setSourceDestination(src, dst);
+
+        if (remoteConfig.addFetchRefSpec(newRefSpec) && remoteConfig.removeFetchRefSpec(oldRrefSpec) && context.isPerforming())
+        {
+          context.log("Setting fetch ref spec for single branch clone");
+        }
+
+        remoteConfig.update(config);
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private static boolean configureLineEndingConversion(SetupTaskContext context, StoredConfig config) throws Exception

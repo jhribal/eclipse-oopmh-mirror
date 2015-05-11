@@ -216,13 +216,22 @@ public interface GitPackage extends EPackage
   int GIT_CLONE_TASK__RECURSIVE = SetupPackage.SETUP_TASK_FEATURE_COUNT + 5;
 
   /**
+   * The feature id for the '<em><b>Restrict To Checkout Branch</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH = SetupPackage.SETUP_TASK_FEATURE_COUNT + 6;
+
+  /**
    * The number of structural features of the '<em>Clone Task</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GIT_CLONE_TASK_FEATURE_COUNT = SetupPackage.SETUP_TASK_FEATURE_COUNT + 6;
+  int GIT_CLONE_TASK_FEATURE_COUNT = SetupPackage.SETUP_TASK_FEATURE_COUNT + 7;
 
   /**
    * Returns the meta object for class '{@link org.eclipse.oomph.setup.git.GitCloneTask <em>Clone Task</em>}'.
@@ -299,6 +308,17 @@ public interface GitPackage extends EPackage
    * @generated
    */
   EAttribute getGitCloneTask_Recursive();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.setup.git.GitCloneTask#isRestrictToCheckoutBranch <em>Restrict To Checkout Branch</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Restrict To Checkout Branch</em>'.
+   * @see org.eclipse.oomph.setup.git.GitCloneTask#isRestrictToCheckoutBranch()
+   * @see #getGitCloneTask()
+   * @generated
+   */
+  EAttribute getGitCloneTask_RestrictToCheckoutBranch();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -381,6 +401,14 @@ public interface GitPackage extends EPackage
      * @generated
      */
     EAttribute GIT_CLONE_TASK__RECURSIVE = eINSTANCE.getGitCloneTask_Recursive();
+
+    /**
+     * The meta object literal for the '<em><b>Restrict To Checkout Branch</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH = eINSTANCE.getGitCloneTask_RestrictToCheckoutBranch();
 
   }
 
