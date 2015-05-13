@@ -27,6 +27,8 @@ public final class StringUtil
 
   public static final String NL = PropertiesUtil.getProperty("line.separator"); //$NON-NLS-1$
 
+  public static String HORIZONTAL_ELLIPSIS = "\u2026";
+
   private StringUtil()
   {
   }
@@ -259,12 +261,17 @@ public final class StringUtil
       throw new IllegalArgumentException("Input string must not be null");
     }
 
+    if (length <= HORIZONTAL_ELLIPSIS.length())
+    {
+      throw new IllegalArgumentException("Length must at least " + HORIZONTAL_ELLIPSIS.length() + 1);
+    }
+
     if (input.length() <= length)
     {
       return input;
     }
 
-    int ellipsisIdx = length - 4;
+    int ellipsisIdx = length - HORIZONTAL_ELLIPSIS.length() - 1;
 
     if (wholeWord)
     {
@@ -272,7 +279,7 @@ public final class StringUtil
     }
 
     String result = input.substring(0, ellipsisIdx);
-    result += " ...";
+    result += HORIZONTAL_ELLIPSIS;
     return result;
   }
 

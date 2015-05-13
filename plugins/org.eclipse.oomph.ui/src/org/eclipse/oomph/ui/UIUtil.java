@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -504,5 +505,37 @@ public final class UIUtil
     catch (InterruptedException ex)
     {
     }
+  }
+
+  /**
+   * Checks if the given {@link Control} is a child of the given
+   * parent.
+   *
+   * @param parent The parent, not null.
+   * @param controlToCheck The control to check, not null.
+   *
+   * @return <code>true</code> if the given control is a child of the given
+   * parent, <code>false</code> otherwise.
+   */
+  public static boolean isParent(Composite parent, Control controlToCheck)
+  {
+    if (parent == null || controlToCheck == null)
+    {
+      throw new IllegalArgumentException("Neither parent nor controlToCheck must be null");
+    }
+
+    if (controlToCheck == parent)
+    {
+      return true;
+    }
+
+    Composite tmpParent = controlToCheck.getParent();
+
+    while (tmpParent != parent && tmpParent != null)
+    {
+      tmpParent = tmpParent.getParent();
+    }
+
+    return tmpParent == parent;
   }
 }

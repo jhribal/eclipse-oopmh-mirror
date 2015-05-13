@@ -21,17 +21,21 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 
 /**
  * @author Eike Stepper
@@ -113,8 +117,9 @@ public abstract class SimpleInstallerPage extends Composite
     Composite textContainer = createInputFieldWrapper(parent, 0, 7, 0, 7);
     applyComboOrTextStyle(textContainer);
 
-    Text textField = new Text(textContainer, SWT.NONE | SWT.SINGLE);
+    final Text textField = new Text(textContainer, SWT.NONE | SWT.SINGLE);
     textField.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, true).create());
+    textField.addFocusListener(new FocusSelectionAdapter());
     applyComboOrTextStyle(textField);
 
     return textField;
@@ -125,8 +130,9 @@ public abstract class SimpleInstallerPage extends Composite
     Composite comboContainer = createInputFieldWrapper(parent, 0, 0, 0, 7);
     applyComboOrTextStyle(comboContainer);
 
-    CCombo combo = new CCombo(comboContainer, style);
+    final CCombo combo = new CCombo(comboContainer, style);
     combo.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, true).create());
+    combo.addFocusListener(new FocusSelectionAdapter());
     applyComboOrTextStyle(combo);
 
     return combo;
@@ -173,7 +179,7 @@ public abstract class SimpleInstallerPage extends Composite
     Label label = new Label(parent, SWT.NONE);
     label.setLayoutData(GridDataFactory.swtDefaults().create());
     label.setText(text);
-    label.setFont(FONT_LABEL);
+    label.setFont(SetupInstallerPlugin.getFont(FONT_LABEL, URI.createURI("font:///10/bold")));
     label.setForeground(AbstractSimpleDialog.COLOR_LABEL_FOREGROUND);
     return label;
   }
@@ -182,6 +188,11 @@ public abstract class SimpleInstallerPage extends Composite
   protected void checkSubclass()
   {
     // Allow subclassing.
+  }
+
+  protected static Control spacer(Composite parent)
+  {
+    return new Label(parent, SWT.NONE);
   }
 
   public static String hex(RGB color)
@@ -198,6 +209,58 @@ public abstract class SimpleInstallerPage extends Composite
     }
 
     return hexString;
+  }
+
+  /**
+   * @author Andreas Scharf
+   */
+  private final class FocusSelectionAdapter extends FocusAdapter
+  {
+    @Override
+    public void focusLost(FocusEvent e)
+    {
+      String content = getWidgetText(e.widget);
+      if (content != null)
+      {
+        setWidgetSelection(e.widget, new Point(content.length(), content.length()));
+      }
+    }
+
+    @Override
+    public void focusGained(FocusEvent e)
+    {
+      String content = getWidgetText(e.widget);
+      if (content != null)
+      {
+        setWidgetSelection(e.widget, new Point(0, content.length()));
+      }
+    }
+
+    private String getWidgetText(Widget widget)
+    {
+      if (widget instanceof CCombo)
+      {
+        return ((CCombo)widget).getText();
+      }
+      else if (widget instanceof Text)
+      {
+        return ((Text)widget).getText();
+      }
+
+      return null;
+    }
+
+    private void setWidgetSelection(Widget widget, Point selection)
+    {
+      if (widget instanceof CCombo)
+      {
+        ((CCombo)widget).setSelection(selection);
+      }
+      else if (widget instanceof Text)
+      {
+        ((Text)widget).setSelection(selection);
+      }
+    }
   }
 
   /**

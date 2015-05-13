@@ -88,12 +88,16 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import java.io.File;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -191,8 +195,8 @@ public class SimpleVariablePage extends SimpleInstallerPage
     container.setBackground(AbstractSimpleDialog.COLOR_WHITE);
 
     // Row 1
-    GridData browserLayoutData = GridDataFactory.fillDefaults().grab(true, false).create();
-    browserLayoutData.heightHint = OS.INSTANCE.isLinux() ? 120 : 216;
+    GridData browserLayoutData = GridDataFactory.fillDefaults().indent(0, 13).grab(true, false).create();
+    browserLayoutData.heightHint = 216;
 
     Composite browserComposite = new Composite(container, SWT.NONE);
     browserComposite.setLayoutData(browserLayoutData);
@@ -214,20 +218,22 @@ public class SimpleVariablePage extends SimpleInstallerPage
     });
 
     Composite variablesComposite = new Composite(container, SWT.NONE);
-    GridLayout variablesLayout = new GridLayout(4, false);
+    GridLayout variablesLayout = new GridLayout(5, false);
     variablesLayout.horizontalSpacing = 8;
     variablesLayout.verticalSpacing = 3;
     variablesLayout.marginLeft = 14;
     variablesLayout.marginRight = 30;
-    variablesLayout.marginTop = 40;
+    variablesLayout.marginTop = 24;
     variablesLayout.marginBottom = 0;
     variablesLayout.marginHeight = 0;
     variablesComposite.setLayout(variablesLayout);
     variablesComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
 
     // Row 3
-    Label productVersionLabel = createLabel(variablesComposite, "Product Version");
-    productVersionLabel.setLayoutData(GridDataFactory.swtDefaults().hint(135, SWT.DEFAULT).create());
+    createLabel(variablesComposite, "Product Version");
+
+    // Spacer to get a little bit more distance between labels and input fields
+    spacer(variablesComposite).setLayoutData(GridDataFactory.swtDefaults().hint(17, SWT.DEFAULT).create());
 
     versionCombo = createComboBox(variablesComposite, SWT.READ_ONLY);
     versionCombo.addSelectionListener(new SelectionAdapter()
@@ -278,8 +284,9 @@ public class SimpleVariablePage extends SimpleInstallerPage
     // Row 4
     javaLabel = createLabel(variablesComposite, "Java VM");
 
+    spacer(variablesComposite);
+
     final CCombo javaCombo = createComboBox(variablesComposite, SWT.READ_ONLY);
-    applyComboOrTextStyle(javaCombo);
 
     javaViewer = new ComboViewer(javaCombo);
     javaViewer.setContentProvider(new ArrayContentProvider());
@@ -313,13 +320,14 @@ public class SimpleVariablePage extends SimpleInstallerPage
       protected void modelEmpty(boolean empty)
       {
         super.modelEmpty(empty);
-        installButton.setEnabled(!empty);
+        validatePage();
       }
 
       @Override
       protected void jreChanged(JRE jre)
       {
         super.jreChanged(jre);
+        validatePage();
         javaCombo.setToolTipText(jre.getJavaHome().toString());
       }
 
@@ -330,18 +338,19 @@ public class SimpleVariablePage extends SimpleInstallerPage
       }
     };
 
-    new Label(variablesComposite, SWT.NONE);
+    spacer(variablesComposite);
 
     // Row 5
     createLabel(variablesComposite, "Installation Folder");
+
+    spacer(variablesComposite);
 
     folderText = createTextField(variablesComposite);
     folderText.addModifyListener(new ModifyListener()
     {
       public void modifyText(ModifyEvent e)
       {
-        String dir = folderText.getText();
-        validateFolderText(dir);
+        validatePage();
         folderText.setToolTipText(installFolder);
       }
     });
@@ -378,28 +387,31 @@ public class SimpleVariablePage extends SimpleInstallerPage
         String dir = dialog.open();
         if (dir != null)
         {
-          validateFolderText(dir);
+          validatePage();
           setFolderText(dir);
         }
       }
     });
 
-    new Label(variablesComposite, SWT.NONE);
-    new Label(variablesComposite, SWT.NONE);
+    spacer(variablesComposite);
+    spacer(variablesComposite);
+    spacer(variablesComposite);
 
     installButton = new InstallLaunchButton(variablesComposite);
     installButton.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).hint(SWT.DEFAULT, 36).indent(0, 32).create());
     installButton.setCurrentState(InstallLaunchButton.State.INSTALL);
 
-    new Label(variablesComposite, SWT.NONE);
-    new Label(variablesComposite, SWT.NONE);
+    spacer(variablesComposite);
+    spacer(variablesComposite);
+    spacer(variablesComposite);
+    spacer(variablesComposite);
 
     installStack = new StackComposite(variablesComposite, SWT.NONE);
-    installStack.setLayoutData(GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING).span(4, 1).indent(60, 0).hint(SWT.DEFAULT, 72).create());
+    installStack.setLayoutData(GridDataFactory.fillDefaults().hint(SWT.DEFAULT, 72).create());    
 
     final Composite duringInstallContainer = new Composite(installStack, SWT.NONE);
     duringInstallContainer.setLayout(UIUtil.createGridLayout(1));
-
+    
     // During installation.
     cancelButton = createButton(duringInstallContainer, "Cancel Installation", "Cancel", SetupInstallerPlugin.INSTANCE.getSWTImage("simple/delete.png"));
     cancelButton.addSelectionListener(new SelectionAdapter()
@@ -485,6 +497,12 @@ public class SimpleVariablePage extends SimpleInstallerPage
     errorComposite = new Composite(installStack, SWT.NONE);
     errorComposite.setLayout(errorLayout);
 
+    // Exclude browser from focus traversal because otherwise we get
+    // a strange traversal behavior
+    List<Control> tabList = new ArrayList<Control>(Arrays.asList(container.getTabList()));
+    tabList.remove(browserComposite);
+    container.setTabList(tabList.toArray(new Control[tabList.size()]));
+
     // Just for debugging
     // installStack.setVisible(true);
     // installStack.setTopControl(errorComposite);
@@ -501,7 +519,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
     button.setCornerWidth(10);
     button.setAlignment(SWT.CENTER);
     button.setFont(SetupInstallerPlugin.getFont(SimpleInstallerDialog.getDefaultFont(), URI.createURI("font:///10/normal")));
-    button.setLayoutData(GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING).grab(false, false).hint(232, 22).create());
+    button.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).hint(SWT.DEFAULT, 22).create());
     button.setForeground(AbstractSimpleDialog.COLOR_LABEL_FOREGROUND);
 
     if (icon != null)
@@ -538,7 +556,15 @@ public class SimpleVariablePage extends SimpleInstallerPage
   @Override
   public boolean setFocus()
   {
-    return folderText.setFocus();
+    boolean focused = folderText.setFocus();
+    
+    // Set the cursor to the end
+    String content = folderText.getText();
+    if (content != null)
+    {
+      folderText.setSelection(content.length());
+    }
+    return focused;
   }
 
   public void setProduct(Product product)
@@ -874,15 +900,18 @@ public class SimpleVariablePage extends SimpleInstallerPage
 
     if (isInstallLogAvailable())
     {
-      action = new Runnable()
+      action = new MessageOverlay.RunnableWithLabel()
       {
         public void run()
         {
           openInstallLog();
         }
-      };
 
-      errorMessage += " <a>Show log</a>.";
+        public String getLabel()
+        {
+          return "Show log.";
+        }
+      };
     }
 
     dialog.showMessage(errorMessage, Type.ERROR, false, action);
@@ -912,10 +941,47 @@ public class SimpleVariablePage extends SimpleInstallerPage
     folderText.setToolTipText(dir);
   }
 
-  private void validateFolderText(String dir)
+  private void validatePage()
+  {
+    String errorMessage = null;
+
+    errorMessage = validateJREs();
+
+    if (errorMessage == null)
+    {
+      errorMessage = validateFolderText(folderText.getText());
+    }
+
+    if (errorMessage != null)
+    {
+      // TODO it would also be possible to add an action which
+      // will trigger the same action as the folderButton
+      dialog.showMessage(errorMessage, Type.ERROR, false, null);
+    }
+    else
+    {
+      dialog.clearMessage();
+    }
+
+    installButton.setEnabled(errorMessage == null);
+  }
+
+  private String validateJREs()
+  {
+    Object input = javaViewer.getInput();
+    if (input instanceof Collection<?> && ((Collection<?>)input).isEmpty())
+    {
+      return "Configuration of JRE failed.";
+    }
+    return null;
+  }
+
+  private String validateFolderText(String dir)
   {
     installFolder = dir;
-    // TODO validate dir?
+
+    // TODO validate dir and set an appropriate error message
+    String errorMessage = null;
 
     try
     {
@@ -931,6 +997,8 @@ public class SimpleVariablePage extends SimpleInstallerPage
     {
       //$FALL-THROUGH$
     }
+
+    return errorMessage;
   }
 
   private void openInstallLog()
