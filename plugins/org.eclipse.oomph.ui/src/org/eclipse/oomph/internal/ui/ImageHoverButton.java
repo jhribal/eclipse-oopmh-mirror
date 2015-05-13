@@ -10,8 +10,10 @@
  */
 package org.eclipse.oomph.internal.ui;
 
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 
 /**
  * @author Andreas Scharf
@@ -41,7 +43,32 @@ public class ImageHoverButton extends FlatButton
     this.hoverImage = hoverImage;
     this.disabledImage = disabledImage;
 
+    setDisabledBackgroundColor(null);
+
+    updateImage();
+  }
+
+  protected void updateImage()
+  {
     setImage(computeImage());
+  }
+
+  @Override
+  protected void onFocusIn(Event event)
+  {
+    updateImage();
+  }
+
+  @Override
+  protected void onFocusOut(Event event)
+  {
+    updateImage();
+  }
+
+  @Override
+  protected void drawFocusState(GC gc, int x, int y, int width, int height)
+  {
+    // Don't draw any borders
   }
 
   protected Image computeImage()
@@ -51,14 +78,14 @@ public class ImageHoverButton extends FlatButton
       return getDisabledImage() != null ? getDisabledImage() : getDefaultImage();
     }
 
-    return isHover() ? getHoverImage() : getDefaultImage();
+    return isHover() || isFocusControl() ? getHoverImage() : getDefaultImage();
   }
 
   @Override
   public void setEnabled(boolean enabled)
   {
     super.setEnabled(enabled);
-    setImage(computeImage());
+    updateImage();
   }
 
   public void setDefaultImage(Image defaultImage)
@@ -66,7 +93,7 @@ public class ImageHoverButton extends FlatButton
     if (this.defaultImage != defaultImage)
     {
       this.defaultImage = defaultImage;
-      setImage(computeImage());
+      updateImage();
     }
   }
 
@@ -80,7 +107,7 @@ public class ImageHoverButton extends FlatButton
     if (this.hoverImage != hoverImage)
     {
       this.hoverImage = hoverImage;
-      setImage(computeImage());
+      updateImage();
     }
   }
 
@@ -92,7 +119,7 @@ public class ImageHoverButton extends FlatButton
   @Override
   protected void onHover()
   {
-    setImage(computeImage());
+    updateImage();
   }
 
   public Image getDisabledImage()
@@ -105,7 +132,7 @@ public class ImageHoverButton extends FlatButton
     if (this.disabledImage != disabledImage)
     {
       this.disabledImage = disabledImage;
-      setImage(computeImage());
+      updateImage();
     }
   }
 }
