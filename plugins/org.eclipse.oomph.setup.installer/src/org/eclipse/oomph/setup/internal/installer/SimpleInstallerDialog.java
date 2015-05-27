@@ -14,6 +14,7 @@ package org.eclipse.oomph.setup.internal.installer;
 import org.eclipse.oomph.internal.ui.AccessUtil;
 import org.eclipse.oomph.internal.ui.FlatButton;
 import org.eclipse.oomph.internal.ui.ImageHoverButton;
+import org.eclipse.oomph.internal.ui.ToggleSwitchButton;
 import org.eclipse.oomph.p2.core.BundlePool;
 import org.eclipse.oomph.p2.core.P2Util;
 import org.eclipse.oomph.p2.core.ProfileTransaction.Resolution;
@@ -79,7 +80,7 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
 
   private static final String UPDATE_MENU_ITEM_TEXT = "UPDATE";
 
-  private static final String ADVANCED_MENU_ITEM_TEXT = "ADVANCED";
+  private static final String ADVANCED_MENU_ITEM_TEXT = "ADVANCED MODE";
 
   private static final String ABOUT_MENU_ITEM_TEXT = "ABOUT";
 
@@ -131,9 +132,12 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
 
   private MessageOverlay currentMessage;
 
+  private ToggleSwitchButton bundlePoolSwitch;
+
   public SimpleInstallerDialog(Display display, final Installer installer)
   {
     super(display, OS.INSTANCE.isMac() ? SWT.TOOL : SWT.NO_TRIM, INSTALLER_WIDTH, INSTALLER_HEIGHT);
+    setMinimumSize(385, 75);
     this.installer = installer;
     catalogManager = installer.getCatalogManager();
   }
@@ -141,9 +145,6 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
   @Override
   protected void createUI(Composite titleComposite)
   {
-    poolEnabled = PREF_POOL_ENABLED.get(true);
-    enablePool(poolEnabled);
-
     Composite exitMenuButtonContainer = new Composite(titleComposite, SWT.NONE);
     exitMenuButtonContainer.setLayout(UIUtil.createGridLayout(1));
     exitMenuButtonContainer.setLayoutData(GridDataFactory.swtDefaults().grab(false, true).align(SWT.CENTER, SWT.FILL).create());
@@ -224,6 +225,8 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
       }
     });
 
+    enablePool(PREF_POOL_ENABLED.get(true));
+
     updateAvailable(false);
   }
 
@@ -267,6 +270,8 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
     {
       pool = null;
     }
+
+    bundlePoolSwitch.setSelected(poolEnabled);
 
     // FIXME: Enabled/Disabled state for bundle pooling?
     // if (poolButton != null)
@@ -325,7 +330,7 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
       }
     });
 
-    SimpleInstallerMenu.InstallerMenuItem bundlePoolsItem = new SimpleInstallerMenu.InstallerMenuItem(menu);
+    SimpleInstallerMenu.InstallerMenuItemWithToggle bundlePoolsItem = new SimpleInstallerMenu.InstallerMenuItemWithToggle(menu);
     bundlePoolsItem.setText(BUNDLE_POOLS_MENU_ITEM_TEXT);
     bundlePoolsItem.setToolTipText(AgentManagerDialog.MESSAGE);
     bundlePoolsItem.addSelectionListener(new SelectionAdapter()
@@ -334,6 +339,16 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
       public void widgetSelected(SelectionEvent e)
       {
         manageBundlePools();
+      }
+    });
+
+    bundlePoolSwitch = bundlePoolsItem.getToggleSwitch();
+    bundlePoolSwitch.addSelectionListener(new SelectionAdapter()
+    {
+      @Override
+      public void widgetSelected(SelectionEvent e)
+      {
+        enablePool(bundlePoolSwitch.isSelected());
       }
     });
 
@@ -564,23 +579,28 @@ public final class SimpleInstallerDialog extends AbstractSimpleDialog implements
 
   public void showMessage(String message, MessageOverlay.Type type, boolean dismissAutomatically, Runnable action)
   {
-    clearMessage();
-
-    currentMessage = new MessageOverlay(this, type, new ControlRelocator()
+    // Check if we can reuse the current message to reduce flickering
+    if (currentMessage == null || currentMessage.getType() != type || currentMessage.isDismissAutomatically() != dismissAutomatically || currentMessage
+        .getAction() != action)
     {
-      public void relocate(Control control)
+      clearMessage();
+
+      currentMessage = new MessageOverlay(this, type, new ControlRelocator()
       {
-        Rectangle bounds = SimpleInstallerDialog.this.getBounds();
-        int x = bounds.x + 5;
-        int y = bounds.y + 24;
+        public void relocate(Control control)
+        {
+          Rectangle bounds = SimpleInstallerDialog.this.getBounds();
+          int x = bounds.x + 5;
+          int y = bounds.y + 24;
 
-        int width = bounds.width - 9;
+          int width = bounds.width - 9;
 
-        // Depending on the current page, the height varies
-        int height = pageStack.peek() instanceof SimpleProductPage ? 87 : 70;
-        control.setBounds(x, y, width, height);
-      }
-    }, dismissAutomatically, action);
+          // Depending on the current page, the height varies
+          int height = pageStack.peek() instanceof SimpleProductPage ? 87 : 70;
+          control.setBounds(x, y, width, height);
+        }
+      }, dismissAutomatically, action);
+    }
 
     currentMessage.setMessage(message);
     currentMessage.setVisible(true);

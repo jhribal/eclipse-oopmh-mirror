@@ -120,8 +120,6 @@ public class SimpleVariablePage extends SimpleInstallerPage
 
   private static final String TEXT_README = "show readme file";
 
-  private static final String TEXT_LOG = "show installation log";
-
   private static final String TEXT_KEEP = "keep installer";
 
   private static final String MESSAGE_SUCCESS = "Installation completed successfully.";
@@ -181,8 +179,6 @@ public class SimpleVariablePage extends SimpleInstallerPage
   private FlatButton keepInstallerButton;
 
   private Composite afterInstallComposite;
-
-  private FlatButton showInstallLogButton;
 
   private Composite errorComposite;
 
@@ -362,6 +358,14 @@ public class SimpleVariablePage extends SimpleInstallerPage
       {
         validatePage();
         folderText.setToolTipText(installFolder);
+
+        UIUtil.getDisplay().asyncExec(new Runnable()
+        {
+          public void run()
+          {
+            folderText.setFocus();
+          }
+        });
       }
     });
 
@@ -452,16 +456,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
         }
       }
     });
-
-    showInstallLogButton = createButton(afterInstallComposite, TEXT_LOG, null, null);
-    showInstallLogButton.addSelectionListener(new SelectionAdapter()
-    {
-      @Override
-      public void widgetSelected(SelectionEvent e)
-      {
-        openInstallLog();
-      }
-    });
+    showReadmeButton.setToolTipText("Show the readme of the installed eclipse");
 
     keepInstallerButton = createButton(afterInstallComposite, TEXT_KEEP, null, null);
     keepInstallerButton.addSelectionListener(new SelectionAdapter()
@@ -472,6 +467,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
         dialog.showKeepInstaller();
       }
     });
+    keepInstallerButton.setToolTipText("Keep the installer to save your settings for the next time");
 
     installButton.addSelectionListener(new SelectionAdapter()
     {
@@ -495,6 +491,8 @@ public class SimpleVariablePage extends SimpleInstallerPage
           installStack.setTopControl(duringInstallContainer);
           installStack.setVisible(true);
           layout(true, true);
+
+          forceFocus();
 
           install();
         }
@@ -856,11 +854,10 @@ public class SimpleVariablePage extends SimpleInstallerPage
     {
       installed = true;
 
-      installButton.setCurrentState(State.INSTALLED);
+      installButton.setCurrentState(State.LAUNCH);
       installButton.setToolTipText("Launch");
 
-      showInstallLogButton.setParent(afterInstallComposite);
-      keepInstallerButton.setVisible(InstallerUtil.canKeepInstaller());
+      keepInstallerButton.setVisible(KeepInstallerUtil.canKeepInstaller());
 
       Scope scope = selectedProductVersion;
       while (scope != null)
@@ -880,6 +877,8 @@ public class SimpleVariablePage extends SimpleInstallerPage
       }
 
       showSuccessMessage();
+
+      backButton.setEnabled(true);
     }
     else
     {
@@ -888,7 +887,6 @@ public class SimpleVariablePage extends SimpleInstallerPage
       showErrorMessage();
     }
 
-    setEnabled(true);
     dialog.setButtonsEnabled(true);
   }
 
@@ -975,6 +973,13 @@ public class SimpleVariablePage extends SimpleInstallerPage
     }
 
     installButton.setEnabled(errorMessage == null);
+  }
+
+  @Override
+  public void aboutToShow()
+  {
+    super.aboutToShow();
+    keepInstallerButton.setVisible(KeepInstallerUtil.canKeepInstaller());
   }
 
   private String validateJREs()
