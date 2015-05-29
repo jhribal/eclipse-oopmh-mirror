@@ -379,7 +379,7 @@ public final class IOUtil
           String extension = data.substring(lastDot);
           data = data.substring(0, lastDot);
 
-          File iconFile = new File(PropertiesUtil.getProperty("java.io.tmpdir"), "icon-" + HexUtil.bytesToHex(digest) + extension);
+          File iconFile = new File(PropertiesUtil.TEMP_DIR, "icon-" + HexUtil.bytesToHex(digest) + extension);
           if (!iconFile.exists())
           {
             ByteArrayInputStream bais = new ByteArrayInputStream(HexUtil.hexToBytes(data));

@@ -346,6 +346,7 @@ public abstract class OomphPlugin extends EMFPlugin
       {
         URL url = bundle.getResource(entry);
         source = url.openStream();
+        file.getParentFile().mkdirs();
         target = new FileOutputStream(file);
 
         IOUtil.copy(source, target);

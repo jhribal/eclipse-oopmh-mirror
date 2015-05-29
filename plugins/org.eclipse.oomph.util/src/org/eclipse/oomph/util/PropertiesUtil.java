@@ -35,7 +35,11 @@ public final class PropertiesUtil
 {
   public static final String USER_HOME = getProperty("user.home", ".");
 
-  public static final String TEMP_DIR = getProperty("java.io.tmpdir", ".");
+  private static final String USER_NAME = getProperty("user.name", "YOU");
+
+  // @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=468865
+  // Append the current user name to /tmp to avoid file permission issues on multi user systems
+  public static final String TEMP_DIR = getProperty("java.io.tmpdir", ".") + "/" + USER_NAME;
 
   public static final String[] EXPERT_FILTER = { "org.eclipse.ui.views.properties.expert" };
 

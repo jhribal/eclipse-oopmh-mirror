@@ -18,6 +18,7 @@ import org.eclipse.oomph.setup.internal.core.util.ResourceMirror;
 import org.eclipse.oomph.setup.internal.core.util.SetupCoreUtil;
 import org.eclipse.oomph.util.IOUtil;
 import org.eclipse.oomph.util.OS;
+import org.eclipse.oomph.util.PropertiesUtil;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -51,7 +52,7 @@ public class SetupArchiver implements IApplication
   {
     String[] arguments = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 
-    File file = new File(System.getProperty("java.io.tmpdir"), "setups.zip");
+    File file = new File(PropertiesUtil.TEMP_DIR, "setups.zip");
 
     for (int i = 0; i < arguments.length; ++i)
     {

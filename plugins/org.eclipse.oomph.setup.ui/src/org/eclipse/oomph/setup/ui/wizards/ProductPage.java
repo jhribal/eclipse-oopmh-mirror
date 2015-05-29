@@ -912,7 +912,7 @@ public class ProductPage extends SetupWizardPage
 
   public static String getImageURI(OomphPlugin plugin, String iconName)
   {
-    File iconFile = new File(PropertiesUtil.getProperty("java.io.tmpdir"), iconName);
+    File iconFile = new File(PropertiesUtil.TEMP_DIR, iconName);
     if (OVERWRITE_TMP_IMAGES || !iconFile.exists())
     {
       iconFile.getParentFile().mkdirs();

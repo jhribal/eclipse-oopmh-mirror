@@ -73,7 +73,7 @@ public final class SetupInstallerPlugin extends OomphUIPlugin
       {
         initializeFonts();
 
-        File temporaryIconsFolder = new File(System.getProperty("java.io.tmpdir"), System.currentTimeMillis() + ".oomph.icons");
+        File temporaryIconsFolder = new File(PropertiesUtil.TEMP_DIR, System.currentTimeMillis() + ".oomph.icons");
         temporaryIconsFolder.mkdir();
         temporaryIconsFolder.deleteOnExit();
         ReflectUtil.setValue("imageDirectory", ImageURIRegistry.INSTANCE, temporaryIconsFolder);

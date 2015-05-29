@@ -960,7 +960,7 @@ public class ProfileTransactionImpl implements ProfileTransaction
       {
         Location location = Platform.getInstallLocation();
         org.eclipse.emf.common.util.URI installationLocation = org.eclipse.emf.common.util.URI.createURI(FileLocator.resolve(location.getURL()).toString());
-        org.eclipse.emf.common.util.URI tempDir = org.eclipse.emf.common.util.URI.createFileURI(PropertiesUtil.getProperty("java.io.tmpdir"));
+        org.eclipse.emf.common.util.URI tempDir = org.eclipse.emf.common.util.URI.createFileURI(PropertiesUtil.TEMP_DIR);
         if (!ObjectUtil.equals(installationLocation.device(), tempDir.device()))
         {
           Field field = ReflectUtil.getField(NativeTouchpoint.class, "backups");
