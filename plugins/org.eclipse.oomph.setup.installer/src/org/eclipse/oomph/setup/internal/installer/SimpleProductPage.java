@@ -24,7 +24,6 @@ import org.eclipse.oomph.ui.SearchField.FilterHandler;
 import org.eclipse.oomph.ui.SpriteAnimator;
 import org.eclipse.oomph.ui.StackComposite;
 import org.eclipse.oomph.ui.UIUtil;
-import org.eclipse.oomph.util.OS;
 import org.eclipse.oomph.util.StringUtil;
 
 import org.eclipse.emf.ecore.EClass;
@@ -34,16 +33,24 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.LocationAdapter;
-import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Eike Stepper
@@ -62,7 +69,7 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
 
   private StackComposite stackComposite;
 
-  private Browser browser;
+  private TableViewer productViewer;
 
   public SimpleProductPage(final Composite parent, final SimpleInstallerDialog dialog)
   {
@@ -84,7 +91,7 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
       @Override
       protected void finishFilter()
       {
-        browser.setFocus();
+        SimpleProductPage.this.setFocus();
       }
     };
 
@@ -103,52 +110,56 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
 
     final SpriteIndexLoader indexLoader = new SpriteIndexLoader(stackComposite);
 
-    browser = new Browser(stackComposite, SWT.NONE);
-    browser.addLocationListener(new LocationAdapter()
-    {
-      @Override
-      public void changing(LocationEvent event)
-      {
-        String url = event.location;
-        if (!"about:blank".equals(url))
-        {
-          if (url.startsWith(PRODUCT_PREFIX))
-          {
-            indexLoader.awaitIndexLoad();
+    productViewer = new TableViewer(stackComposite, SWT.NONE);
+    productViewer.setContentProvider(ArrayContentProvider.getInstance());
+    productViewer.setLabelProvider(new ProductLabelProvider());
 
-            url = url.substring(PRODUCT_PREFIX.length());
-            int lastSlash = url.lastIndexOf('/');
-
-            String catalogName = url.substring(0, lastSlash);
-            String productName = url.substring(lastSlash + 1);
-
-            for (Scope scope : catalogSelector.getSelectedCatalogs())
-            {
-              if (scope instanceof ProductCatalog)
-              {
-                ProductCatalog productCatalog = (ProductCatalog)scope;
-                if (catalogName.equals(productCatalog.getName()))
-                {
-                  for (Product product : productCatalog.getProducts())
-                  {
-                    if (productName.equals(product.getName()))
-                    {
-                      dialog.productSelected(product);
-                    }
-                  }
-                }
-              }
-            }
-          }
-          else
-          {
-            OS.INSTANCE.openSystemBrowser(url);
-          }
-
-          event.doit = false;
-        }
-      }
-    });
+    // browser = new Browser(stackComposite, SWT.NONE);
+    // browser.addLocationListener(new LocationAdapter()
+    // {
+    // @Override
+    // public void changing(LocationEvent event)
+    // {
+    // String url = event.location;
+    // if (!"about:blank".equals(url))
+    // {
+    // if (url.startsWith(PRODUCT_PREFIX))
+    // {
+    // indexLoader.awaitIndexLoad();
+    //
+    // url = url.substring(PRODUCT_PREFIX.length());
+    // int lastSlash = url.lastIndexOf('/');
+    //
+    // String catalogName = url.substring(0, lastSlash);
+    // String productName = url.substring(lastSlash + 1);
+    //
+    // for (Scope scope : catalogSelector.getSelectedCatalogs())
+    // {
+    // if (scope instanceof ProductCatalog)
+    // {
+    // ProductCatalog productCatalog = (ProductCatalog)scope;
+    // if (catalogName.equals(productCatalog.getName()))
+    // {
+    // for (Product product : productCatalog.getProducts())
+    // {
+    // if (productName.equals(product.getName()))
+    // {
+    // dialog.productSelected(product);
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // else
+    // {
+    // OS.INSTANCE.openSystemBrowser(url);
+    // }
+    //
+    // event.doit = false;
+    // }
+    // }
+    // });
 
     stackComposite.setTopControl(indexLoader.getAnimator());
 
@@ -173,7 +184,7 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
   @Override
   public boolean setFocus()
   {
-    return browser.setFocus();
+    return productViewer.getControl().setFocus();
   }
 
   public void handleFilter(String filter)
@@ -184,14 +195,13 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
       filter = filterText;
     }
 
-    StringBuilder productsBuilder = new StringBuilder();
-
     boolean noFilter = StringUtil.isEmpty(filter);
     if (!noFilter)
     {
       filter = filter.toLowerCase();
     }
 
+    List<Product> products = new ArrayList<Product>();
     for (Scope scope : catalogSelector.getSelectedCatalogs())
     {
       if (scope instanceof ProductCatalog)
@@ -202,21 +212,18 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
           if (!ProductPage.getValidProductVersions(product).isEmpty()
               && (noFilter || isFiltered(product.getName(), filter) || isFiltered(product.getLabel(), filter) || isFiltered(product.getDescription(), filter)))
           {
-            productsBuilder.append(renderProduct(product, false));
+            products.add(product);
           }
         }
       }
     }
 
-    String productPageHTML = SimpleInstallerDialog.getProductTemplate();
-    String simpleInstallerHTML = SimpleInstallerDialog.getPageTemplate();
-    productPageHTML = simpleInstallerHTML.replace("%CONTENT%", productsBuilder.toString());
-    browser.setText(productPageHTML, true);
+    productViewer.setInput(products);
   }
 
   public void reset()
   {
-    browser.setText(browser.getText());
+    productViewer.refresh();
   }
 
   private static String removeLinks(String description)
@@ -312,6 +319,75 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
   /**
    * @author Eike Stepper
    */
+  private static final class ProductLabelProvider extends OwnerDrawLabelProvider
+  {
+    private static final int BORDER = 18;
+
+    private static final int RADIUS = 32;
+
+    private static final int HEIGHT = 2 * BORDER + 2 * RADIUS;
+
+    private static final Color COLOR_SELECTION = SetupInstallerPlugin.getColor(174, 187, 221);
+
+    public ProductLabelProvider()
+    {
+    }
+
+    @Override
+    protected void measure(Event event, Object element)
+    {
+      Table table = ((TableItem)event.item).getParent();
+      int width = table.getClientArea().width;
+      event.setBounds(new Rectangle(event.x, event.y, width, HEIGHT));
+    }
+
+    @Override
+    protected void erase(Event event, Object element)
+    {
+      Rectangle bounds = event.getBounds();
+      if ((event.detail & SWT.SELECTED) != 0)
+      {
+        Color oldForeground = event.gc.getForeground();
+        Color oldBackground = event.gc.getBackground();
+
+        event.gc.setBackground(COLOR_SELECTION);
+        event.gc.setForeground(event.item.getDisplay().getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
+        event.gc.fillRectangle(bounds);
+
+        /* restore the old GC colors */
+        event.gc.setForeground(oldForeground);
+        event.gc.setBackground(oldBackground);
+
+        /* ensure that default selection is not drawn */
+        event.detail &= ~SWT.SELECTED;
+      }
+    }
+
+    @Override
+    protected void paint(Event event, Object element)
+    {
+      Rectangle bounds = event.getBounds();
+
+      GC gc = event.gc;
+      int oldAntialias = gc.getAntialias();
+
+      try
+      {
+        gc.setAntialias(SWT.ON);
+
+        gc.setBackground(COLOR_PAGE_BORDER);
+        gc.fillOval(bounds.x + BORDER, bounds.y + BORDER, 2 * RADIUS, 2 * RADIUS);
+      }
+      finally
+      {
+        gc.setAntialias(oldAntialias);
+      }
+    }
+  }
+
+  /**
+   * @author Eike Stepper
+   */
   private final class SpriteIndexLoader extends IndexLoader
   {
     private final SpriteAnimator animator;
@@ -331,7 +407,7 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
     {
       searchField.setEnabled(false);
 
-      browser.setText("", true);
+      productViewer.setInput(null);
       stackComposite.setTopControl(animator);
       animator.start(1, animator.getImages().length - 1);
 
@@ -363,8 +439,8 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
             {
               public void run()
               {
-                stackComposite.setTopControl(browser);
-                browser.setFocus();
+                stackComposite.setTopControl(productViewer.getControl());
+                productViewer.getControl().setFocus();
 
                 CatalogManager catalogManager = catalogSelector.getCatalogManager();
                 Index index = catalogManager.getIndex();
@@ -413,7 +489,7 @@ public class SimpleProductPage extends SimpleInstallerPage implements FilterHand
     @Override
     protected void finishedWaiting()
     {
-      stackComposite.setTopControl(browser);
+      stackComposite.setTopControl(productViewer.getControl());
     }
 
     @Override
