@@ -1242,8 +1242,6 @@
         <requirement
             name="org.eclipse.e4.demo.cssbridge"/>
         <requirement
-            name="org.eclipse.e4.demo.e4photo"/>
-        <requirement
             name="org.eclipse.e4.ui.examples.css.rcp"/>
         <requirement
             name="org.eclipse.e4.ui.examples.job"/>
