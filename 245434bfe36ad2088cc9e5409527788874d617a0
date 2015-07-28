@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2721e7e2_afeccbb7",
+        "filename": "products/org.eclipse.oomph.setup.installer.product/Installer.product",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 449
+      },
+      "writtenOn": "2015-07-28T08:23:21Z",
+      "side": 1,
+      "message": "This line with a space to separate arguments looks bogus to me. It\u0027s not in the same for as the --launcher.XXMaxPermSize\n256M argument. Are you 100% sure that I should test it with this space character?",
+      "range": {
+        "startLine": 18,
+        "startChar": 44,
+        "endLine": 18,
+        "endChar": 45
+      },
+      "revId": "245434bfe36ad2088cc9e5409527788874d617a0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
