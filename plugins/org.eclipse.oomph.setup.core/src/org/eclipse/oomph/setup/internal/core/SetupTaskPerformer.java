@@ -122,7 +122,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.internal.p2.update.Configuration;
 import org.eclipse.equinox.internal.p2.update.Site;
@@ -1512,7 +1512,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
           {
             SetupTask setupTask = it.next();
             checkCancelation();
-            progressMonitor = new SubProgressMonitor(monitor, 1);
+            progressMonitor = SubMonitor.convert(monitor, 1);
 
             try
             {
@@ -2791,11 +2791,11 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
 
     try
     {
-      progressMonitor = new SubProgressMonitor(monitor, 1);
+      progressMonitor = SubMonitor.convert(monitor, 1);
       if (task.isNeeded(this))
       {
         progressMonitor.done();
-        progressMonitor = new SubProgressMonitor(monitor, 100);
+        progressMonitor = SubMonitor.convert(monitor, 100);
         task.perform(this);
       }
       else
@@ -2826,7 +2826,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
         cacheUsageConfirmer.reset();
       }
 
-      performTriggeredSetupTasks(new SubProgressMonitor(monitor, 100));
+      performTriggeredSetupTasks(SubMonitor.convert(monitor, 100));
 
       if (bootstrap)
       {
@@ -2847,18 +2847,18 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
     log("Performing post bootstrap tasks", false, Severity.INFO);
     File productConfigurationLocation = getProductConfigurationLocation();
 
-    performEclipseIniTask(false, "--launcher.appendVmargs", null, new SubProgressMonitor(monitor, 1));
+    performEclipseIniTask(false, "--launcher.appendVmargs", null, SubMonitor.convert(monitor, 1));
 
     if (vmPath != null)
     {
-      performEclipseIniTask(false, "-vm", vmPath, new SubProgressMonitor(monitor, 1));
+      performEclipseIniTask(false, "-vm", vmPath, SubMonitor.convert(monitor, 1));
     }
 
     performEclipseIniTask(true, "-D" + SetupProperties.PROP_UPDATE_URL, "=" + redirect(URI.createURI((String)get(SetupProperties.PROP_UPDATE_URL))),
-        new SubProgressMonitor(monitor, 1));
+        SubMonitor.convert(monitor, 1));
 
-    performIndexRediction(SetupContext.INDEX_SETUP_URI, "", new SubProgressMonitor(monitor, 1));
-    performIndexRediction(SetupContext.INDEX_SETUP_LOCATION_URI, ".location", new SubProgressMonitor(monitor, 1));
+    performIndexRediction(SetupContext.INDEX_SETUP_URI, "", SubMonitor.convert(monitor, 1));
+    performIndexRediction(SetupContext.INDEX_SETUP_LOCATION_URI, ".location", SubMonitor.convert(monitor, 1));
 
     if (REMOTE_DEBUG)
     {
@@ -2914,7 +2914,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
       ResourceCopyTask resourceCopyTask = SetupFactory.eINSTANCE.createResourceCopyTask();
       resourceCopyTask.setSourceURL(sourceLocation.toString());
       resourceCopyTask.setTargetURL(targetURI.toString());
-      performTask(resourceCopyTask, new SubProgressMonitor(monitor, 1));
+      performTask(resourceCopyTask, SubMonitor.convert(monitor, 1));
     }
     else
     {
@@ -2928,11 +2928,11 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
 
     try
     {
-      initNeededSetupTasks(new SubProgressMonitor(monitor, 1));
+      initNeededSetupTasks(SubMonitor.convert(monitor, 1));
 
       if (!neededSetupTasks.isEmpty())
       {
-        performNeededSetupTasks(new SubProgressMonitor(monitor, 100));
+        performNeededSetupTasks(SubMonitor.convert(monitor, 100));
       }
       else
       {
@@ -3003,7 +3003,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
         task(neededTask);
 
         int work = Math.max(0, neededTask.getProgressMonitorWork());
-        progressMonitor = new SubProgressMonitor(monitor, work);
+        progressMonitor = SubMonitor.convert(monitor, work);
 
         try
         {

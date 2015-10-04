@@ -42,7 +42,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.egit.core.EclipseGitProgressTransformer;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand;
@@ -743,7 +743,7 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         {
           if (cachedGit == null)
           {
-            cachedGit = cloneRepository(context, workDir, checkoutBranch, remoteName, remoteURI, isRecursive(), new SubProgressMonitor(monitor, 50));
+            cachedGit = cloneRepository(context, workDir, checkoutBranch, remoteName, remoteURI, isRecursive(), SubMonitor.convert(monitor, 50));
             cachedRepository = cachedGit.getRepository();
 
             if (!URI.createURI(remoteURI).isFile())
@@ -769,7 +769,7 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
 
           if (isRecursive())
           {
-            addSubmodules(context, cachedGit, new SubProgressMonitor(monitor, 20));
+            addSubmodules(context, cachedGit, SubMonitor.convert(monitor, 20));
           }
         }
 
@@ -1132,7 +1132,7 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     command.call();
   }
 
-  private static void addSubmodules(SetupTaskContext context, Git git, SubProgressMonitor monitor) throws Exception
+  private static void addSubmodules(SetupTaskContext context, Git git, IProgressMonitor monitor) throws Exception
   {
     context.log("Adding submodules");
 
