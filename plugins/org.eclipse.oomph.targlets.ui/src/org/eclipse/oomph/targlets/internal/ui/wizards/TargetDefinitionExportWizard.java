@@ -12,11 +12,11 @@ package org.eclipse.oomph.targlets.internal.ui.wizards;
 
 import org.eclipse.oomph.targlets.internal.ui.TargletsUIPlugin;
 import org.eclipse.oomph.util.IOUtil;
-import org.eclipse.oomph.util.MonitorUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -71,10 +71,10 @@ public class TargetDefinitionExportWizard extends Wizard implements IExportWizar
 
           if (needsResolution)
           {
-            targetDefinition.resolve(MonitorUtil.create(monitor, 1));
+            targetDefinition.resolve(SubMonitor.convert(monitor, 1));
           }
 
-          copy(MonitorUtil.create(monitor, 1));
+          copy(SubMonitor.convert(monitor, 1));
         }
         catch (Exception ex)
         {

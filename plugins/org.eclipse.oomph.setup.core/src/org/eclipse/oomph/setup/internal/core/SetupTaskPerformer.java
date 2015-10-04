@@ -67,7 +67,6 @@ import org.eclipse.oomph.setup.p2.impl.P2TaskImpl;
 import org.eclipse.oomph.setup.util.StringExpander;
 import org.eclipse.oomph.util.CollectionUtil;
 import org.eclipse.oomph.util.IOUtil;
-import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.OS;
 import org.eclipse.oomph.util.ObjectUtil;
 import org.eclipse.oomph.util.Pair;
@@ -123,6 +122,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepository;
 import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
@@ -1802,7 +1802,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
           {
             SetupTask setupTask = it.next();
             checkCancelation();
-            progressMonitor = MonitorUtil.create(monitor, 1);
+            progressMonitor = SubMonitor.convert(monitor, 1);
 
             try
             {
@@ -3103,11 +3103,11 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
 
     try
     {
-      progressMonitor = MonitorUtil.create(monitor, 1);
+      progressMonitor = SubMonitor.convert(monitor, 1);
       if (task.isNeeded(this))
       {
         progressMonitor.done();
-        progressMonitor = MonitorUtil.create(monitor, 100);
+        progressMonitor = SubMonitor.convert(monitor, 100);
         task.perform(this);
       }
       else
@@ -3138,7 +3138,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
         cacheUsageConfirmer.reset();
       }
 
-      performTriggeredSetupTasks(MonitorUtil.create(monitor, 100));
+      performTriggeredSetupTasks(SubMonitor.convert(monitor, 100));
 
       if (bootstrap)
       {
@@ -3190,7 +3190,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
       ResourceCopyTask resourceCopyTask = SetupFactory.eINSTANCE.createResourceCopyTask();
       resourceCopyTask.setSourceURL(networkPreferencesSourceLocation.toString());
       resourceCopyTask.setTargetURL(targetURI.toString());
-      performTask(resourceCopyTask, MonitorUtil.create(monitor, 1));
+      performTask(resourceCopyTask, SubMonitor.convert(monitor, 1));
     }
     else
     {
@@ -3210,7 +3210,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
           ResourceCopyTask resourceCopyTask = SetupFactory.eINSTANCE.createResourceCopyTask();
           resourceCopyTask.setSourceURL(jschPreferencesSourceLocation.toString());
           resourceCopyTask.setTargetURL(targetURI.toString());
-          performTask(resourceCopyTask, MonitorUtil.create(monitor, 1));
+          performTask(resourceCopyTask, SubMonitor.convert(monitor, 1));
         }
         else
         {
@@ -3234,11 +3234,11 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
 
     try
     {
-      initNeededSetupTasks(MonitorUtil.create(monitor, 1));
+      initNeededSetupTasks(SubMonitor.convert(monitor, 1));
 
       if (!neededSetupTasks.isEmpty())
       {
-        performNeededSetupTasks(MonitorUtil.create(monitor, 100));
+        performNeededSetupTasks(SubMonitor.convert(monitor, 100));
       }
       else
       {
@@ -3310,7 +3310,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
         task(neededTask);
 
         int work = Math.max(0, neededTask.getProgressMonitorWork());
-        progressMonitor = MonitorUtil.create(monitor, work);
+        progressMonitor = SubMonitor.convert(monitor, work);
 
         try
         {
