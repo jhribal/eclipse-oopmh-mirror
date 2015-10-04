@@ -16,7 +16,6 @@ import org.eclipse.oomph.setup.SetupTaskContext;
 import org.eclipse.oomph.setup.impl.SetupTaskImpl;
 import org.eclipse.oomph.setup.projects.ProjectsBuildTask;
 import org.eclipse.oomph.setup.projects.ProjectsPackage;
-import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.StringUtil;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -36,6 +35,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -500,7 +500,7 @@ public class ProjectsBuildTaskImpl extends SetupTaskImpl implements ProjectsBuil
         for (IProject project : projects)
         {
           context.log("Refreshing " + project.getName(), false);
-          project.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtil.create(monitor, 1));
+          project.refreshLocal(IResource.DEPTH_INFINITE, SubMonitor.convert(monitor, 1));
         }
       }
 
@@ -509,7 +509,7 @@ public class ProjectsBuildTaskImpl extends SetupTaskImpl implements ProjectsBuil
       if (isClean())
       {
         buildsConfigs = getBuildConfigs(projects);
-        ROOT.getWorkspace().build(buildsConfigs, IncrementalProjectBuilder.CLEAN_BUILD, false, MonitorUtil.create(monitor, size));
+        ROOT.getWorkspace().build(buildsConfigs, IncrementalProjectBuilder.CLEAN_BUILD, false, SubMonitor.convert(monitor, size));
       }
 
       if (isBuild())
@@ -519,7 +519,7 @@ public class ProjectsBuildTaskImpl extends SetupTaskImpl implements ProjectsBuil
           buildsConfigs = getBuildConfigs(projects);
         }
 
-        ROOT.getWorkspace().build(buildsConfigs, IncrementalProjectBuilder.FULL_BUILD, false, MonitorUtil.create(monitor, size));
+        ROOT.getWorkspace().build(buildsConfigs, IncrementalProjectBuilder.FULL_BUILD, false, SubMonitor.convert(monitor, size));
       }
     }
     finally

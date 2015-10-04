@@ -30,7 +30,6 @@ import org.eclipse.oomph.targlets.core.ITargletContainer;
 import org.eclipse.oomph.targlets.internal.core.TargletContainer;
 import org.eclipse.oomph.targlets.internal.core.TargletsCorePlugin;
 import org.eclipse.oomph.targlets.internal.core.WorkspaceIUImporter;
-import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.ObjectUtil;
 import org.eclipse.oomph.util.StringUtil;
 import org.eclipse.oomph.util.pde.TargetPlatformRunnable;
@@ -51,6 +50,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.pde.core.target.ITargetDefinition;
@@ -1041,7 +1041,7 @@ public class TargletTaskImpl extends SetupTaskImpl implements TargletTask
         {
           if (targetDefinition == null)
           {
-            targetDefinition = getTargetDefinition(service, MonitorUtil.create(monitor, 1));
+            targetDefinition = getTargetDefinition(service, SubMonitor.convert(monitor, 1));
           }
 
           String targetName = getSafeTargetName();
@@ -1164,11 +1164,11 @@ public class TargletTaskImpl extends SetupTaskImpl implements TargletTask
             TargletsCorePlugin.INSTANCE.setCacheUsageConfirmer(cacheUsageConfirmer);
 
             targletContainer.setTarglets(targlets);
-            targletContainer.forceUpdate(activateTarget, mirrors, MonitorUtil.create(monitor, 90));
+            targletContainer.forceUpdate(true, mirrors, SubMonitor.convert(monitor, 90));
 
             try
             {
-              Job.getJobManager().join(WorkspaceIUImporter.WORKSPACE_IU_IMPORT_FAMILY, MonitorUtil.create(monitor, 10));
+              Job.getJobManager().join(WorkspaceIUImporter.WORKSPACE_IU_IMPORT_FAMILY, SubMonitor.convert(monitor, 10));
             }
             catch (InterruptedException ex)
             {
