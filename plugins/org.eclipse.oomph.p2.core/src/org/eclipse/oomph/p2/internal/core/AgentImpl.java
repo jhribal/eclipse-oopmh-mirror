@@ -18,7 +18,6 @@ import org.eclipse.oomph.p2.core.P2Util;
 import org.eclipse.oomph.p2.core.Profile;
 import org.eclipse.oomph.p2.core.ProfileCreator;
 import org.eclipse.oomph.util.IOUtil;
-import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.PropertiesUtil;
 import org.eclipse.oomph.util.StringUtil;
 
@@ -28,6 +27,7 @@ import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.engine.CommitOperationEvent;
 import org.eclipse.equinox.internal.p2.repository.Transport;
 import org.eclipse.equinox.internal.p2.touchpoint.eclipse.EclipseTouchpoint;
@@ -465,14 +465,14 @@ public class AgentImpl extends AgentManagerElementImpl implements Agent
       {
         LazyProfileRegistry lazyProfileRegistry = (LazyProfileRegistry)profileRegistry;
         lazyProfileRegistry.resetProfiles();
-        lazyProfileRegistry.getProfileMap(MonitorUtil.create(monitor, 1));
+        lazyProfileRegistry.getProfileMap(SubMonitor.convert(monitor, 1));
       }
       else
       {
         monitor.worked(1);
       }
 
-      fillProfileMap(profileMap, MonitorUtil.create(monitor, 9));
+      fillProfileMap(profileMap, SubMonitor.convert(monitor, 9));
       profileMap.refresh();
     }
     finally

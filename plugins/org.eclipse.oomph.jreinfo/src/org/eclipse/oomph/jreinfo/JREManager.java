@@ -13,7 +13,6 @@ package org.eclipse.oomph.jreinfo;
 import org.eclipse.oomph.extractor.lib.JREData;
 import org.eclipse.oomph.internal.jreinfo.JREInfoPlugin;
 import org.eclipse.oomph.util.IOUtil;
-import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.OS;
 import org.eclipse.oomph.util.PropertiesUtil;
 import org.eclipse.oomph.util.StringUtil;
@@ -23,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubMonitor;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -139,7 +139,7 @@ public final class JREManager
 
       for (int i = 0; i < children; i++)
       {
-        addExtraJavaHomes(extraJavaHomes, childFolders[i], false, result, MonitorUtil.create(monitor, 1));
+        addExtraJavaHomes(extraJavaHomes, childFolders[i], false, result, SubMonitor.convert(monitor, 1));
       }
     }
     catch (OperationCanceledException ex)

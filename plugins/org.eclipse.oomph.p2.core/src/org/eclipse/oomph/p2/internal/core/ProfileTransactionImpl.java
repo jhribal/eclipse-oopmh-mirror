@@ -24,7 +24,6 @@ import org.eclipse.oomph.p2.core.ProfileTransaction.CommitContext.ResolutionInfo
 import org.eclipse.oomph.p2.internal.core.CachingRepositoryManager.Artifact.BetterMirrorSelector;
 import org.eclipse.oomph.util.Confirmer;
 import org.eclipse.oomph.util.Confirmer.Confirmation;
-import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.ObjectUtil;
 import org.eclipse.oomph.util.Pair;
 import org.eclipse.oomph.util.PropertiesUtil;
@@ -47,6 +46,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepository;
 import org.eclipse.equinox.internal.p2.director.ProfileChangeRequest;
 import org.eclipse.equinox.internal.p2.director.SimplePlanner;
@@ -334,10 +334,10 @@ public class ProfileTransactionImpl implements ProfileTransaction
 
       try
       {
-        Resolution resolution = resolve(commitContext, MonitorUtil.create(monitor, 1));
+        Resolution resolution = resolve(commitContext, SubMonitor.convert(monitor, 1));
         if (resolution != null)
         {
-          return resolution.commit(MonitorUtil.create(monitor, 1));
+          return resolution.commit(SubMonitor.convert(monitor, 1));
         }
 
         monitor.worked(1);
@@ -376,7 +376,7 @@ public class ProfileTransactionImpl implements ProfileTransaction
 
       final List<IMetadataRepository> metadataRepositories = new ArrayList<IMetadataRepository>();
       Set<URI> artifactURIs = new HashSet<URI>();
-      URI[] metadataURIs = collectRepositories(metadataRepositories, artifactURIs, cleanup, MonitorUtil.create(monitor, 50));
+      URI[] metadataURIs = collectRepositories(metadataRepositories, artifactURIs, cleanup, SubMonitor.convert(monitor, 50));
 
       final ProfileImpl profileImpl = (ProfileImpl)profile;
       final IProfile delegate = profileImpl.getDelegate();
@@ -405,7 +405,7 @@ public class ProfileTransactionImpl implements ProfileTransaction
         }
       } : planner.createChangeRequest(delegate);
 
-      final IInstallableUnit rootIU = adjustProfileChangeRequest(profileChangeRequest, MonitorUtil.create(monitor, 5));
+      final IInstallableUnit rootIU = adjustProfileChangeRequest(profileChangeRequest, SubMonitor.convert(monitor, 5));
 
       final ProvisioningContext provisioningContext = context.createProvisioningContext(this, profileChangeRequest);
       provisioningContext.setMetadataRepositories(metadataURIs);
@@ -419,9 +419,9 @@ public class ProfileTransactionImpl implements ProfileTransaction
         provisioningContext.setProperty("org.eclipse.equinox.p2.internal.profileius", Boolean.FALSE.toString());
       }
 
-      IQueryable<IInstallableUnit> metadata = provisioningContext.getMetadata(MonitorUtil.create(monitor, 5));
+      IQueryable<IInstallableUnit> metadata = provisioningContext.getMetadata(SubMonitor.convert(monitor, 5));
 
-      final IProvisioningPlan provisioningPlan = planner.getProvisioningPlan(profileChangeRequest, provisioningContext, MonitorUtil.create(monitor, 10));
+      final IProvisioningPlan provisioningPlan = planner.getProvisioningPlan(profileChangeRequest, provisioningContext, SubMonitor.convert(monitor, 10));
       P2CorePlugin.INSTANCE.coreException(provisioningPlan.getStatus());
 
       IQueryable<IInstallableUnit> futureState = provisioningPlan.getFutureState();
@@ -442,7 +442,7 @@ public class ProfileTransactionImpl implements ProfileTransaction
 
       if (includeSourceBundles)
       {
-        IInstallableUnit sourceContainerIU = generateSourceContainerIU(provisioningPlan, metadata, MonitorUtil.create(monitor, 5));
+        IInstallableUnit sourceContainerIU = generateSourceContainerIU(provisioningPlan, metadata, SubMonitor.convert(monitor, 5));
         provisioningPlan.addInstallableUnit(sourceContainerIU);
         provisioningPlan.setInstallableUnitProfileProperty(sourceContainerIU, Profile.PROP_PROFILE_ROOT_IU, Boolean.TRUE.toString());
       }
@@ -529,7 +529,7 @@ public class ProfileTransactionImpl implements ProfileTransaction
           {
             if (eventBus != null)
             {
-              provisioningListener.setMonitor(MonitorUtil.create(monitor, 1));
+              provisioningListener.setMonitor(SubMonitor.convert(monitor, 1));
               eventBus.addListener(provisioningListener);
             }
 
@@ -1610,7 +1610,7 @@ public class ProfileTransactionImpl implements ProfileTransaction
 
         try
         {
-          IMetadataRepository metadataRepository = workPool.manager.loadRepository(getKey(), MonitorUtil.create(monitor, 1));
+          IMetadataRepository metadataRepository = workPool.manager.loadRepository(getKey(), SubMonitor.convert(monitor, 1));
           workPool.metadataRepositories.add(metadataRepository);
           return Status.OK_STATUS;
         }
