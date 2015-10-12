@@ -172,6 +172,14 @@
         <sourceLocator
             rootFolder="${git.clone.equinox.p2.location}"/>
       </targlet>
+      <targlet
+          name="Equinox P2 Tests"
+          activeRepositoryList="${eclipse.target.platform}">
+        <requirement
+            name="org.eclipse.core.tests.harness"/>
+        <requirement
+            name="org.easymock"/>
+      </targlet>
     </setupTask>
     <setupTask
         xsi:type="setup.workingsets:WorkingSetTask">
