@@ -64,13 +64,17 @@ public class OomphEditingDomain extends BaseAdapterFactoryEditingDomain
         {
           if (delegate.isSupportedType(transferData))
           {
-            Object data = systemClipboard.getContents(delegate.getTransfer());
-            if (data != null)
+            Transfer transfer = delegate.getTransfer();
+            if (transfer != null)
             {
-              Collection<?> value = delegate.getValue(this, data);
-              if (!value.isEmpty())
+              Object data = systemClipboard.getContents(transfer);
+              if (data != null)
               {
-                return new ArrayList<Object>(value);
+                Collection<?> value = delegate.getValue(this, data);
+                if (!value.isEmpty())
+                {
+                  return new ArrayList<Object>(value);
+                }
               }
             }
           }
