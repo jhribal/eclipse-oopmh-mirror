@@ -86,5 +86,14 @@
             type="java.lang.Object">
       </propertyTester>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.oomph.setup.ui.actions.LaunchQuestionnaire"
+            description="Review the IDE&apos;s most fiercely contested preferences "
+            id="org.eclipse.oomph.setup.ui.questionnaire"
+            name="Launch Configuration Setup Wizard">
+      </command>
+   </extension>
 
 </plugin>
