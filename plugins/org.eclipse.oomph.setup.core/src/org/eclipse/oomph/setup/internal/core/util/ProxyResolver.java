@@ -13,6 +13,7 @@ package org.eclipse.oomph.setup.internal.core.util;
 import org.eclipse.oomph.base.util.BaseUtil;
 import org.eclipse.oomph.util.WorkerPool;
 
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -64,7 +65,7 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
   @Override
   protected void run(String taskName, IProgressMonitor monitor)
   {
-    EList<Resource> resources = resourceSet.getResources();
+    EList<Resource> resources = new BasicEList<Resource>(resourceSet.getResources());
     monitor.setTaskName("Resolving");
     monitor.subTask("Resolving proxies of " + resources.size() + " resources");
     perform(resources);
@@ -125,7 +126,19 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
                     break;
                   }
 
+                  EList<Resource> resources = resourceSet.getResources();
+                  int resourcesCount = resources.size();
+
                   referencedEObject = eObjects.get(i);
+
+                  int newResourcesCount = resources.size();
+                  if (newResourcesCount > resourcesCount)
+                  {
+                    for (int j = resourcesCount; j < newResourcesCount; j++)
+                    {
+                      getWorkPool().schedule(resources.get(j));
+                    }
+                  }
                 }
 
                 ++i;
@@ -157,7 +170,19 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
               InternalEObject referencedEObject;
               synchronized (resourceSet)
               {
+                EList<Resource> resources = resourceSet.getResources();
+                int resourcesCount = resources.size();
+
                 referencedEObject = (InternalEObject)eObject.eGet(eReference);
+
+                int newResourcesCount = resources.size();
+                if (newResourcesCount > resourcesCount)
+                {
+                  for (int i = resourcesCount; i < newResourcesCount; i++)
+                  {
+                    getWorkPool().schedule(resources.get(i));
+                  }
+                }
               }
 
               if (referencedEObject != null && containment && referencedEObject.eDirectResource() == null)
