@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e7dfcf21_3965260f",
+        "filename": "setups/interim/Equinox.setup",
+        "patchSetId": 2
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 11
+      },
+      "writtenOn": "2016-03-17T19:18:14Z",
+      "side": 1,
+      "message": "I\u0027m not sure if it is needed because it works on my machine which is running Linux.",
+      "parentUuid": "67ccbf7d_05bcdeb0",
+      "revId": "cd52e791b04fe21959c123ab3fab867cd917cc3c",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "67ccbf7d_25c9e24e",
         "filename": "setups/interim/Equinox.setup",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2015-11-11T10:00:44Z",
       "side": 1,
       "message": "Is that available in the release train repo?",
+      "range": {
+        "startLine": 181,
+        "startChar": 18,
+        "endLine": 181,
+        "endChar": 30
+      },
+      "revId": "cd52e791b04fe21959c123ab3fab867cd917cc3c",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e7dfcf21_f93adeee",
+        "filename": "setups/interim/Equinox.setup",
+        "patchSetId": 2
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 11
+      },
+      "writtenOn": "2016-03-17T19:18:14Z",
+      "side": 1,
+      "message": "According to https://wiki.eclipse.org/Eclipse/Testing#Using_EasyMock, In the Eclipse Galileo release the utility EasyMock was added to the platform test framework.",
+      "parentUuid": "67ccbf7d_25c9e24e",
       "range": {
         "startLine": 181,
         "startChar": 18,
