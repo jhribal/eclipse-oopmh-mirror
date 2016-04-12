@@ -586,6 +586,11 @@ public class ProgressPage extends SetupWizardPage
   @Override
   public boolean performCancel()
   {
+    if (getWizard().getCurrentPage() instanceof ProgressPage && (!progressPageLog.isCanceled() || !progressPageLog.isDone()))
+    {
+      getWizard().getShell().setVisible(false);
+    }
+
     return progressPageLog == null || progressPageLog.isDone() || progressPageLog.isCanceled();
   }
 

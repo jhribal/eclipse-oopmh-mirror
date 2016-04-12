@@ -152,6 +152,9 @@ public abstract class SetupWizardPage extends WizardPage implements HelpProvider
     return null;
   }
 
+  /**
+   * Returns true if the page can be closed. False if not (usually because of currently running tasks).
+   */
   public boolean performCancel()
   {
     return true;
