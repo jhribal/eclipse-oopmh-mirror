@@ -471,6 +471,7 @@ public class MylynBuildsTaskImpl extends SetupTaskImpl implements MylynBuildsTas
         String connectorKind = getConnectorKind();
 
         IBuildServer server = getServer();
+        String password = PreferencesUtil.decrypt(getPassword());
         if (server != null)
         {
           if (isAuthenticate())
@@ -483,7 +484,6 @@ public class MylynBuildsTaskImpl extends SetupTaskImpl implements MylynBuildsTas
         {
           String serverURL = getServerURL();
           String userID = getUserID();
-          String password = PreferencesUtil.decrypt(getPassword());
 
           context.log("Adding " + connectorKind + " server: " + serverURL);
 
