@@ -25,6 +25,11 @@ Eike Stepper - initial API and implementation
   <version>1.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <sonar.jacoco.reportPath>${project.basedir}/../../target/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.java.source>1.8</sonar.java.source>
+  </properties>
+
   <modules>
     <module>../../../plugins/org.eclipse.oomph.base</module>
     <module>../../../plugins/org.eclipse.oomph.base.edit</module>
@@ -114,6 +119,39 @@ Eike Stepper - initial API and implementation
     <module>../../../plugins/org.eclipse.oomph.workingsets.edit</module>
     <module>../../../plugins/org.eclipse.oomph.workingsets.editor</module>
   </modules>
+
+  <build>
+    <plugins>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.7.9</version>
+          <executions>
+            <execution>
+              <id>pre-test</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <configuration>
+                <!-- Where to put jacoco coverage report -->
+                <destFile>${sonar.jacoco.reportPath}</destFile>
+                <append>true</append>
+              </configuration>
+            </execution>
+            <execution>
+              <id>post-test</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <configuration>
+                <dataFile>${sonar.jacoco.reportPath}</dataFile>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>
