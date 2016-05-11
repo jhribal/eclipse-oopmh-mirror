@@ -34,17 +34,36 @@ import java.util.Map;
  */
 public final class DownloadUtil
 {
+
+  private static final int RETRY_DELAY = 2000;
+
+  private static final int HTTP_ERROR_BASE_NUMBER = 400;
+
+  private static final int DOWNLOAD_TIMEOUT = 30000;
+  
   private static final int CONNECT_TIMEOUT = 10000;
 
   private static final int READ_TIMEOUT = 30000;
 
   private static final int BUFFER_SIZE = 4096;
 
+  private DownloadUtil()
+  {
+  }
+
+
   public static File downloadURL(String url, ProgressLog progress)
   {
+    String downloadUrl;
+    
+    /* Remove trailing "/" */
     if (url.endsWith("/"))
     {
-      url = url.substring(0, url.length() - 1);
+      downloadUrl = url.substring(0, url.length() - 1);
+    }
+    else
+    {
+      downloadUrl = url;
     }
 
     try
@@ -56,16 +75,13 @@ public final class DownloadUtil
       {
         try
         {
-          downloadURL(url, tmp, progress);
+          downloadURL(downloadUrl, tmp, progress);
         }
         catch (Exception ex)
         {
-          if (tmp.exists())
+          if (tmp.exists() && !tmp.delete())
           {
-            if (!tmp.delete())
-            {
-              tmp.deleteOnExit();
-            }
+            tmp.deleteOnExit();
           }
 
           throw ex;
@@ -100,7 +116,7 @@ public final class DownloadUtil
       float factor = 0;
 
       long start = System.currentTimeMillis();
-      while (System.currentTimeMillis() < start + 30000)
+      while (System.currentTimeMillis() < start + DOWNLOAD_TIMEOUT)
       {
         exception = null;
 
@@ -115,14 +131,17 @@ public final class DownloadUtil
             connection.connect();
 
             int result = ((HttpURLConnection)connection).getResponseCode();
-            if (result >= 400)
+            if (result >= HTTP_ERROR_BASE_NUMBER)
             {
               throw new IOException("HTTP error " + result);
             }
           }
 
           int length = connection.getContentLength();
+
+          /* Percentage factor */
           factor = 100f / length;
+
           fileName = new File(connection.getURL().getFile()).getName();
 
           in = new BufferedInputStream(connection.getInputStream());
@@ -135,7 +154,7 @@ public final class DownloadUtil
 
           try
           {
-            Thread.sleep(2000);
+            Thread.sleep(RETRY_DELAY);
           }
           catch (InterruptedException ex1)
           {

@@ -19,23 +19,23 @@ import org.eclipse.core.runtime.IStatus;
  */
 public interface ProgressLog
 {
-  public boolean isCanceled();
+  boolean isCanceled();
 
-  public void log(String line);
+  void log(String line);
 
-  public void log(String line, Severity severity);
+  void log(String line, Severity severity);
 
-  public void log(String line, boolean filter);
+  void log(String line, boolean filter);
 
-  public void log(String line, boolean filter, Severity severity);
+  void log(String line, boolean filter, Severity severity);
 
-  public void log(IStatus status);
+  void log(IStatus status);
 
-  public void log(Throwable t);
+  void log(Throwable t);
 
-  public void task(SetupTask setupTask);
+  void task(SetupTask setupTask);
 
-  public void setTerminating();
+  void setTerminating();
 
   /**
    * @author Eike Stepper
@@ -58,6 +58,9 @@ public interface ProgressLog
 
           case IStatus.ERROR:
             return ERROR;
+            
+          default:
+            break;
         }
       }
 

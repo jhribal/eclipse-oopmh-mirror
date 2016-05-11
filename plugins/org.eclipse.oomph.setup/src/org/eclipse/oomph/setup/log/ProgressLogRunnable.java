@@ -20,5 +20,5 @@ public interface ProgressLogRunnable
   /**
    * @return a non-empty set of reasons if a restart is needed, an empty set or <code>null</code> otherwise.
    */
-  public Set<String> run(ProgressLog log) throws Exception;
+  Set<String> run(ProgressLog log) throws Exception;
 }

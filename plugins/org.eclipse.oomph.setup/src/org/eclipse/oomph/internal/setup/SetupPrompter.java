@@ -22,24 +22,24 @@ import java.util.List;
  */
 public interface SetupPrompter
 {
-  public static final SetupPrompter OK = new Default(true);
+  static final SetupPrompter OK = new Default(true);
 
-  public static final SetupPrompter CANCEL = new Default(false);
+  static final SetupPrompter CANCEL = new Default(false);
 
-  public OS getOS();
+  OS getOS();
 
-  public String getVMPath();
+  String getVMPath();
 
-  public UserCallback getUserCallback();
+  UserCallback getUserCallback();
 
-  public String getValue(VariableTask variable);
+  String getValue(VariableTask variable);
 
-  public boolean promptVariables(List<? extends SetupTaskContext> performers);
+  boolean promptVariables(List<? extends SetupTaskContext> performers);
 
   /**
    * @author Eike Stepper
    */
-  public static final class Default implements SetupPrompter
+  class Default implements SetupPrompter
   {
     private final boolean ok;
 

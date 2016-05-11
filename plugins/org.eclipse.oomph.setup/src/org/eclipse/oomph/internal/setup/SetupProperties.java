@@ -13,8 +13,9 @@ package org.eclipse.oomph.internal.setup;
 /**
  * @author Eike Stepper
  */
-public interface SetupProperties
+public class SetupProperties
 {
+
   public static final String PROP_DO_NOT_LOAD_RESOURCES_PLUGIN = "org.eclipse.emf.ecore.plugin.EcorePlugin.doNotLoadResourcesPlugin";
 
   public static final String PROP_REDIRECTION_BASE = "oomph.redirection.";
@@ -60,4 +61,9 @@ public interface SetupProperties
   public static final String PROJP_SETUP_ECF_READ_TIMEOUT = "oomph.setup.ecf.read.timeout";
 
   public static final String PROP_INSTALLER_UPDATE_URL = "oomph.installer.update.url";
+
+  private SetupProperties()
+  {
+  }
+
 }

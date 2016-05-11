@@ -27,57 +27,57 @@ import java.util.Set;
  */
 public interface SetupTaskContext extends ProgressLog
 {
-  public IProgressMonitor getProgressMonitor(boolean working);
+  IProgressMonitor getProgressMonitor(boolean working);
 
-  public SetupPrompter getPrompter();
+  SetupPrompter getPrompter();
 
-  public Trigger getTrigger();
+  Trigger getTrigger();
 
-  public void checkCancelation();
+  void checkCancelation();
 
-  public boolean isSelfHosting();
+  boolean isSelfHosting();
 
-  public boolean isPerforming();
+  boolean isPerforming();
 
-  public boolean isOffline();
+  boolean isOffline();
 
-  public boolean isMirrors();
+  boolean isMirrors();
 
-  public boolean isRestartNeeded();
+  boolean isRestartNeeded();
 
-  public void setRestartNeeded(String reason);
+  void setRestartNeeded(String reason);
 
-  public User getUser();
+  User getUser();
 
-  public Workspace getWorkspace();
+  Workspace getWorkspace();
 
-  public Installation getInstallation();
+  Installation getInstallation();
 
-  public File getInstallationLocation();
+  File getInstallationLocation();
 
-  public File getProductLocation();
+  File getProductLocation();
 
-  public File getProductConfigurationLocation();
+  File getProductConfigurationLocation();
 
-  public File getWorkspaceLocation();
+  File getWorkspaceLocation();
 
-  public String getRelativeProductFolder();
+  String getRelativeProductFolder();
 
-  public OS getOS();
+  OS getOS();
 
-  public URIConverter getURIConverter();
+  URIConverter getURIConverter();
 
-  public URI redirect(URI uri);
+  URI redirect(URI uri);
 
-  public String redirect(String uri);
+  String redirect(String uri);
 
-  public Object get(Object key);
+  Object get(Object key);
 
-  public Object put(Object key, Object value);
+  Object put(Object key, Object value);
 
-  public Set<Object> keySet();
+  Set<Object> keySet();
 
-  public String getLauncherName();
+  String getLauncherName();
 
-  public boolean matchesFilterContext(String filter);
+  boolean matchesFilterContext(String filter);
 }
