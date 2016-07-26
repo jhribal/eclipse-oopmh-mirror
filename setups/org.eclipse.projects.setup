@@ -516,6 +516,7 @@
   <project href="https://www.eclipse.org/papyrus-rt/content/setup/papyrus-rt-developer.setup#/"/>
   <project href="interim/PDE.setup#/"/>
   <project href="interim/Platform.setup#/"/>
+  <project href="http://git.eclipse.org/c/webtools/webtools.releng.git/plain/WTP.setup#/"/>
   <project href="http://git.eclipse.org/c/mmt/org.eclipse.qvtd.git/plain/releng/org.eclipse.qvtd.oomph/setups/qvtd.setup#/"/>
   <project href="http://git.eclipse.org/c/mmt/org.eclipse.qvto.git/plain/releng/org.eclipse.qvto.oomph/setups/qvto.setup#/"/>
   <project href="http://git.eclipse.org/c/rcptt/org.eclipse.rcptt.git/plain/releng/RCPTT.setup#/"/>
