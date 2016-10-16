@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2015, 2016 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  *    Yatta Solutions - [466264] Enhance UX in simple installer
+ *    Christian W. Damus - bug 506031
  */
 package org.eclipse.oomph.setup.internal.installer;
 
@@ -56,7 +57,7 @@ public abstract class AbstractSimpleDialog extends Shell
     setLayout(verticalLayout);
     setSize(width, height);
     setImages(Window.getDefaultImages());
-    setText(AbstractSetupDialog.SHELL_TEXT);
+    setText(AbstractSetupDialog.getDefaultShellText());
 
     setBackground(SetupInstallerPlugin.getColor(207, 207, 207));
 

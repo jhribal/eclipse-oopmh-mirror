@@ -8,6 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  *    Yatta Solutions - [466264] Enhance UX in simple installer
+ *    Christian W. Damus - bug 506031
  */
 package org.eclipse.oomph.setup.internal.installer;
 
@@ -518,7 +519,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
       public void widgetSelected(SelectionEvent e)
       {
         DirectoryDialog dialog = new DirectoryDialog(getShell());
-        dialog.setText(AbstractSetupDialog.SHELL_TEXT);
+        dialog.setText(AbstractSetupDialog.getDefaultShellText());
         dialog.setMessage("Select an installation folder:");
 
         if (!StringUtil.isEmpty(installFolder))

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2015 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2014, 2016 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Christian W. Damus - bug 506031
  */
 package org.eclipse.oomph.setup.util;
 
@@ -30,7 +31,8 @@ public final class SetupUtil
   public static final String INSTALLER_UPDATE_URL = PropertiesUtil.getProperty(SetupProperties.PROP_INSTALLER_UPDATE_URL, DEFAULT_INSTALLER_UPDATE_URL)
       .replace('\\', '/');
 
-  public static final String INSTALLER_PRODUCT_ID = "org.eclipse.oomph.setup.installer.product";
+  public static final String INSTALLER_PRODUCT_ID = PropertiesUtil.getProperty(SetupProperties.PROP_INSTALLER_PRODUCT,
+      "org.eclipse.oomph.setup.installer.product");
 
   public static final boolean INSTALLER_PRODUCT = INSTALLER_PRODUCT_ID.equals(PropertiesUtil.getProperty("eclipse.product"));
 

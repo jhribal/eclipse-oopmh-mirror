@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Christian W. Damus - bug 506031
  */
 package org.eclipse.oomph.internal.setup;
 
@@ -64,4 +65,6 @@ public interface SetupProperties
   public static final String PROP_INSTALLER_UPDATE_URL = "oomph.installer.update.url";
 
   public static final String PROP_SETUP_USER_AGENT = "oomph.userAgent";
+
+  public static final String PROP_INSTALLER_PRODUCT = "oomph.installer.product";
 }

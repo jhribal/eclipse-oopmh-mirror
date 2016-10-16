@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2015 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2014, 2016 Eike Stepper (Berlin, Germany) and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Eike Stepper - initial API and implementation
+ *    Christian W. Damus - bug 506031
  */
 package org.eclipse.oomph.setup.ui;
 
@@ -20,7 +21,13 @@ import org.eclipse.swt.widgets.Shell;
  */
 public abstract class AbstractSetupDialog extends OomphDialog
 {
+  /**
+   * @deprecated Use the {@link #getDefaultShellText()} API, instead.
+   */
+  @Deprecated
   public static final String SHELL_TEXT = "Eclipse Installer";
+
+  private static String defaultShellText = SHELL_TEXT;
 
   public AbstractSetupDialog(Shell parentShell, String title, int width, int height, OomphUIPlugin plugin, boolean helpAvailable)
   {
@@ -36,6 +43,33 @@ public abstract class AbstractSetupDialog extends OomphDialog
   @Override
   protected String getShellText()
   {
-    return SHELL_TEXT;
+    return getDefaultShellText();
+  }
+
+  /**
+   * Queries the default text for new shells.
+   * The default-default, if not set, is {@code "Eclipse Installer"}.
+   *
+   * @return the default text for new shells
+   */
+  public static String getDefaultShellText()
+  {
+    return defaultShellText;
+  }
+
+  /**
+   * Assigns the default text for new shells.
+   *
+   * @param text the new default shell text (required)
+   * @throws IllegalArgumentException if {@code text} is {@code null}
+   */
+  public static void setDefaultShellText(String text)
+  {
+    if (text == null)
+    {
+      throw new IllegalArgumentException("null text"); //$NON-NLS-1$
+    }
+
+    defaultShellText = text;
   }
 }
