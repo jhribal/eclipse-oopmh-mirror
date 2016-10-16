@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2015 Eike Stepper (Berlin, Germany) and others.
+ * Copyright (c) 2014, 2016 Eike Stepper (Berlin, Germany), and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  *    Yatta Solutions - [466264] Enhance UX in simple installer
+ *    Christian W. Damus - bug 506031
  */
 package org.eclipse.oomph.setup.internal.installer;
 
@@ -39,12 +40,15 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+
+import org.osgi.framework.Bundle;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -116,15 +120,7 @@ public class InstallerApplication implements IApplication
     jreInitializer.setDaemon(true);
     jreInitializer.start();
 
-    int[] sizes = { 16, 32, 48, 64, 128, 256 };
-    Image[] images = new Image[sizes.length];
-    for (int i = 0; i < sizes.length; i++)
-    {
-      int size = sizes[i];
-      images[i] = SetupInstallerPlugin.INSTANCE.getSWTImage("oomph" + size + ".png");
-    }
-
-    Window.setDefaultImages(images);
+    Window.setDefaultImages(getWindowImages(context));
 
     boolean restarted = false;
     File restarting = new File(SetupContext.CONFIGURATION_STATE_LOCATION_URI.appendSegment("restarting").toFileString());
@@ -155,7 +151,13 @@ public class InstallerApplication implements IApplication
     }
 
     final Display display = Display.getDefault();
-    Display.setAppName(AbstractSetupDialog.SHELL_TEXT);
+
+    String appName = context == null ? null : context.getBrandingName();
+    if (appName != null)
+    {
+      AbstractSetupDialog.setDefaultShellText(appName);
+    }
+    Display.setAppName(AbstractSetupDialog.getDefaultShellText());
     handleCocoaMenu(display, installerDialog);
 
     if (context != null)
@@ -193,7 +195,7 @@ public class InstallerApplication implements IApplication
         if (KeepInstallerUtil.canKeepInstaller())
         {
           Shell shell = new Shell(display);
-          if (MessageDialog.openQuestion(shell, AbstractSetupDialog.SHELL_TEXT,
+          if (MessageDialog.openQuestion(shell, AbstractSetupDialog.getDefaultShellText(),
               "As an advanced user, do you want to keep the installer in a permanent location?"))
           {
             if (new KeepInstallerDialog(shell, true).open() == KeepInstallerDialog.OK)
@@ -423,6 +425,44 @@ public class InstallerApplication implements IApplication
 
       return exitCode.get();
     }
+  }
+
+  /**
+   * Gets the window images specified by the active product extension, or else
+   * the Eclipse Installer images if there is no active product or it provides
+   * no images of its own.
+   *
+   * @param context the application context, or {@code null} to use the default
+   *                Eclipse Installer window images
+   */
+  private Image[] getWindowImages(IApplicationContext context)
+  {
+    Image[] result;
+
+    String windowImages = context == null ? null : context.getBrandingProperty("windowImages"); //$NON-NLS-1$
+    if (context != null && Platform.getProduct() != null)
+    {
+      String[] imagePaths = windowImages.split(",");//$NON-NLS-1$
+      Bundle productBundle = Platform.getProduct().getDefiningBundle();
+      result = new Image[imagePaths.length];
+      for (int i = 0; i < imagePaths.length; i++)
+      {
+        ImageDescriptor desc = ImageDescriptor.createFromURL(productBundle.getEntry(imagePaths[i].trim()));
+        result[i] = SetupInstallerPlugin.INSTANCE.getSWTImage(desc);
+      }
+    }
+    else
+    {
+      int[] sizes = { 16, 32, 48, 64, 128, 256 };
+      result = new Image[sizes.length];
+      for (int i = 0; i < sizes.length; i++)
+      {
+        int size = sizes[i];
+        result[i] = SetupInstallerPlugin.INSTANCE.getSWTImage("oomph" + size + ".png");
+      }
+    }
+
+    return result;
   }
 
   public void stop()
