@@ -8,6 +8,7 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  *    Yatta Solutions - [466264] Enhance UX in simple installer
+ *    Christian W. Damus - bug 506441
  */
 package org.eclipse.oomph.setup.internal.installer;
 
@@ -29,6 +30,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -176,10 +178,15 @@ public final class KeepInstallerDialog extends AbstractSetupDialog
     {
       public void run()
       {
+        String folderName = "eclipse-installer";
+        if (Display.getAppName() != null)
+        {
+          folderName = Display.getAppName().toLowerCase().replace(" ", "-");
+        }
         File home = new File(PropertiesUtil.getUserHome());
         for (int i = 1; i < Integer.MAX_VALUE; i++)
         {
-          File folder = new File(home, "eclipse-installer" + (i > 1 ? i : ""));
+          File folder = new File(home, folderName + (i > 1 ? i : ""));
           if (!folder.exists())
           {
             String path = folder.getAbsolutePath();

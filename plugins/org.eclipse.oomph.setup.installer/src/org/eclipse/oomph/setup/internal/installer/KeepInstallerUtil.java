@@ -8,12 +8,16 @@
  * Contributors:
  *    Eike Stepper - initial API and implementation
  *    Yatta Solutions - [466264] Enhance UX in simple installer
+ *    Christian W. Damus - bug 506441
  */
 package org.eclipse.oomph.setup.internal.installer;
 
 import org.eclipse.oomph.util.IOUtil;
 import org.eclipse.oomph.util.OS;
 import org.eclipse.oomph.util.OomphPlugin.Preference;
+
+import org.eclipse.swt.widgets.Display;
+
 import org.eclipse.oomph.util.PropertiesUtil;
 
 import java.io.File;
@@ -36,7 +40,12 @@ public final class KeepInstallerUtil
 
   public static void createShortCut(String specialFolder, String target)
   {
-    createShortCut(specialFolder, null, target, "Eclipse Installer");
+    String shortcutName = Display.getAppName();
+    if (shortcutName == null)
+    {
+      shortcutName = "Eclipse Installer";
+    }
+    createShortCut(specialFolder, null, target, shortcutName);
   }
 
   public static void createShortCut(String specialFolder, String groupName, String target, String shortcutName)
