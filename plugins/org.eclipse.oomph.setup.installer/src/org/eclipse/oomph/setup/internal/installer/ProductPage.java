@@ -13,6 +13,7 @@ package org.eclipse.oomph.setup.internal.installer;
 import org.eclipse.oomph.base.provider.BaseEditUtil;
 import org.eclipse.oomph.base.util.BaseResource;
 import org.eclipse.oomph.base.util.BaseUtil;
+import org.eclipse.oomph.internal.setup.SetupProperties;
 import org.eclipse.oomph.internal.ui.AccessUtil;
 import org.eclipse.oomph.jreinfo.JRE;
 import org.eclipse.oomph.jreinfo.JREManager;
@@ -157,7 +158,12 @@ public class ProductPage extends SetupWizardPage
 {
   public static final String PAGE_NAME = "ProductPage";
 
-  private static final boolean SHOW_BUNDLE_POOL_UI = PropertiesUtil.getProperty(AgentManager.PROP_BUNDLE_POOL_LOCATION) == null;
+  /**
+   * Adds the p2 bundle pool buttons to the UI if true. <br/>
+   * This is true iff (the property oomph.setup.installer.p2pool isn't set OR set to true) AND AgentManager.PROP_BUNDLE_POOL_LOCATION isn't set
+   */
+  private static final boolean SHOW_BUNDLE_POOL_UI = (PropertiesUtil.getBoolean(SetupProperties.PROP_SETUP_INSTALLER_P2_POOL) == null
+      || PropertiesUtil.getBoolean(SetupProperties.PROP_SETUP_INSTALLER_P2_POOL)) & PropertiesUtil.getProperty(AgentManager.PROP_BUNDLE_POOL_LOCATION) == null;
 
   private static final Product NO_PRODUCT = createNoProduct();
 
