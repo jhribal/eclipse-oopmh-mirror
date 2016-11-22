@@ -64,4 +64,10 @@ public interface SetupProperties
   public static final String PROP_INSTALLER_UPDATE_URL = "oomph.installer.update.url";
 
   public static final String PROP_SETUP_USER_AGENT = "oomph.userAgent";
+
+  /**
+   * Skips the 'Choose a Project' page on the installer iff set to true
+   * @author sholzer 22.11.16
+   */
+  public static final String PROP_SETUP_INSTALLER_SKIP_PROJECTS = "oomph.setup.installer.skip.projects";
 }

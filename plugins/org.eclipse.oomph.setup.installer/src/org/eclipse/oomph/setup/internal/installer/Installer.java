@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.setup.internal.installer;
 
+import org.eclipse.oomph.internal.setup.SetupProperties;
 import org.eclipse.oomph.p2.internal.ui.P2ServiceUI;
 import org.eclipse.oomph.setup.Index;
 import org.eclipse.oomph.setup.Trigger;
@@ -61,7 +62,15 @@ public class Installer extends SetupWizard
   public void addPages()
   {
     addPage(new ProductPage(selectionMemento));
-    addPage(new ProjectPage(selectionMemento));
+    /*
+     * If oomph.setup.installer.skip.projects isn't set or is set to false the projects page is added to the installer. If set to true the page isn't added.
+     * @author sholzer 22.11.16
+     */
+    if (PropertiesUtil.getBoolean(SetupProperties.PROP_SETUP_INSTALLER_SKIP_PROJECTS) == null
+        || PropertiesUtil.getBoolean(SetupProperties.PROP_SETUP_INSTALLER_SKIP_PROJECTS) == false)
+    {
+      addPage(new ProjectPage(selectionMemento));
+    }
     addPage(new ExtensionPage());
     super.addPages();
 
