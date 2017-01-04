@@ -139,6 +139,16 @@ public class JDTPackageImpl extends EPackageImpl implements JDTPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getJRETask_IsDefault()
+  {
+    return (EAttribute)jreTaskEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public JDTFactory getJDTFactory()
   {
     return (JDTFactory)getEFactoryInstance();
@@ -170,6 +180,7 @@ public class JDTPackageImpl extends EPackageImpl implements JDTPackage
     jreTaskEClass = createEClass(JRE_TASK);
     createEAttribute(jreTaskEClass, JRE_TASK__VERSION);
     createEAttribute(jreTaskEClass, JRE_TASK__LOCATION);
+    createEAttribute(jreTaskEClass, JRE_TASK__IS_DEFAULT);
   }
 
   /**
@@ -214,6 +225,8 @@ public class JDTPackageImpl extends EPackageImpl implements JDTPackage
     initEAttribute(getJRETask_Version(), ecorePackage.getEString(), "version", null, 1, 1, JRETask.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getJRETask_Location(), ecorePackage.getEString(), "location", null, 1, 1, JRETask.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+        !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getJRETask_IsDefault(), ecorePackage.getEBoolean(), "isDefault", null, 0, 1, JRETask.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
         !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource

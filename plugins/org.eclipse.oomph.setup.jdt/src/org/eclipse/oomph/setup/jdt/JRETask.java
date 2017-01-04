@@ -23,6 +23,7 @@ import org.eclipse.oomph.setup.SetupTask;
  * <ul>
  *   <li>{@link org.eclipse.oomph.setup.jdt.JRETask#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.jdt.JRETask#getLocation <em>Location</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.jdt.JRETask#isIsDefault <em>Is Default</em>}</li>
  * </ul>
  *
  * @see org.eclipse.oomph.setup.jdt.JDTPackage#getJRETask()
@@ -90,5 +91,31 @@ public interface JRETask extends SetupTask
    * @generated
    */
   void setLocation(String value);
+
+  /**
+   * Returns the value of the '<em><b>Is Default</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Is Default</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Is Default</em>' attribute.
+   * @see #setIsDefault(boolean)
+   * @see org.eclipse.oomph.setup.jdt.JDTPackage#getJRETask_IsDefault()
+   * @model
+   * @generated
+   */
+  boolean isIsDefault();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.oomph.setup.jdt.JRETask#isIsDefault <em>Is Default</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Is Default</em>' attribute.
+   * @see #isIsDefault()
+   * @generated
+   */
+  void setIsDefault(boolean value);
 
 } // JRETask

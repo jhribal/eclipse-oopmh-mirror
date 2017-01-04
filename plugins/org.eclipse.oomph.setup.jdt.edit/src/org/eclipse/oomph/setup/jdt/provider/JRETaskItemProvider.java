@@ -81,6 +81,7 @@ public class JRETaskItemProvider extends SetupTaskItemProvider
 
       addVersionPropertyDescriptor(object);
       addLocationPropertyDescriptor(object);
+      addIsDefaultPropertyDescriptor(object);
     }
     return itemPropertyDescriptors;
   }
@@ -131,6 +132,19 @@ public class JRETaskItemProvider extends SetupTaskItemProvider
     itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
         getString("_UI_JRETask_location_feature"), getString("_UI_PropertyDescriptor_description", "_UI_JRETask_location_feature", "_UI_JRETask_type"),
         JDTPackage.Literals.JRE_TASK__LOCATION, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+  }
+
+  /**
+   * This adds a property descriptor for the Default feature.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated NOT
+   */
+  protected void addIsDefaultPropertyDescriptor(Object object)
+  {
+    itemPropertyDescriptors.add(new ItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+        getString("_UI_JRETask_isDefault_feature"), getString("_UI_PropertyDescriptor_description", "_UI_JRETask_isDefault_feature", "_UI_JRETask_type"),
+        JDTPackage.Literals.JRE_TASK__IS_DEFAULT, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
   }
 
   /**
@@ -206,6 +220,7 @@ public class JRETaskItemProvider extends SetupTaskItemProvider
     {
       case JDTPackage.JRE_TASK__VERSION:
       case JDTPackage.JRE_TASK__LOCATION:
+      case JDTPackage.JRE_TASK__IS_DEFAULT:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
         return;
     }

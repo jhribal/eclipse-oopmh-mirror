@@ -41,6 +41,7 @@ import java.io.File;
  * <ul>
  *   <li>{@link org.eclipse.oomph.setup.jdt.impl.JRETaskImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.jdt.impl.JRETaskImpl#getLocation <em>Location</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.jdt.impl.JRETaskImpl#isIsDefault <em>Is Default</em>}</li>
  * </ul>
  *
  * @generated
@@ -86,6 +87,26 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
    * @ordered
    */
   protected String location = LOCATION_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isIsDefault() <em>Is Default</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isIsDefault()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean IS_DEFAULT_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isIsDefault() <em>Is Default</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isIsDefault()
+   * @generated
+   * @ordered
+   */
+  protected boolean isDefault = IS_DEFAULT_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -163,6 +184,31 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isIsDefault()
+  {
+    return isDefault;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setIsDefault(boolean newIsDefault)
+  {
+    boolean oldIsDefault = isDefault;
+    isDefault = newIsDefault;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, JDTPackage.JRE_TASK__IS_DEFAULT, oldIsDefault, isDefault));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -172,6 +218,8 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
         return getVersion();
       case JDTPackage.JRE_TASK__LOCATION:
         return getLocation();
+      case JDTPackage.JRE_TASK__IS_DEFAULT:
+        return isIsDefault();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -191,6 +239,12 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
         return;
       case JDTPackage.JRE_TASK__LOCATION:
         setLocation((String)newValue);
+        return;
+      case JDTPackage.JRE_TASK__IS_DEFAULT:
+        if (null != newValue)
+        {
+          setIsDefault((Boolean)newValue);
+        }
         return;
     }
     super.eSet(featureID, newValue);
@@ -212,6 +266,9 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
       case JDTPackage.JRE_TASK__LOCATION:
         setLocation(LOCATION_EDEFAULT);
         return;
+      case JDTPackage.JRE_TASK__IS_DEFAULT:
+        setIsDefault(IS_DEFAULT_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -230,6 +287,8 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
         return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
       case JDTPackage.JRE_TASK__LOCATION:
         return LOCATION_EDEFAULT == null ? location != null : !LOCATION_EDEFAULT.equals(location);
+      case JDTPackage.JRE_TASK__IS_DEFAULT:
+        return isDefault != IS_DEFAULT_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -252,23 +311,25 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
     result.append(version);
     result.append(", location: ");
     result.append(location);
+    result.append(", isDefault: ");
+    result.append(isDefault);
     result.append(')');
     return result.toString();
   }
 
   public boolean isNeeded(SetupTaskContext context) throws Exception
   {
-    return JREHelper.isNeeded(context, getVersion(), getLocation());
+    return JREHelper.isNeeded(context, getVersion(), getLocation(), isIsDefault());
   }
 
   public void perform(SetupTaskContext context) throws Exception
   {
-    JREHelper.perform(context, getVersion(), getLocation());
+    JREHelper.perform(context, getVersion(), getLocation(), isIsDefault());
   }
 
   private static class JREHelper
   {
-    public static void perform(SetupTaskContext context, String version, String location) throws Exception
+    public static void perform(SetupTaskContext context, String version, String location, Boolean isDefault) throws Exception
     {
       IVMInstallType[] types = JavaRuntime.getVMInstallTypes();
 
@@ -310,12 +371,28 @@ public class JRETaskImpl extends SetupTaskImpl implements JRETask
             }
           }
 
+          // if the user selected this JRE/JDK to be default execution environment, we propagate this
+          IExecutionEnvironment[] executionEnvironments = JavaRuntime.getExecutionEnvironmentsManager().getExecutionEnvironments();
+
+          for (IExecutionEnvironment executionEnvironment : executionEnvironments)
+          {
+            String id = executionEnvironment.getId();
+            if (version.equals(id) && isDefault)
+            {
+              if (executionEnvironment.getDefaultVM() == null)
+              {
+                executionEnvironment.setDefaultVM(realVM);
+                break;
+              }
+            }
+          }
+
           return;
         }
       }
     }
 
-    public static boolean isNeeded(SetupTaskContext context, String version, String location) throws Exception
+    public static boolean isNeeded(SetupTaskContext context, String version, String location, Boolean isDefault) throws Exception
     {
       for (IVMInstallType vmInstallType : JavaRuntime.getVMInstallTypes())
       {
