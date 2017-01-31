@@ -42,18 +42,21 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.equinox.p2.repository.IRunnableWithProgress;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.userstorage.IStorage;
 import org.eclipse.userstorage.IStorageService;
 import org.eclipse.userstorage.StorageFactory;
+import org.eclipse.userstorage.oauth.EclipseOAuthCredentialsProvider;
 import org.eclipse.userstorage.spi.ICredentialsProvider;
 import org.eclipse.userstorage.spi.StorageCache;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -106,6 +109,12 @@ public final class SynchronizerManager
   {
     StorageCache cache = new RemoteDataProvider.SyncStorageCache(SYNC_FOLDER);
     storage = StorageFactory.DEFAULT.create(RemoteDataProvider.APPLICATION_TOKEN, cache);
+
+    ICredentialsProvider credentialProvider = configureCredentialProvider();
+    if (credentialProvider != null)
+    {
+      storage.setCredentialsProvider(credentialProvider);
+    }
 
     remoteDataProvider = new RemoteDataProvider(storage);
   }
@@ -399,6 +408,27 @@ public final class SynchronizerManager
     }
 
     return null;
+  }
+
+  private static ICredentialsProvider configureCredentialProvider()
+  {
+    try
+    {
+      URI authService = new URI("https://accounts.eclipse.org/");
+      // FIXME: scopes should use the uss_project_* alternatives
+      // String[] scopes = { "profile", "uss_project_retrieve", "uss_project_update", "uss_project_delete" };
+      String[] scopes = new String[] { "profile", "uss_all_retrieve", "uss_all_update", "uss_all_delete" };
+      URI expectedCallback = new URI("http://localhost/");
+      String oauthClientId = PropertiesUtil.getProperty("oomph.oauth.clientId", Constants.CLIENT_ID);
+      String oauthClientSecret = PropertiesUtil.getProperty("oomph.oauth.clientSecret", Constants.CLIENT_SECRET);
+
+      return new EclipseOAuthCredentialsProvider(authService, oauthClientId, oauthClientSecret, scopes, expectedCallback);
+    }
+    catch (URISyntaxException ex)
+    {
+      SetupUIPlugin.INSTANCE.log(ex);
+      return null;
+    }
   }
 
   /**
