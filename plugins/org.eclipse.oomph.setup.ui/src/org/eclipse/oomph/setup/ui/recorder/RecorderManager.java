@@ -80,6 +80,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.userstorage.IStorage;
+import org.eclipse.userstorage.IStorage.Connectedness;
 import org.eclipse.userstorage.IStorageService;
 import org.eclipse.userstorage.spi.ICredentialsProvider;
 import org.eclipse.userstorage.util.ProtocolException;
@@ -1096,6 +1097,10 @@ public final class RecorderManager
         IStorage storage = SynchronizerManager.INSTANCE.getStorage();
         IStorageService service = storage.getService();
         if (service == null)
+        {
+          return false;
+        }
+        else if (!interactive && storage.getConnectedness() == Connectedness.UNAUTHENTICATED)
         {
           return false;
         }
