@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.userstorage.IStorage;
 import org.eclipse.userstorage.IStorageService;
 import org.eclipse.userstorage.spi.ICredentialsProvider;
 
@@ -134,10 +133,11 @@ public class SynchronizerJob extends Job
   @Override
   protected IStatus run(IProgressMonitor monitor)
   {
-    RemoteDataProvider remoteDataProvider = (RemoteDataProvider)synchronizer.getRemoteSnapshot().getDataProvider();
-    IStorage storage = remoteDataProvider.getStorage();
-    ICredentialsProvider oldCredentialsProvider = storage.getCredentialsProvider();
-    storage.setCredentialsProvider(credentialsProvider);
+    // RemoteDataProvider remoteDataProvider = (RemoteDataProvider)synchronizer.getRemoteSnapshot().getDataProvider();
+    // IStorage storage = remoteDataProvider.getStorage();
+    // if(storage.getConnectedness() == Connectedness.UNAUTHORIZED) {
+    // return Status.OK_STATUS;
+    // }
 
     try
     {
@@ -175,10 +175,6 @@ public class SynchronizerJob extends Job
         exception = t;
         notifyAll();
       }
-    }
-    finally
-    {
-      storage.setCredentialsProvider(oldCredentialsProvider);
     }
 
     return Status.OK_STATUS;
