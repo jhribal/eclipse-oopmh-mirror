@@ -48,12 +48,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.userstorage.IStorage;
 import org.eclipse.userstorage.IStorageService;
 import org.eclipse.userstorage.StorageFactory;
+import org.eclipse.userstorage.oauth.EclipseOAuthCredentialsProvider;
 import org.eclipse.userstorage.spi.ICredentialsProvider;
 import org.eclipse.userstorage.spi.StorageCache;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -106,8 +109,35 @@ public final class SynchronizerManager
   {
     StorageCache cache = new RemoteDataProvider.SyncStorageCache(SYNC_FOLDER);
     storage = StorageFactory.DEFAULT.create(RemoteDataProvider.APPLICATION_TOKEN, cache);
+    ICredentialsProvider credentialProvider = configureCredentialProvider();
+    if (credentialProvider != null)
+    {
+      storage.setCredentialsProvider(credentialProvider);
+    }
 
     remoteDataProvider = new RemoteDataProvider(storage);
+  }
+
+  private static ICredentialsProvider configureCredentialProvider()
+  {
+    try
+    {
+      URI authService = new URI("https://accounts.eclipse.org/");
+      // FIXME: scopes should use the uss_project_* alternatives
+      // String[] scopes = { "profile", "uss_project_retrieve", "uss_project_update", "uss_project_delete" };
+      String[] scopes = new String[] { "profile", "uss_all_retrieve", "uss_all_update", "uss_all_delete" };
+      URI expectedCallback = new URI("http://localhost/");
+      // FIXME: constants should be baked in at compile-time
+      String oauthClientId = System.getProperty("oomph.oauth.clientId", "@oomph.oauth.clientId@");
+      String oauthClientSecret = System.getProperty("oomph.oauth.clientSecret", "@oomph.oauth.clientSecret@");
+
+      return new EclipseOAuthCredentialsProvider(authService, oauthClientId, oauthClientSecret, scopes, expectedCallback);
+    }
+    catch (URISyntaxException ex)
+    {
+      SetupUIPlugin.INSTANCE.log(ex);
+      return null;
+    }
   }
 
   public IStorage getStorage()
