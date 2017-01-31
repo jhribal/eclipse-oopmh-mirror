@@ -48,12 +48,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.userstorage.IStorage;
 import org.eclipse.userstorage.IStorageService;
 import org.eclipse.userstorage.StorageFactory;
+import org.eclipse.userstorage.oauth.EclipseOAuthCredentialsProvider;
 import org.eclipse.userstorage.spi.ICredentialsProvider;
 import org.eclipse.userstorage.spi.StorageCache;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -106,6 +110,12 @@ public final class SynchronizerManager
   {
     StorageCache cache = new RemoteDataProvider.SyncStorageCache(SYNC_FOLDER);
     storage = StorageFactory.DEFAULT.create(RemoteDataProvider.APPLICATION_TOKEN, cache);
+
+    ICredentialsProvider credentialProvider = createCredentialProvider();
+    if (credentialProvider != null)
+    {
+      storage.setCredentialsProvider(credentialProvider);
+    }
 
     remoteDataProvider = new RemoteDataProvider(storage);
   }
@@ -399,6 +409,30 @@ public final class SynchronizerManager
     }
 
     return null;
+  }
+
+  private static ICredentialsProvider createCredentialProvider()
+  {
+    try
+    {
+      URI authService = new URI(OAuthConstants.SERVICE);
+      URI expectedCallback = new URI(OAuthConstants.EXPECTED_CALLBACK);
+      String[] scopes = OAuthConstants.SCOPES;
+      String oauthClientId = OAuthConstants.getClientID();
+      String oauthClientSecret = OAuthConstants.getClientSecret();
+
+      return new EclipseOAuthCredentialsProvider(authService, oauthClientId, oauthClientSecret, scopes, expectedCallback);
+    }
+    catch (URISyntaxException ex)
+    {
+      SetupUIPlugin.INSTANCE.log(ex);
+      return null;
+    }
+    catch (UnsupportedEncodingException ex)
+    {
+      SetupUIPlugin.INSTANCE.log(ex);
+      return null;
+    }
   }
 
   /**
