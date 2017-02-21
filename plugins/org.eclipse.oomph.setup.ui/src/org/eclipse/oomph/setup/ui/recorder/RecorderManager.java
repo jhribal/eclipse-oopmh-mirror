@@ -1078,7 +1078,7 @@ public final class RecorderManager
 
     private File tmpFolder;
 
-    private SynchronizerJob synchronizerJob;
+    private volatile SynchronizerJob synchronizerJob;
 
     public EarlySynchronization()
     {
@@ -1169,9 +1169,10 @@ public final class RecorderManager
         return;
       }
 
-      if (synchronizerJob != null)
+      SynchronizerJob job = synchronizerJob;
+      if (job != null)
       {
-        synchronizerJob.stopSynchronization();
+        job.stopSynchronization();
         synchronizerJob = null;
 
         if (!SYNC_FOLDER_KEEP)
@@ -1199,101 +1200,101 @@ public final class RecorderManager
       {
         return null;
       }
-
-      if (synchronizerJob != null)
+      final SynchronizerJob job = synchronizerJob;
+      if (job == null)
       {
-        final SyncInfo result = new SyncInfo();
-        result.recorderTarget = recorderTarget;
-        result.tmpFolder = tmpFolder;
-        result.synchronization = synchronizerJob.getSynchronization();
-
-        if (result.synchronization == null)
-        {
-          Throwable earlyException = synchronizerJob.getException();
-          if (earlyException instanceof OperationCanceledException)
-          {
-            // This means that the user couldn't be authenticated. Try again in UI thread below.
-            stop();
-            result.synchronization = null;
-
-            start(true);
-            result.tmpFolder = tmpFolder;
-          }
-          else if (earlyException != null)
-          {
-            SetupUIPlugin.INSTANCE.log(earlyException, IStatus.WARNING);
-            return null;
-          }
-
-          try
-          {
-            final AtomicBoolean canceled = new AtomicBoolean();
-            final IStorageService service = synchronizerJob.getService();
-
-            final Semaphore authenticationSemaphore = service.getAuthenticationSemaphore();
-            authenticationSemaphore.acquire();
-
-            UIUtil.syncExec(new Runnable()
-            {
-              public void run()
-              {
-                try
-                {
-                  Shell shell = UIUtil.getShell();
-                  ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
-
-                  dialog.run(true, true, new IRunnableWithProgress()
-                  {
-                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-                    {
-                      authenticationSemaphore.release();
-
-                      String serviceLabel = service.getServiceLabel();
-                      result.synchronization = await(serviceLabel, monitor);
-                    }
-                  });
-                }
-                catch (InvocationTargetException ex)
-                {
-                  SetupUIPlugin.INSTANCE.log(ex);
-                }
-                catch (InterruptedException ex)
-                {
-                  canceled.set(true);
-                }
-              }
-            });
-
-            if (result.synchronization == null && !canceled.get())
-            {
-              Throwable exception = synchronizerJob.getException();
-              if (exception == null || exception instanceof OperationCanceledException)
-              {
-                return null;
-              }
-
-              throw exception;
-            }
-          }
-          catch (Throwable ex)
-          {
-            SetupUIPlugin.INSTANCE.log(ex);
-          }
-        }
-
-        return result;
+        return null;
       }
 
-      return null;
+      final SyncInfo result = new SyncInfo();
+      result.recorderTarget = recorderTarget;
+      result.tmpFolder = tmpFolder;
+      result.synchronization = job.getSynchronization();
+
+      if (result.synchronization == null)
+      {
+        Throwable earlyException = job.getException();
+        if (earlyException instanceof OperationCanceledException)
+        {
+          // This means that the user couldn't be authenticated. Try again in UI thread below.
+          stop();
+          result.synchronization = null;
+
+          start(true);
+          result.tmpFolder = tmpFolder;
+        }
+        else if (earlyException != null)
+        {
+          SetupUIPlugin.INSTANCE.log(earlyException, IStatus.WARNING);
+          return null;
+        }
+
+        try
+        {
+          final AtomicBoolean canceled = new AtomicBoolean();
+          final IStorageService service = job.getService();
+
+          final Semaphore authenticationSemaphore = service.getAuthenticationSemaphore();
+          authenticationSemaphore.acquire();
+
+          UIUtil.syncExec(new Runnable()
+          {
+            public void run()
+            {
+              try
+              {
+                Shell shell = UIUtil.getShell();
+                ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+
+                dialog.run(true, true, new IRunnableWithProgress()
+                {
+                  public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
+                  {
+                    authenticationSemaphore.release();
+
+                    String serviceLabel = service.getServiceLabel();
+                    result.synchronization = await(serviceLabel, monitor, job);
+                  }
+                });
+              }
+              catch (InvocationTargetException ex)
+              {
+                SetupUIPlugin.INSTANCE.log(ex);
+              }
+              catch (InterruptedException ex)
+              {
+                canceled.set(true);
+              }
+            }
+          });
+
+          if (result.synchronization == null && !canceled.get())
+          {
+            Throwable exception = job.getException();
+            if (exception == null || exception instanceof OperationCanceledException)
+            {
+              return null;
+            }
+
+            throw exception;
+          }
+        }
+        catch (Throwable ex)
+        {
+          SetupUIPlugin.INSTANCE.log(ex);
+        }
+      }
+
+      return result;
     }
 
-    private Synchronization await(String serviceLabel, IProgressMonitor monitor)
+    private static Synchronization await(String serviceLabel, IProgressMonitor monitor, SynchronizerJob job)
     {
       monitor.beginTask("Requesting data from " + serviceLabel + "...", IProgressMonitor.UNKNOWN);
 
       try
       {
-        return synchronizerJob.awaitSynchronization(monitor);
+        return job.awaitSynchronization(monitor);
       }
       finally
       {
@@ -1312,11 +1313,24 @@ public final class RecorderManager
           {
             public void run()
             {
-              OptOutDialog dialog = new OptOutDialog(UIUtil.getShell(), synchronizerJob.getService());
-              dialog.open();
-              if (!dialog.getAnswer())
+              IStorageService storageService;
+              SynchronizerJob job = synchronizerJob;
+              if (job != null)
               {
-                SynchronizerManager.INSTANCE.setSyncEnabled(false);
+                storageService = job.getService();
+              }
+              else
+              {
+                storageService = SynchronizerManager.INSTANCE.getStorage().getService();
+              }
+              if (storageService != null)
+              {
+                OptOutDialog dialog = new OptOutDialog(UIUtil.getShell(), storageService);
+                dialog.open();
+                if (!dialog.getAnswer())
+                {
+                  SynchronizerManager.INSTANCE.setSyncEnabled(false);
+                }
               }
             }
           });
