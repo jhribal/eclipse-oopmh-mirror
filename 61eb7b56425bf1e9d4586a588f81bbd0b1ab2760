@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7c23755_c32e2e94",
+        "filename": "plugins/org.eclipse.oomph.setup.ui/src/org/eclipse/oomph/setup/ui/synchronizer/OAuthConstants.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 755
+      },
+      "writtenOn": "2017-02-27T17:55:32Z",
+      "side": 1,
+      "message": "We need to replace this with\n\n   { \"profile\", \"uss_retrieve\", \"uss_update\" }",
+      "revId": "61eb7b56425bf1e9d4586a588f81bbd0b1ab2760",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_831d166e",
+        "filename": "plugins/org.eclipse.oomph.setup.ui/src/org/eclipse/oomph/setup/ui/synchronizer/OAuthConstants.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 755
+      },
+      "writtenOn": "2017-02-27T17:55:32Z",
+      "side": 1,
+      "message": "We can remove this.",
+      "revId": "61eb7b56425bf1e9d4586a588f81bbd0b1ab2760",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
