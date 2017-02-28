@@ -93,7 +93,7 @@ public abstract class OomphTransferDelegate
 
   public static final List<? extends OomphTransferDelegate> DELEGATES = Collections.unmodifiableList(MODIFIABLE_DELEGATES);
 
-  public static final List<? extends Transfer> TRANSFERS = asTransfers(MODIFIABLE_DELEGATES);
+  protected static final List<? extends Transfer> TRANSFERS = asTransfers(MODIFIABLE_DELEGATES);
 
   public static Transfer[] transfers()
   {

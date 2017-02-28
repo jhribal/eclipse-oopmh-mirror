@@ -259,6 +259,7 @@ public class AnnotationImpl extends ModelElementImpl implements Annotation
     switch (featureID)
     {
       case BasePackage.ANNOTATION__MODEL_ELEMENT:
+
         if (eInternalContainer() != null)
         {
           msgs = eBasicRemoveFromContainer(msgs);

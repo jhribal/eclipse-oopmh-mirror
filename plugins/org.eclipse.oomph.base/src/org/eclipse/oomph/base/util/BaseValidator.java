@@ -219,8 +219,9 @@ public class BaseValidator extends EObjectValidator
     {
       return uri != null && uri.length() != 0 && uri.equals(URI.createURI(uri, true).toString());
     }
-    catch (Throwable exception)
+    catch (Throwable ex)
     {
+      ex.printStackTrace();
       return false;
     }
   }
@@ -282,7 +283,7 @@ public class BaseValidator extends EObjectValidator
    * @generated
    * @see #validateID_Pattern
    */
-  public static final PatternMatcher[][] ID__PATTERN__VALUES = new PatternMatcher[][] {
+  protected static final PatternMatcher[][] ID__PATTERN__VALUES = new PatternMatcher[][] {
       new PatternMatcher[] { XMLTypeUtil.createPatternMatcher("[\\i-[:]][\\c-[:]]*") } };
 
   /**

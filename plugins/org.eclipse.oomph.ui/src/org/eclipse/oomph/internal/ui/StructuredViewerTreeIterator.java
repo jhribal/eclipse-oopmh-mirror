@@ -30,7 +30,7 @@ public class StructuredViewerTreeIterator extends AbstractTreeIterator<Object>
 
   private StructuredViewer viewer;
 
-  private ITreeContentProvider treeContentProvider;
+  private transient ITreeContentProvider treeContentProvider;
 
   public StructuredViewerTreeIterator(StructuredViewer viewer)
   {

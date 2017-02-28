@@ -566,7 +566,7 @@ public class ModelElementItemProvider extends ItemProviderAdapter
     {
       if (object instanceof EList<?>)
       {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (Object child : (List<?>)object)
         {
           if (result.length() != 0)
