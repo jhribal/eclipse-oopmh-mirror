@@ -41,6 +41,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -289,8 +290,8 @@ public class BaseResourceImpl extends XMIResourceImpl implements org.eclipse.oom
         {
           return GET_ELEMENT_INDENT_METHOD.invoke(doc, extraIndent).toString();
         }
-        catch (Throwable ex)
-        {
+        catch (Exception ex)
+	{      
           return "";
         }
       }
