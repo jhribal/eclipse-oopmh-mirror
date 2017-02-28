@@ -286,7 +286,7 @@ public class FlatButton extends Canvas implements Listener, PaintListener
 
   public void removeSelectionListener(SelectionListener listener)
   {
-    selectionListeners.remove(selectionListeners);
+    selectionListeners.clear();
   }
 
   public boolean isHover()
@@ -297,7 +297,7 @@ public class FlatButton extends Canvas implements Listener, PaintListener
   @Override
   public Point computeSize(int wHint, int hHint, boolean changed)
   {
-    Point size = null;
+    Point size;
 
     if (wHint != SWT.DEFAULT && hHint != SWT.DEFAULT)
     {
@@ -725,7 +725,7 @@ public class FlatButton extends Canvas implements Listener, PaintListener
   private void clearBackground(GC gc, Rectangle bounds)
   {
     Composite parent = getParent();
-    Color parentBackground = null;
+    Color parentBackground;
 
     do
     {

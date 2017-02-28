@@ -1352,7 +1352,7 @@ public class FindAndReplaceTarget implements IFindReplaceTarget, IFindReplaceTar
     }
     catch (RuntimeException exception)
     {
-      return;
+      throw exception;
     }
 
     // If there is a special item in the properties view, we want to update the text to show the replacement.

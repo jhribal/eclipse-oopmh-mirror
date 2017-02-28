@@ -142,8 +142,8 @@ public class AnnotationImpl extends ModelElementImpl implements Annotation
    */
   public NotificationChain basicSetModelElement(ModelElement newModelElement, NotificationChain msgs)
   {
-    msgs = eBasicSetContainer((InternalEObject)newModelElement, BasePackage.ANNOTATION__MODEL_ELEMENT, msgs);
-    return msgs;
+	msgs = eBasicSetContainer((InternalEObject)newModelElement, BasePackage.ANNOTATION__MODEL_ELEMENT, msgs);
+	return msgs;
   }
 
   /**
@@ -256,16 +256,18 @@ public class AnnotationImpl extends ModelElementImpl implements Annotation
   @Override
   public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
+    NotificationChain chainMessages = null;
     switch (featureID)
     {
       case BasePackage.ANNOTATION__MODEL_ELEMENT:
+
         if (eInternalContainer() != null)
         {
-          msgs = eBasicRemoveFromContainer(msgs);
+          chainMessages = eBasicRemoveFromContainer(msgs);
         }
-        return basicSetModelElement((ModelElement)otherEnd, msgs);
+        return basicSetModelElement((ModelElement)otherEnd, chainMessages);
     }
-    return super.eInverseAdd(otherEnd, featureID, msgs);
+    return super.eInverseAdd(otherEnd, featureID, chainMessages);
   }
 
   /**
@@ -433,7 +435,7 @@ public class AnnotationImpl extends ModelElementImpl implements Annotation
       return super.toString();
     }
 
-    StringBuffer result = new StringBuffer(super.toString());
+    StringBuilder result = new StringBuilder(super.toString());
     result.append(" (source: ");
     result.append(source);
     result.append(')');

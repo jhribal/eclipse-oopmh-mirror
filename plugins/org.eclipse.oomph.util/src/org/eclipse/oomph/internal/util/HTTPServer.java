@@ -131,7 +131,7 @@ public final class HTTPServer
   public String getURL()
   {
     int port = acceptor != null ? acceptor.getPort() : 0;
-    return "http://127.0.0.1:" + port;
+    return System.getProperty("myapplication.ip") + port;
   }
 
   public synchronized void addContext(Context context)

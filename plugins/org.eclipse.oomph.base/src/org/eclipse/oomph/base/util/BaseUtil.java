@@ -81,11 +81,12 @@ public final class BaseUtil
 
   public static BaseResource loadResourceSafely(ResourceSet resourceSet, URI uri)
   {
+
     try
     {
       return (BaseResource)resourceSet.getResource(uri, true);
     }
-    catch (Throwable ex)
+    catch (IORuntimeException ex)
     {
       // This method is always expected to return a non-null result.
       BaseResource resource = (BaseResource)resourceSet.getResource(uri, false);
@@ -165,7 +166,7 @@ public final class BaseUtil
     }
     catch (IOException ex)
     {
-      throw new IORuntimeException();
+      throw new IORuntimeException(ex);
     }
   }
 
