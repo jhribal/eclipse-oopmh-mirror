@@ -63,6 +63,7 @@ public final class JREManager
 
   private JREManager()
   {
+
     try
     {
       loadJavaHomes();
@@ -72,7 +73,7 @@ public final class JREManager
         addExtraJavaHomes(defaultJavaHome.toString(), new NullProgressMonitor());
       }
     }
-    catch (Throwable ex)
+    catch (Exception ex)
     {
       JREInfoPlugin.INSTANCE.log(ex);
     }
@@ -453,7 +454,7 @@ public final class JREManager
         return OSType.Linux;
       }
     }
-    catch (Throwable ex)
+    catch (RuntimeException ex)
     {
       JREInfoPlugin.INSTANCE.log(ex);
     }
@@ -467,7 +468,7 @@ public final class JREManager
     {
       return JREData.determineBitness();
     }
-    catch (Throwable ex)
+    catch (RuntimeException ex)
     {
       JREInfoPlugin.INSTANCE.log(ex);
     }
