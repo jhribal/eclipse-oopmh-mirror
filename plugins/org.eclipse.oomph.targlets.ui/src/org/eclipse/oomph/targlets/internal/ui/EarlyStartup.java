@@ -13,6 +13,9 @@ package org.eclipse.oomph.targlets.internal.ui;
 import org.eclipse.oomph.util.PropertiesUtil;
 
 import org.eclipse.ui.IStartup;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Eike Stepper
@@ -25,7 +28,18 @@ public class EarlyStartup implements IStartup
   {
     if (MANIFEST_DISCOVERY)
     {
-      ManifestDiscovery.INSTANCE.start();
+      final IWorkbench workbench = PlatformUI.getWorkbench();
+      workbench.getDisplay().asyncExec(new Runnable()
+      {
+        public void run()
+        {
+          IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+          if (window != null)
+          {
+            ManifestDiscovery.INSTANCE.start();
+          }
+        }
+      });
     }
   }
 }
