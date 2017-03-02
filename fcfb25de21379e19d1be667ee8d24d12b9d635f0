@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_832eec43",
+        "filename": "plugins/org.eclipse.oomph.base.edit/src/org/eclipse/oomph/base/provider/ModelElementItemProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 858,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_1a8de009",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_3a6ffca6",
         "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/impl/AnnotationImpl.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-02T08:24:28Z",
       "side": 1,
       "message": "This is generated code.  We won\u0027t change it.",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_2306f893",
+        "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/impl/AnnotationImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_3a6ffca6",
       "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_43fdb4df",
+        "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/impl/AnnotationImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_5a72f889",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_7a79746b",
         "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/impl/AnnotationImpl.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-03-02T08:24:28Z",
       "side": 1,
       "message": "This is generated code.  We won\u0027t change it.",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_6300f074",
+        "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/impl/AnnotationImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 438,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_7a79746b",
       "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_83f6ec00",
+        "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/impl/StringToStringMapEntryImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_9a7c905d",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_da5d28fb",
         "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/util/BaseResourceImpl.java",
         "patchSetId": 1
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_a3f1280a",
+        "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/util/BaseResourceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_da5d28fb",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_fa6ca4ac",
         "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/util/BaseUtil.java",
         "patchSetId": 1
@@ -115,6 +223,24 @@
       "writtenOn": "2017-03-02T08:24:28Z",
       "side": 1,
       "message": "This could throw perhaps other types of runtime exceptions.  This changes the behavior.",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_0303bc84",
+        "filename": "plugins/org.eclipse.oomph.base/src/org/eclipse/oomph/base/util/BaseUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Going to change this to RuntimeException then, just to make sure nothing slips through.",
+      "parentUuid": "a7c23755_fa6ca4ac",
       "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
@@ -189,6 +315,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_2398b8cc",
+        "filename": "plugins/org.eclipse.oomph.jreinfo/src/org/eclipse/oomph/jreinfo/JREInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_7a5094db",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_da444821",
         "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/FindAndReplaceTarget.java",
         "patchSetId": 1
@@ -206,6 +350,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_83a8acd9",
+        "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/FindAndReplaceTarget.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1355,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_da444821",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_fa43c413",
         "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/FlatButton.java",
         "patchSetId": 1
@@ -217,6 +379,24 @@
       "writtenOn": "2017-03-02T08:24:28Z",
       "side": 1,
       "message": "This looks like a bug.  I\u0027m sure the code intends to remove the listener passed as an argument...",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_a3a3e8f9",
+        "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/FlatButton.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_fa43c413",
       "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
@@ -257,6 +437,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_03801c4e",
+        "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/OomphTransferDelegate.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_5ac4b80a",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_9ace5029",
         "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/OomphTransferDelegate.java",
         "patchSetId": 1
@@ -268,6 +466,24 @@
       "writtenOn": "2017-03-02T08:24:28Z",
       "side": 1,
       "message": "The base class doesn\u0027t work anyway.",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_2383585c",
+        "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/OomphTransferDelegate.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1202,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_9ace5029",
       "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
@@ -291,6 +507,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_438a1470",
+        "filename": "plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/StructuredViewerTreeIterator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_fade64d4",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_3ae8dc73",
         "filename": "plugins/org.eclipse.oomph.util/src/org/eclipse/oomph/internal/util/HTTPServer.java",
         "patchSetId": 1
@@ -302,6 +536,24 @@
       "writtenOn": "2017-03-02T08:24:28Z",
       "side": 1,
       "message": "Won\u0027t this return null and cause a null pointer exception?",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_638d5085",
+        "filename": "plugins/org.eclipse.oomph.util/src/org/eclipse/oomph/internal/util/HTTPServer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Changed to static String.",
+      "parentUuid": "a7c23755_3ae8dc73",
       "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
@@ -325,6 +577,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_c601d23e",
+        "filename": "plugins/org.eclipse.oomph.util/src/org/eclipse/oomph/internal/util/table/Formula.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_7ae25493",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_9ae5709b",
         "filename": "plugins/org.eclipse.oomph.util/src/org/eclipse/oomph/util/IOUtil.java",
         "patchSetId": 1
@@ -342,6 +612,24 @@
     },
     {
       "key": {
+        "uuid": "a7c23755_e6fc0eaa",
+        "filename": "plugins/org.eclipse.oomph.util/src/org/eclipse/oomph/util/IOUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_9ae5709b",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7c23755_daf60851",
         "filename": "plugins/org.eclipse.oomph.util/src/org/eclipse/oomph/util/Request.java",
         "patchSetId": 1
@@ -353,6 +641,24 @@
       "writtenOn": "2017-03-02T08:24:28Z",
       "side": 1,
       "message": "I doubt this would actually work as a Serializable anyway.",
+      "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c23755_262e06c9",
+        "filename": "plugins/org.eclipse.oomph.util/src/org/eclipse/oomph/util/Request.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 108730
+      },
+      "writtenOn": "2017-03-02T21:06:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7c23755_daf60851",
       "revId": "fcfb25de21379e19d1be667ee8d24d12b9d635f0",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
