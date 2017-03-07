@@ -1216,7 +1216,11 @@ public final class RecorderManager
             stop();
             result.synchronization = null;
 
-            start(true);
+            if (!start(true))
+            {
+              return null;
+            }
+
             result.tmpFolder = tmpFolder;
           }
           else if (earlyException != null)
