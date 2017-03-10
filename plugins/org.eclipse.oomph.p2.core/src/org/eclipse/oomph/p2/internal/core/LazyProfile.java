@@ -301,7 +301,8 @@ public final class LazyProfile extends org.eclipse.equinox.internal.p2.engine.Pr
   @Override
   public org.eclipse.equinox.internal.p2.engine.Profile snapshot()
   {
-    return getDelegate().snapshot();
+    Profile profile = getDelegate();
+    return profile == null ? null : profile.snapshot();
   }
 
   @Override
