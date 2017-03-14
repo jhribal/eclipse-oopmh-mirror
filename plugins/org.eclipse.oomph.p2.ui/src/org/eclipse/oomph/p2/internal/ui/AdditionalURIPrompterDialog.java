@@ -225,6 +225,13 @@ public final class AdditionalURIPrompterDialog extends OomphDialog implements IC
         catch (Exception ex)
         {
           uri = null;
+          try
+          {
+            throw new Exception("Unable to create host URI for: " + uriText.getText(), ex);
+          }
+          catch (Exception ex1)
+          {
+          }
         }
 
         enteredURI.set(uri);
