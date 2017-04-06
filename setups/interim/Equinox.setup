@@ -190,7 +190,7 @@
     <setupTask
         xsi:type="setup.workingsets:WorkingSetTask">
       <workingSet
-          name="Equinox P2">
+          name="Equinox p2">
         <predicate
             xsi:type="predicates:AndPredicate">
           <operand
@@ -202,7 +202,7 @@
         </predicate>
       </workingSet>
       <workingSet
-          name="Equinox P2 Tests">
+          name="Equinox p2 Tests">
         <predicate
             xsi:type="predicates:AndPredicate">
           <operand
