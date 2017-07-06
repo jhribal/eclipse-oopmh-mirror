@@ -3869,6 +3869,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
 
     Map<Object, Set<Object>> composedMap = new HashMap<Object, Set<Object>>();
     List<VariableTask> allAppliedRuleVariables = new ArrayList<VariableTask>();
+    List<VariableTask> allResolvedVariables = new ArrayList<VariableTask>();
     List<VariableTask> allUnresolvedVariables = new ArrayList<VariableTask>();
     List<VariableTask> allPasswordVariables = new ArrayList<VariableTask>();
     Map<VariableTask, EAttribute> allRuleAttributes = new LinkedHashMap<VariableTask, EAttribute>();
@@ -3994,6 +3995,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
         }
 
         allAppliedRuleVariables.addAll(performer.getAppliedRuleVariables());
+        allResolvedVariables.addAll(performer.getResolvedVariables());
         allUnresolvedVariables.addAll(performer.getUnresolvedVariables());
         allPasswordVariables.addAll(performer.getPasswordVariables());
         allRuleAttributes.putAll(performer.getRuleAttributes());
@@ -4037,6 +4039,7 @@ public class SetupTaskPerformer extends AbstractSetupTaskContext
     SetupTaskPerformer composedPerformer = new SetupTaskPerformer(uriConverter, prompter, trigger, setupContext, setupTasks);
     composedPerformer.getBundles().addAll(bundles);
     composedPerformer.getAppliedRuleVariables().addAll(allAppliedRuleVariables);
+    composedPerformer.getResolvedVariables().addAll(allResolvedVariables);
     composedPerformer.getUnresolvedVariables().addAll(allUnresolvedVariables);
     composedPerformer.getPasswordVariables().addAll(allPasswordVariables);
     composedPerformer.getRuleAttributes().putAll(allRuleAttributes);
