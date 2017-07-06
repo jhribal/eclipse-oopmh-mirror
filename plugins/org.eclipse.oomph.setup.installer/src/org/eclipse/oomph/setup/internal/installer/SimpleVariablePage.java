@@ -27,6 +27,7 @@ import org.eclipse.oomph.p2.internal.core.DownloadArtifactEvent;
 import org.eclipse.oomph.setup.AnnotationConstants;
 import org.eclipse.oomph.setup.AttributeRule;
 import org.eclipse.oomph.setup.Installation;
+import org.eclipse.oomph.setup.InstallationTask;
 import org.eclipse.oomph.setup.LicenseInfo;
 import org.eclipse.oomph.setup.Product;
 import org.eclipse.oomph.setup.ProductCatalog;
@@ -332,6 +333,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
     versionCombo = createComboBox(variablesComposite, SWT.READ_ONLY);
     versionCombo.addSelectionListener(new SelectionAdapter()
     {
+
       @Override
       public void widgetSelected(SelectionEvent e)
       {
@@ -380,13 +382,16 @@ public class SimpleVariablePage extends SimpleInstallerPage
       });
     }
     else
+
     {
       bitness32Spacer = new Label(variablesComposite, SWT.NONE);
       bitness64Spacer = new Label(variablesComposite, SWT.NONE);
     }
 
     // Row 4
-    javaLabel = createLabel(variablesComposite, "Java VM");
+    javaLabel =
+
+        createLabel(variablesComposite, "Java VM");
 
     javaSpacer = spacer(variablesComposite);
 
@@ -824,7 +829,67 @@ public class SimpleVariablePage extends SimpleInstallerPage
       versionCombo.setToolTipText(toolTipText);
     }
 
-    setFolderText(getDefaultInstallationFolder());
+    setDefaultInstallationPathValue();
+  }
+
+  private void setDefaultInstallationPathValue()
+  {
+    try
+    {
+      // create a performer to look for a default installation path variable
+      JRE jre = javaController.getJRE();
+      String vmPath = ProductPage.getVMOption(jre);
+
+      ResourceSet resourceSet = installer.getResourceSet();
+      URIConverter uriConverter = resourceSet.getURIConverter();
+
+      SetupContext setupContext = SetupContext.create(resourceSet, selectedProductVersion);
+      SimplePrompter prompter = new SimplePrompter(OS.INSTANCE.getForBitness(javaController.getBitness()), vmPath);
+
+      SetupTaskPerformer peekPerformer = SetupTaskPerformer.create(uriConverter, prompter, Trigger.BOOTSTRAP, setupContext, false);
+
+      String defaultInstallationPath = getDefaultInstallationPath(peekPerformer);
+      if (defaultInstallationPath != null)
+      {
+        setFolderText(defaultInstallationPath);
+      }
+      else
+      {
+        setFolderText(getDefaultInstallationFolder());
+      }
+    }
+    catch (Exception ex)
+    {
+      setFolderText(getDefaultInstallationFolder());
+    }
+  }
+
+  private String getDefaultInstallationPath(SetupTaskPerformer peekPerformer)
+  {
+    VariableTask installationLocationVariableTask = findInstallationLocationVariableTask(peekPerformer);
+    if (installationLocationVariableTask != null)
+    {
+      String defaultValue = installationLocationVariableTask.getDefaultValue();
+      if (!StringUtil.isEmpty(defaultValue))
+      {
+        return peekPerformer.expandString(defaultValue);
+      }
+    }
+
+    return null;
+  }
+
+  private VariableTask findInstallationLocationVariableTask(SetupTaskPerformer peekPerformer)
+  {
+    List<VariableTask> variableTasks = peekPerformer.getResolvedVariables();
+    for (VariableTask variableTask : variableTasks)
+    {
+      if ("installation.location".equals(variableTask.getName()))
+      {
+        return variableTask;
+      }
+    }
+    return null;
   }
 
   @Override
@@ -1230,6 +1295,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
 
         UIUtil.syncExec(new Runnable()
         {
+
           public void run()
           {
             String message = "The variable" + (multi ? "s" : "") + " " + variables + " " + (multi ? "are" : "is") + " undefined. You likely declared "
@@ -1254,6 +1320,9 @@ public class SimpleVariablePage extends SimpleInstallerPage
       }
 
       EList<SetupTask> triggeredSetupTasks = performer.getTriggeredSetupTasks();
+
+      setInstallationPath(triggeredSetupTasks);
+
       final Map<EClass, EList<SetupTask>> enablementTasks = EnablementComposite.getEnablementTasks(triggeredSetupTasks);
       if (!enablementTasks.isEmpty())
       {
@@ -1298,6 +1367,22 @@ public class SimpleVariablePage extends SimpleInstallerPage
     {
       userAdjuster.undo();
       BaseUtil.saveEObject(user);
+    }
+  }
+
+  /**
+   * Finds the installation task and sets the installation path entered by the user
+   */
+  private void setInstallationPath(EList<SetupTask> triggeredSetupTasks)
+  {
+    for (SetupTask setupTask : triggeredSetupTasks)
+    {
+      if (setupTask instanceof InstallationTask)
+      {
+        InstallationTask installationTask = (InstallationTask)setupTask;
+        installationTask.setLocation(installFolder);
+        return;
+      }
     }
   }
 
@@ -2489,7 +2574,9 @@ public class SimpleVariablePage extends SimpleInstallerPage
             int width = list.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
 
             Rectangle clientArea = shell.getClientArea();
+
             Rectangle newClientArea = shell.computeTrim(clientArea.x, clientArea.y, width, clientArea.height);
+
             Rectangle bounds = shell.getBounds();
             if (bounds.width < newClientArea.width)
             {
