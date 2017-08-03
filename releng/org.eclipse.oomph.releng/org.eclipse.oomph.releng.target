@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="Generated from Oomph" sequenceNumber="34">
+<target name="Generated from Oomph" sequenceNumber="36">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      <unit id="org.eclipse.egit.feature.group" version="0.0.0"/>
+      <unit id="com.google.gson" version="0.0.0"/>
+      <unit id="org.apache.commons.compress" version="0.0.0"/>
+      <unit id="org.apache.sshd.core" version="0.0.0"/>
+      <unit id="org.eclipse.cvs" version="0.0.0"/>
+      <unit id="org.eclipse.egit.ui" version="0.0.0"/>
+      <unit id="org.eclipse.emf.common.ui.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.databinding.edit" version="0.0.0"/>
       <unit id="org.eclipse.emf.ecoretools.sdk.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.edit.ui.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.m2e.feature.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.mylyn.builds.sdk.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.mylyn.sdk_feature.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.jetty.client" version="0.0.0"/>
+      <unit id="org.eclipse.m2e.core" version="0.0.0"/>
+      <unit id="org.eclipse.mylyn.builds.ui" version="0.0.0"/>
       <unit id="org.eclipse.nebula.widgets.tablecombo" version="0.0.0"/>
-      <unit id="org.eclipse.sdk.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.swtbot.eclipse.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.swtbot.generator" version="0.0.0"/>
-      <unit id="org.eclipse.userstorage.oauth" version="0.0.0"/>
+      <unit id="org.eclipse.test.performance" version="0.0.0"/>
       <unit id="org.eclipse.userstorage.tests" version="0.0.0"/>
-      <repository location="http://download.eclipse.org/releases/oxygen"/>
+      <unit id="org.eclipse.userstorage.ui" version="0.0.0"/>
+      <unit id="org.kohsuke.args4j" version="0.0.0"/>
+      <unit id="org.mockito" version="0.0.0"/>
+      <unit id="org.objectweb.asm.tree" version="0.0.0"/>
+      <repository location="http://download.eclipse.org/releases/neon"/>
       <repository location="http://download.eclipse.org/technology/nebula/snapshot"/>
       <repository location="http://download.eclipse.org/technology/swtbot/releases/latest"/>
       <repository location="http://download.eclipse.org/tools/orbit/downloads/latest-R"/>
       <repository location="http://download.eclipse.org/usssdk/updates/latest"/>
-      <repository location="http://download.eclipse.org/eclipse/updates/4.7-I-builds"/>
+      <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20170516192513/repository/"/>
+      <repository location="http://download.eclipse.org/eclipse/updates/4.6"/>
+      <repository location="http://download.eclipse.org/tools/ajdt/44/dev/update"/>
+      <repository location="http://download.eclipse.org/cbi/updates/license"/>
+      <repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.5.v20170502/"/>
+      <repository location="http://download.eclipse.org/modeling/emf/cdo/orbit/latest-R"/>
+      <repository location="http://download.eclipse.org/modeling/emf/emf/updates/2.11.x"/>
+      <repository location="http://download.eclipse.org/tools/gef/updates/releases"/>
     </location>
   </locations>
 </target>

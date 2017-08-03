@@ -88,7 +88,7 @@
           label="J2SE-1.4"/>
       <choice
           value="${jre.location-1.5}"
-          label="J2SE-1.5"/>
+          label="JavaSE-1.8"/>
       <choice
           value="${jre.location-1.6}"
           label="JavaSE-1.6"/>

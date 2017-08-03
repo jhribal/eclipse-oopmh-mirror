@@ -8,7 +8,7 @@ Bundle-Activator: org.eclipse.oomph.setup.ui.internal.ide.SetupUIIDEPlugin$Imple
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.core.variables;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.ui;bundle-version="[3.5.0,4.0.0)",

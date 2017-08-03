@@ -7,7 +7,7 @@ Bundle-ClassPath: .
 Bundle-Activator: org.eclipse.oomph.preferences.presentation.PreferencesEditorPlugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.oomph.preferences.presentation;version="1.4.0";x-internal:=true,
  org.eclipse.oomph.preferences.presentation.actions;version="1.4.0";x-internal:=true,
  org.eclipse.oomph.preferences.presentation.handlers;version="1.4.0";x-internal:=true

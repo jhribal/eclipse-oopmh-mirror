@@ -6,7 +6,7 @@ Bundle-ClassPath: .
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.oomph.setup.tests;version="1.8.0";x-internal:=true,
  org.eclipse.oomph.setup.tests.data;version="1.8.0";x-internal:=true
