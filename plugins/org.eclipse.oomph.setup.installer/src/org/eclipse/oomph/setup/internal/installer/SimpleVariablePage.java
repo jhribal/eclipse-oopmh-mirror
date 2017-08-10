@@ -393,7 +393,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
     final CCombo javaCombo = createComboBox(variablesComposite, SWT.READ_ONLY);
 
     javaViewer = new ComboViewer(javaCombo);
-    javaViewer.setContentProvider(new ArrayContentProvider());
+    javaViewer.setContentProvider(ArrayContentProvider.getInstance());
     javaViewer.setLabelProvider(new LabelProvider());
     javaViewer.addPostSelectionChangedListener(new ISelectionChangedListener()
     {

@@ -69,7 +69,7 @@ public class RecorderPoliciesComposite extends Composite implements ISelectionPr
     composite.setLayout(tableLayout);
 
     viewer = CheckboxTableViewer.newCheckList(composite, style);
-    viewer.setContentProvider(new ArrayContentProvider());
+    viewer.setContentProvider(ArrayContentProvider.getInstance());
     viewer.setLabelProvider(new LabelProvider());
     viewer.addCheckStateListener(new ICheckStateListener()
     {

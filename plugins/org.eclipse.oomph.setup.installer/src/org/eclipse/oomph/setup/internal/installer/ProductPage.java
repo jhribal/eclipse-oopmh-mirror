@@ -370,7 +370,7 @@ public class ProductPage extends SetupWizardPage
 
     javaViewer = new ComboViewer(lowerComposite, SWT.READ_ONLY);
     javaViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-    javaViewer.setContentProvider(new ArrayContentProvider());
+    javaViewer.setContentProvider(ArrayContentProvider.getInstance());
     javaViewer.setLabelProvider(new LabelProvider());
 
     javaViewer.setInput(Collections.singletonList(new JRE(new File(""), 0, 0, 0, 0, false, 0)));

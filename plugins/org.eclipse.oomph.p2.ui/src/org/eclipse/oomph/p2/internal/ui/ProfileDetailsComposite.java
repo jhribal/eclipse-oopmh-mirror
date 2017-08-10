@@ -230,7 +230,7 @@ public class ProfileDetailsComposite extends Composite
     tabItem.setControl(composite);
 
     final TableViewer viewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.VIRTUAL);
-    viewer.setContentProvider(new ArrayContentProvider());
+    viewer.setContentProvider(ArrayContentProvider.getInstance());
     viewer.setLabelProvider(new PropertiesLabelProvider());
 
     Table table = viewer.getTable();

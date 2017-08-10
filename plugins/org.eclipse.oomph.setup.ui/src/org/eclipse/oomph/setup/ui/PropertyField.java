@@ -884,7 +884,7 @@ public abstract class PropertyField
       };
       comboViewer.setLabelProvider(labelProvider);
 
-      comboViewer.setContentProvider(new ArrayContentProvider());
+      comboViewer.setContentProvider(ArrayContentProvider.getInstance());
       comboViewer.setInput(choices);
       comboViewer.getCombo().addModifyListener(new ModifyListener()
       {

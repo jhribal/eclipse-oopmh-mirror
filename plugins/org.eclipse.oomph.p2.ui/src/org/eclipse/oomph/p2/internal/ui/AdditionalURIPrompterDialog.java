@@ -116,7 +116,7 @@ public final class AdditionalURIPrompterDialog extends OomphDialog implements IC
     artifactViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
     artifactViewer.setComparator(new ViewerComparator());
     artifactViewer.setLabelProvider(new AgentAnalyzerComposite.TableLabelProvider(parent.getDisplay(), true));
-    artifactViewer.setContentProvider(new ArrayContentProvider());
+    artifactViewer.setContentProvider(ArrayContentProvider.getInstance());
     artifactViewer.setInput(artifacts);
 
     Composite repositoryComposite = new Composite(sashForm, SWT.NONE);

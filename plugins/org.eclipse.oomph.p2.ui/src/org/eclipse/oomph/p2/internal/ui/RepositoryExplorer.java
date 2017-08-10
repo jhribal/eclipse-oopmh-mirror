@@ -1975,7 +1975,7 @@ public class RepositoryExplorer extends ViewPart implements FilterHandler
 
       namespaceViewer = new ComboViewer(namespaceCombo);
       namespaceViewer.setComparator(new ViewerComparator());
-      namespaceViewer.setContentProvider(new ArrayContentProvider());
+      namespaceViewer.setContentProvider(ArrayContentProvider.getInstance());
       namespaceViewer.setLabelProvider(new LabelProvider());
       namespaceViewer.setInput(new String[] { currentNamespace });
       namespaceViewer.addSelectionChangedListener(new ISelectionChangedListener()

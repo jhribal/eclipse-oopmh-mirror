@@ -104,7 +104,7 @@ public class VersionBuilderPreferencePage extends AbstractPreferencePage
 
     viewer.setColumnProperties(new String[] { "releasePath", "checkMode" });
 
-    viewer.setContentProvider(new ArrayContentProvider());
+    viewer.setContentProvider(ArrayContentProvider.getInstance());
 
     viewer.setLabelProvider(new ReleaseCheckModeLabelProvider());
 

@@ -93,7 +93,7 @@ public class TargetDefinitionExportWizardPage extends WizardPage
 
     targetDefinitionViewer = new TableViewer(container, SWT.BORDER | SWT.V_SCROLL);
     targetDefinitionViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    targetDefinitionViewer.setContentProvider(new ArrayContentProvider());
+    targetDefinitionViewer.setContentProvider(ArrayContentProvider.getInstance());
     targetDefinitionViewer.setLabelProvider(new TargetLabelProvider());
     targetDefinitionViewer.addSelectionChangedListener(new ISelectionChangedListener()
     {
