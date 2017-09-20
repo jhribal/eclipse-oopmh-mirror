@@ -11,6 +11,7 @@
 package org.eclipse.oomph.setup.internal.core.util;
 
 import org.eclipse.oomph.base.util.BaseUtil;
+import org.eclipse.oomph.setup.internal.core.SetupCorePlugin;
 import org.eclipse.oomph.util.WorkerPool;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -132,6 +133,7 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
       return Status.OK_STATUS;
     }
 
+    @SuppressWarnings("unchecked")
     protected void visit(EObject eObject)
     {
       EClass eClass = eObject.eClass();
@@ -143,8 +145,19 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
           boolean containment = eReference.isContainment();
           if (eReference.isMany())
           {
-            @SuppressWarnings("unchecked")
-            InternalEList<InternalEObject> eObjects = (InternalEList<InternalEObject>)eObject.eGet(eReference);
+            InternalEList<InternalEObject> eObjects = null;
+            try
+            {
+              eObjects = (InternalEList<InternalEObject>)eObject.eGet(eReference);
+            }
+            catch (RuntimeException ex)
+            {
+              StringBuilder msg = new StringBuilder("Error resolving EReference ").append(eReference.getEContainingClass().getName()).append(".")
+                  .append(eReference.getName()).append("for " + eObject).append("in resource ").append(eObject.eResource().getURI());
+              SetupCorePlugin.INSTANCE.log(new Status(IStatus.ERROR, SetupCorePlugin.INSTANCE.getSymbolicName(), msg.toString()));
+              eObject.eSet(eReference, null);
+              continue; // with next reference
+            }
             for (int i = 0;;)
             {
               try
