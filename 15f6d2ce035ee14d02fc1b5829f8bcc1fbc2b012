@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7880b39_bf8bff28",
+        "filename": "plugins/org.eclipse.oomph.setup.core/src/org/eclipse/oomph/setup/internal/core/util/ProxyResolver.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 143600
+      },
+      "writtenOn": "2017-09-20T12:11:03Z",
+      "side": 1,
+      "message": "eObjects could be null here if the new catch block is hit.",
+      "revId": "15f6d2ce035ee14d02fc1b5829f8bcc1fbc2b012",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
