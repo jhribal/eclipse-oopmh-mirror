@@ -317,7 +317,7 @@ public class ManifestDiscovery
   {
     List<ITargletContainer> result = new ArrayList<ITargletContainer>();
 
-    if (targetDefinition != null)
+    if (targetDefinition != null && targetDefinition.getTargetLocations() != null)
     {
       for (ITargetLocation targetLocation : targetDefinition.getTargetLocations())
       {
