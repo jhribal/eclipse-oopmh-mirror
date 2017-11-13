@@ -579,7 +579,12 @@ public class TargletTaskItemProvider extends SetupTaskItemProvider
                         final String vmArguments = targetDefinition.getVMArguments();
 
                         // Consider each target location, and an IU bundle container.
-                        for (ITargetLocation targetLocation : targetDefinition.getTargetLocations())
+                        ITargetLocation[] targetLocations = targetDefinition.getTargetLocations();
+                        if (targetLocations == null)
+                        {
+                          targetLocations = new ITargetLocation[0];
+                        }
+                        for (ITargetLocation targetLocation : targetLocations)
                         {
                           if (targetLocation instanceof org.eclipse.pde.internal.core.target.IUBundleContainer)
                           {
