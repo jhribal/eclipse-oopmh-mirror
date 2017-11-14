@@ -235,18 +235,6 @@
               pattern=".*/eclipse\.platform/ant/.*\.tests\..*"/>
         </predicate>
       </workingSet>
-      <workingSet
-          name="Platform Update">
-        <predicate
-            xsi:type="predicates:AndPredicate">
-          <operand
-              xsi:type="predicates:RepositoryPredicate"
-              project="org.eclipse.update.core"/>
-          <operand
-              xsi:type="predicates:LocationPredicate"
-              pattern=".*/eclipse\.platform/update/.*"/>
-        </predicate>
-      </workingSet>
     </setupTask>
     <stream
         name="master"
