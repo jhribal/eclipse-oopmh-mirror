@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.setup.maven.impl;
 
+import org.eclipse.oomph.predicates.PredicatesUtil;
 import org.eclipse.oomph.resources.MavenProjectFactory;
 import org.eclipse.oomph.resources.SourceLocator;
 import org.eclipse.oomph.resources.backend.BackendContainer;
@@ -398,7 +399,7 @@ public class MavenImportTaskImpl extends SetupTaskImpl implements MavenImportTas
       IProject project = sourceLocator.loadProject(MavenProjectFactory.LIST, backendContainer, MonitorUtil.create(monitor, 1));
       if (project != null)
       {
-        if (sourceLocator.matches(project))
+        if (PredicatesUtil.matchesPredicates(project, sourceLocator.getPredicates()))
         {
           String projectName = project.getName();
           if (!ROOT.getProject(projectName).exists())
@@ -408,8 +409,11 @@ public class MavenImportTaskImpl extends SetupTaskImpl implements MavenImportTas
         }
       }
 
-      Collection<MavenProjectInfo> projects = projectInfo.getProjects();
-      processMavenProject(sourceLocator, projectInfos, projects, MonitorUtil.create(monitor, 5));
+      if (sourceLocator.isLocateNestedProjects())
+      {
+        Collection<MavenProjectInfo> projects = projectInfo.getProjects();
+        processMavenProject(sourceLocator, projectInfos, projects, MonitorUtil.create(monitor, 5));
+      }
     }
     finally
     {
