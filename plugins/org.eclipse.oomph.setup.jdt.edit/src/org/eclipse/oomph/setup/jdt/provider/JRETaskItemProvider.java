@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.setup.jdt.provider;
 
+import org.eclipse.oomph.setup.jdt.JDTFactory;
 import org.eclipse.oomph.setup.jdt.JDTPackage;
 import org.eclipse.oomph.setup.jdt.JRETask;
 import org.eclipse.oomph.setup.provider.SetupTaskItemProvider;
@@ -218,6 +219,39 @@ public class JRETaskItemProvider extends SetupTaskItemProvider
   }
 
   /**
+   * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
+   * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
+   * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
+  {
+    if (childrenFeatures == null)
+    {
+      super.getChildrenFeatures(object);
+      childrenFeatures.add(JDTPackage.Literals.JRE_TASK__JRE_LIBRARIES);
+    }
+    return childrenFeatures;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  protected EStructuralFeature getChildFeature(Object object, Object child)
+  {
+    // Check the type of the specified child object and return the proper feature to use for
+    // adding (see {@link AddCommand}) it as a child.
+
+    return super.getChildFeature(object, child);
+  }
+
+  /**
    * This returns JRETask.gif.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -296,6 +330,9 @@ public class JRETaskItemProvider extends SetupTaskItemProvider
       case JDTPackage.JRE_TASK__VM_ARGUMENTS:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
         return;
+      case JDTPackage.JRE_TASK__JRE_LIBRARIES:
+        fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+        return;
     }
     super.notifyChanged(notification);
   }
@@ -311,6 +348,8 @@ public class JRETaskItemProvider extends SetupTaskItemProvider
   protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
   {
     super.collectNewChildDescriptors(newChildDescriptors, object);
+
+    newChildDescriptors.add(createChildParameter(JDTPackage.Literals.JRE_TASK__JRE_LIBRARIES, JDTFactory.eINSTANCE.createJRELibrary()));
   }
 
   /**
