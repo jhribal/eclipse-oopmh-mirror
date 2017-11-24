@@ -16,6 +16,7 @@ import org.eclipse.oomph.setup.util.StringExpander;
 import org.eclipse.oomph.util.StringUtil;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -36,9 +38,12 @@ import java.util.regex.Pattern;
  */
 public class StringFilterRegistry
 {
+
   public static final StringFilterRegistry INSTANCE = new StringFilterRegistry();
 
   private static final Pattern CAMEL_PATTERN = Pattern.compile("(?:[^\\p{Alnum}]+|^)(\\p{Lower})?");
+
+  private static final Pattern XML_ENCODING_PATTERN = Pattern.compile("(?s)<\\?xml\\s+.*encoding\\s*=\\s*\"([a-zA-Z0-9\\-_]+)\".*\\?>.*");
 
   private final Map<String, StringFilter> filters = new HashMap<String, StringFilter>();
 
@@ -46,7 +51,7 @@ public class StringFilterRegistry
   {
     registerFilter("file", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return URI.createURI(value).toFileString();
       }
@@ -54,7 +59,7 @@ public class StringFilterRegistry
 
     registerFilter("uri", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return URI.createFileURI(value).toString();
       }
@@ -62,7 +67,7 @@ public class StringFilterRegistry
 
     registerFilter("uriLastSegment", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         URI uri = URI.createURI(value);
         if (!uri.isHierarchical())
@@ -76,7 +81,7 @@ public class StringFilterRegistry
 
     registerFilter("gitRepository", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         URI uri = URI.createURI(value);
         if (!uri.isHierarchical())
@@ -96,7 +101,7 @@ public class StringFilterRegistry
 
     registerFilter("username", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return URI.encodeSegment(value, false).replace(":", "%3A").replace("@", "%40");
       }
@@ -104,7 +109,7 @@ public class StringFilterRegistry
 
     registerFilter("canonical", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         // Don't canonicalize the value if it contains a unexpanded variable reference.
         if (StringExpander.STRING_EXPANSION_PATTERN.matcher(value).find())
@@ -127,7 +132,7 @@ public class StringFilterRegistry
 
     registerFilter("preferenceNode", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return value.replaceAll("/", "\\\\2f");
       }
@@ -135,7 +140,7 @@ public class StringFilterRegistry
 
     registerFilter("length", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return Integer.toString(value.length());
       }
@@ -143,7 +148,7 @@ public class StringFilterRegistry
 
     registerFilter("trim", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return value.trim();
       }
@@ -151,7 +156,7 @@ public class StringFilterRegistry
 
     registerFilter("trimLeft", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return StringUtil.trimLeft(value);
       }
@@ -159,7 +164,7 @@ public class StringFilterRegistry
 
     registerFilter("trimRight", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return StringUtil.trimRight(value);
       }
@@ -167,7 +172,7 @@ public class StringFilterRegistry
 
     registerFilter("trimTrailingSlashes", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return StringUtil.trimTrailingSlashes(value);
       }
@@ -175,7 +180,7 @@ public class StringFilterRegistry
 
     registerFilter("upper", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return value.toUpperCase();
       }
@@ -183,7 +188,7 @@ public class StringFilterRegistry
 
     registerFilter("lower", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return value.toLowerCase();
       }
@@ -191,7 +196,7 @@ public class StringFilterRegistry
 
     registerFilter("cap", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return StringUtil.cap(value);
       }
@@ -199,7 +204,7 @@ public class StringFilterRegistry
 
     registerFilter("allCap", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return StringUtil.capAll(value);
       }
@@ -207,7 +212,7 @@ public class StringFilterRegistry
 
     registerFilter("qualifiedName", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return value.trim().replaceAll("[^\\p{Alnum}]+", ".").toLowerCase();
       }
@@ -215,7 +220,7 @@ public class StringFilterRegistry
 
     registerFilter("camel", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         Matcher matcher = CAMEL_PATTERN.matcher(value);
         StringBuffer result = new StringBuffer();
@@ -233,7 +238,7 @@ public class StringFilterRegistry
 
     registerFilter("property", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return value.replaceAll("\\\\", "\\\\\\\\");
       }
@@ -241,7 +246,7 @@ public class StringFilterRegistry
 
     registerFilter("path", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         return value.replaceAll("\\\\", "/");
       }
@@ -249,7 +254,7 @@ public class StringFilterRegistry
 
     registerFilter("basePath", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         value = value.replaceAll("\\\\", "/");
         int pos = value.lastIndexOf('/');
@@ -264,7 +269,7 @@ public class StringFilterRegistry
 
     registerFilter("lastSegment", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         int pos = Math.max(value.lastIndexOf('/'), value.lastIndexOf('\\'));
         if (pos == -1)
@@ -278,7 +283,7 @@ public class StringFilterRegistry
 
     registerFilter("fileExtension", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         int pos = value.lastIndexOf('.');
         if (pos == -1)
@@ -292,7 +297,7 @@ public class StringFilterRegistry
 
     registerFilter("urlEncode", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         try
         {
@@ -308,7 +313,7 @@ public class StringFilterRegistry
 
     registerFilter("urlDecode", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         try
         {
@@ -325,7 +330,7 @@ public class StringFilterRegistry
     registerFilter("slashEncode", new StringFilter()
     {
       @SuppressWarnings("restriction")
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         try
         {
@@ -342,7 +347,7 @@ public class StringFilterRegistry
     registerFilter("slashDecode", new StringFilter()
     {
       @SuppressWarnings("restriction")
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         try
         {
@@ -358,11 +363,40 @@ public class StringFilterRegistry
 
     registerFilter("propertyValue", new StringFilter()
     {
-      public String filter(String value)
+      public String filter(String value, String filterArg)
       {
         PreferenceProperty preferenceProperty = new PreferencesUtil.PreferenceProperty(value);
         String result = preferenceProperty.get(null);
         return result == null ? "" : result;
+      }
+    });
+
+    registerFilter("base64", new StringFilter()
+    {
+      public String filter(String value, String filterArg)
+      {
+        try
+        {
+          Charset charset;
+          if (value.startsWith("<?xml"))
+          {
+            Matcher matcher = XML_ENCODING_PATTERN.matcher(value);
+            charset = Charset.forName(matcher.matches() ? matcher.group(1) : "UTF-8");
+          }
+          else if (filterArg != null)
+          {
+            charset = Charset.forName(filterArg.toUpperCase());
+          }
+          else
+          {
+            charset = Charset.defaultCharset();
+          }
+          return XMLTypeFactory.eINSTANCE.convertBase64Binary(value.getBytes(charset));
+        }
+        catch (Exception ex)
+        {
+          return value;
+        }
       }
     });
   }
@@ -374,10 +408,22 @@ public class StringFilterRegistry
 
   public String filter(String value, String filterName)
   {
+    String filterArg;
+    int dotIdx = filterName.indexOf('.');
+    if (dotIdx != -1)
+    {
+      String tmp = filterName;
+      filterName = tmp.substring(0, dotIdx);
+      filterArg = tmp.substring(dotIdx + 1);
+    }
+    else
+    {
+      filterArg = null;
+    }
     StringFilter filter = filters.get(filterName.toLowerCase());
     if (filter != null)
     {
-      return filter.filter(value);
+      return filter.filter(value, filterArg);
     }
 
     return value;

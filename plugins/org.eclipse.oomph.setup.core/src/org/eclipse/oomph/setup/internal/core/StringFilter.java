@@ -15,5 +15,5 @@ package org.eclipse.oomph.setup.internal.core;
  */
 public interface StringFilter
 {
-  public String filter(String value);
+  public String filter(String value, String filterArg);
 }
