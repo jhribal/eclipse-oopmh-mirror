@@ -218,7 +218,7 @@ public class PreferenceCaptureDialog extends Dialog
 
     PatternFilter filter = new PatternFilter();
     filter.setIncludeLeadingWildcard(true);
-    final FilteredTree availablePreferencesTree = new FilteredTree(availablePreferencesComposite, SWT.MULTI | SWT.BORDER, filter, true);
+    final FilteredTree availablePreferencesTree = new PreferenceFilteredTree(availablePreferencesComposite, SWT.MULTI | SWT.BORDER, filter);
     GridData availablePreferencesTreeGridData = new GridData();
     availablePreferencesTreeGridData.widthHint = Display.getCurrent().getBounds().width / 5;
     availablePreferencesTreeGridData.heightHint = Display.getCurrent().getBounds().height / 3;
