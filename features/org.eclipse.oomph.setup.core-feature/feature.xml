@@ -34,6 +34,13 @@
       <discovery label="%updateSiteName" url="http://download.eclipse.org/oomph/updates"/>
    </url>
 
+   <requires>
+      <import plugin="org.apache.commons.codec" version="1.6.0" match="compatible"/>
+      <import plugin="org.apache.commons.logging" version="1.0.0" match="compatible"/>
+      <import plugin="org.apache.httpcomponents.httpclient" version="4.2.0" match="compatible"/>
+      <import plugin="org.apache.httpcomponents.httpcore" version="4.2.0" match="compatible"/>
+   </requires>
+
    <plugin
          id="org.eclipse.oomph.setup"
          download-size="0"
@@ -110,34 +117,6 @@
 
    <plugin
          id="org.eclipse.oomph.extractor.lib"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.httpcomponents.httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.httpcomponents.httpcore"
          download-size="0"
          install-size="0"
          version="0.0.0"

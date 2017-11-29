@@ -93,5 +93,17 @@
    <feature id="org.eclipse.oomph.tests" version="0.0.0">
       <category name="org.eclipse.oomph.others.category"/>
    </feature>
+   <bundle id="org.apache.commons.codec" version="0.0.0">
+      <category name="org.eclipse.oomph.others.category"/>
+   </bundle>
+   <bundle id="org.apache.commons.logging" version="0.0.0">
+      <category name="org.eclipse.oomph.others.category"/>
+   </bundle>
+   <bundle id="org.apache.httpcomponents.httpclient" version="0.0.0">
+      <category name="org.eclipse.oomph.others.category"/>
+   </bundle>
+   <bundle id="org.apache.httpcomponents.httpcore" version="0.0.0">
+      <category name="org.eclipse.oomph.others.category"/>
+   </bundle>
 
 </site>
