@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7979753_97cb6ac7",
+        "filename": "plugins/org.eclipse.oomph.setup.maven/src/org/eclipse/oomph/setup/maven/impl/MavenImportTaskImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1220
+      },
+      "writtenOn": "2017-12-01T14:51:52Z",
+      "side": 1,
+      "message": "Given that the method being called does this:\n\n  public boolean matches(IProject project)\n  {\n    return PredicatesUtil.matchesPredicates(project, predicates);\n  }\n\nhow is the replacement semantically different.",
+      "revId": "b165b856e381594db33a032b30017290e7e2554f",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7979753_57010277",
+        "filename": "plugins/org.eclipse.oomph.setup.maven/src/org/eclipse/oomph/setup/maven/impl/MavenImportTaskImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1220
+      },
+      "writtenOn": "2017-12-01T14:51:52Z",
+      "side": 1,
+      "message": "This makes sense, but I wonder if it should depend on whether the above code found a project.  I suppose is should not and what you have here is exactly right.",
+      "revId": "b165b856e381594db33a032b30017290e7e2554f",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
