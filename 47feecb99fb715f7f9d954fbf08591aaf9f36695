@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7979753_725fe9f2",
+        "filename": "plugins/org.eclipse.oomph.setup.core/src/org/eclipse/oomph/setup/internal/core/StringFilterRegistry.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 140797
+      },
+      "writtenOn": "2017-12-04T11:24:57Z",
+      "side": 1,
+      "message": "Good, thanks. (I was unaware of this API.)",
+      "revId": "47feecb99fb715f7f9d954fbf08591aaf9f36695",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
