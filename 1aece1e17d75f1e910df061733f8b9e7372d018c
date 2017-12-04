@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7979753_32ac8175",
+        "filename": "plugins/org.eclipse.oomph.setup.tests/src/org/eclipse/oomph/setup/tests/JRETaskTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 140797
+      },
+      "writtenOn": "2017-12-04T11:09:06Z",
+      "side": 1,
+      "message": "My mistake - strictly speaking, this constant should have been declared with type IPath, not Path.",
+      "range": {
+        "startLine": 48,
+        "startChar": 2,
+        "endLine": 48,
+        "endChar": 90
+      },
+      "revId": "1aece1e17d75f1e910df061733f8b9e7372d018c",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
