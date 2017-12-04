@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a7979753_af79eee8",
+        "filename": "plugins/org.eclipse.oomph.setup.maven/src/org/eclipse/oomph/setup/maven/impl/MavenImportTaskImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 130
+      },
+      "writtenOn": "2017-12-04T09:21:46Z",
+      "side": 1,
+      "message": "Not much, if at all, I guess ;-)",
+      "parentUuid": "a7979753_97cb6ac7",
+      "revId": "b165b856e381594db33a032b30017290e7e2554f",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7979753_57010277",
         "filename": "plugins/org.eclipse.oomph.setup.maven/src/org/eclipse/oomph/setup/maven/impl/MavenImportTaskImpl.java",
         "patchSetId": 1
