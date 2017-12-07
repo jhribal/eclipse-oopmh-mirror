@@ -54,6 +54,19 @@
         value="false"/>
   </setupTask>
   <setupTask
+      xsi:type="setup:CompoundTask"
+      name="m2e">
+    <setupTask
+        xsi:type="setup.p2:P2Task"
+        label="m2e Connectors">
+      <requirement
+          name="org.sonatype.tycho.m2e.feature.feature.group"/>
+      <repository
+          url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.9.0/N/LATEST/"/>
+      <description>Installs m2e connectors for Tycho</description>
+    </setupTask>
+  </setupTask>
+  <setupTask
       xsi:type="setup:VariableTask"
       name="eclipse.target.platform"
       defaultValue="Photon"
@@ -160,6 +173,12 @@
       </repositoryList>
     </targlet>
   </setupTask>
+  <setupTask
+      xsi:type="setup:ResourceCreationTask"
+      id="lifecycle-mapping"
+      content="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xA;&lt;lifecycleMappingMetadata>&#xA;  &lt;pluginExecutions>&#xA;    &lt;pluginExecution>&#xA;      &lt;pluginExecutionFilter>&#xA;        &lt;groupId>org.eclipse.cbi.maven.plugins&lt;/groupId>&#xA;        &lt;artifactId>eclipse-cbi-plugin&lt;/artifactId>&#xA;        &lt;versionRange>[1,)&lt;/versionRange>&#xA;        &lt;goals>&#xA;          &lt;goal>generate-api-build-xml&lt;/goal>&#xA;        &lt;/goals>&#xA;      &lt;/pluginExecutionFilter>&#xA;      &lt;action>&#xA;        &lt;ignore />&#xA;      &lt;/action>&#xA;    &lt;/pluginExecution>&#xA;    &lt;pluginExecution>&#xA;      &lt;pluginExecutionFilter>&#xA;        &lt;groupId>org.eclipse.tycho.extras&lt;/groupId>&#xA;        &lt;artifactId>tycho-eclipserun-plugin&lt;/artifactId>&#xA;        &lt;versionRange>[1,)&lt;/versionRange>&#xA;        &lt;goals>&#xA;          &lt;goal>eclipse-run&lt;/goal>&#xA;        &lt;/goals>&#xA;      &lt;/pluginExecutionFilter>&#xA;      &lt;action>&#xA;        &lt;ignore />&#xA;      &lt;/action>&#xA;    &lt;/pluginExecution>&#xA;    &lt;pluginExecution>&#xA;      &lt;pluginExecutionFilter>&#xA;        &lt;groupId>org.codehaus.mojo&lt;/groupId>&#xA;        &lt;artifactId>build-helper-maven-plugin&lt;/artifactId>&#xA;        &lt;versionRange>1.8&lt;/versionRange>&#xA;        &lt;goals>&#xA;          &lt;goal>add-source&lt;/goal>&#xA;          &lt;goal>add-test-source&lt;/goal>&#xA;        &lt;/goals>&#xA;      &lt;/pluginExecutionFilter>&#xA;      &lt;action>&#xA;        &lt;ignore />&#xA;      &lt;/action>&#xA;    &lt;/pluginExecution>&#xA;  &lt;/pluginExecutions>&#xA;&lt;/lifecycleMappingMetadata>&#xA;"
+      targetURL="${workspace.location|uri}/.metadata/.plugins/org.eclipse.m2e.core/lifecycle-mapping-metadata.xml"
+      encoding="UTF-8"/>
   <project name="platform"
       label="Base, Update, and Ant">
     <setupTask
