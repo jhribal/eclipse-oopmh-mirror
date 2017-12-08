@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a7979753_54bbaeb9",
+        "filename": "setups/interim/Platform.setup",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 12380
+      },
+      "writtenOn": "2017-12-08T15:21:41Z",
+      "side": 1,
+      "message": "The feature installs the m2e connectors for Tycho. Without, m2e does not know how the Eclipse Tycho plugins behave in the lifecycle. In detail this is explained here:\nhttps://www.eclipse.org/m2e/documentation/m2e-execution-not-covered.html\n\nWhile it might be correct to mark these unknown mappings as errors, it is a PITA for developers.\n\nThey can do a quickfix on these errors (if they known that there is one) which installs exactly this feature from the p2 repo below.\n\nThis change automates this just and makes applying the quickfix unneccessary.",
+      "parentUuid": "a7979753_341f0295",
+      "revId": "f1e007ed357154fdf42b3b695286e20708f01cbc",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7979753_f4601a03",
         "filename": "setups/interim/Platform.setup",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "a7979753_74ca6a44",
+        "filename": "setups/interim/Platform.setup",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 12380
+      },
+      "writtenOn": "2017-12-08T15:21:41Z",
+      "side": 1,
+      "message": "The quickfix installed this p2 repo.\n\nLooking up the repo showed me that there is actual a newer one:\nhttp://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.9.0/N/LATEST/\n\nIf that one also has the desired effect I would update the URL, OK?",
+      "parentUuid": "a7979753_f4601a03",
+      "revId": "f1e007ed357154fdf42b3b695286e20708f01cbc",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7979753_b4569230",
         "filename": "setups/interim/Platform.setup",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2017-12-08T14:15:24Z",
       "side": 1,
       "message": "Is it this processed only by the IU being installed above?",
+      "revId": "f1e007ed357154fdf42b3b695286e20708f01cbc",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7979753_d4f6be84",
+        "filename": "setups/interim/Platform.setup",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 12380
+      },
+      "writtenOn": "2017-12-08T15:21:41Z",
+      "side": 1,
+      "message": "This one is processed by the m2e Maven integration. It contains lifecycle mappings for maven plugins for which no connector feature exists.",
+      "parentUuid": "a7979753_b4569230",
       "revId": "f1e007ed357154fdf42b3b695286e20708f01cbc",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
