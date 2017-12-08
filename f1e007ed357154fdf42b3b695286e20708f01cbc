@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7979753_341f0295",
+        "filename": "setups/interim/Platform.setup",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1220
+      },
+      "writtenOn": "2017-12-08T14:15:24Z",
+      "side": 1,
+      "message": "What is the purpose of this IU?  Should we really force all platform developers to install this?  What does it do?",
+      "revId": "f1e007ed357154fdf42b3b695286e20708f01cbc",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7979753_f4601a03",
+        "filename": "setups/interim/Platform.setup",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1220
+      },
+      "writtenOn": "2017-12-08T14:15:24Z",
+      "side": 1,
+      "message": "How is this URL likely to evolve over time?  Does the \"N\" suggest it\u0027s a specific nightly build?",
+      "revId": "f1e007ed357154fdf42b3b695286e20708f01cbc",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7979753_b4569230",
+        "filename": "setups/interim/Platform.setup",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1220
+      },
+      "writtenOn": "2017-12-08T14:15:24Z",
+      "side": 1,
+      "message": "Is it this processed only by the IU being installed above?",
+      "revId": "f1e007ed357154fdf42b3b695286e20708f01cbc",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
