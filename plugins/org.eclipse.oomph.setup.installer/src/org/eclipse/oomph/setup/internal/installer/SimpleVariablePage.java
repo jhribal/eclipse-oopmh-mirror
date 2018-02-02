@@ -1290,7 +1290,7 @@ public class SimpleVariablePage extends SimpleInstallerPage
         performer.put(Certificate.class, UnsignedContentDialog.createUnsignedContentConfirmer(user, false));
       }
 
-      performer.setOffline(false);
+      performer.setOffline(isOffline());
       performer.setMirrors(true);
       performer.setProgress(progress);
       performer.log("Executing " + performer.getTrigger().toString().toLowerCase() + " tasks");
@@ -1308,6 +1308,16 @@ public class SimpleVariablePage extends SimpleInstallerPage
       userAdjuster.undo();
       BaseUtil.saveEObject(user);
     }
+  }
+
+  private boolean isOffline()
+  {
+    if (PropertiesUtil.isProperty(SetupProperties.PROP_SETUP_OFFLINE_STARTUP))
+    {
+      return true;
+    }
+
+    return false; // default value if no system property defined
   }
 
   private void installCancel()
