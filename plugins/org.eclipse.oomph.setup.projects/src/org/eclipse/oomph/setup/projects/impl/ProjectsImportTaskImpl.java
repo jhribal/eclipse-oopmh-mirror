@@ -222,21 +222,36 @@ public class ProjectsImportTaskImpl extends SetupTaskImpl implements ProjectsImp
       return true;
     }
 
-    for (SourceLocator sourceLocator : getSourceLocators())
+    IProgressMonitor monitor = context.getProgressMonitor(true);
+    monitor.beginTask("", getSourceLocators().size());
+    try
     {
-      IProject[] projects = getProjects(sourceLocator);
-      if (projects == null)
+      for (SourceLocator sourceLocator : getSourceLocators())
       {
-        return true;
-      }
-
-      for (IProject project : projects)
-      {
-        if (!project.exists())
+        IProject[] projects = getProjects(sourceLocator);
+        if (projects == null)
         {
           return true;
         }
+
+        ProjectHandler.Collector collector = new ProjectHandler.Collector();
+        MultiStatus childStatus = new MultiStatus(ProjectsPlugin.INSTANCE.getSymbolicName(), 0,
+            "Projects Import Analysis of '" + sourceLocator.getRootFolder() + "'", null);
+        sourceLocator.handleProjects(EclipseProjectFactory.LIST, collector, childStatus, MonitorUtil.create(monitor, 1));
+
+        // if any project does not exist yet an import is needed
+        for (IProject project : collector.getProjectMap().keySet())
+        {
+          if (!project.exists() || !ROOT.getProject(project.getName()).exists())
+          {
+            return true;
+          }
+        }
       }
+    }
+    finally
+    {
+      monitor.done();
     }
 
     return false;

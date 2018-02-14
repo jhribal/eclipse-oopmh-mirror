@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.setup.maven.impl;
 
+import org.eclipse.oomph.predicates.PredicatesUtil;
 import org.eclipse.oomph.resources.MavenProjectFactory;
 import org.eclipse.oomph.resources.SourceLocator;
 import org.eclipse.oomph.resources.backend.BackendContainer;
@@ -19,6 +20,7 @@ import org.eclipse.oomph.setup.Trigger;
 import org.eclipse.oomph.setup.impl.SetupTaskImpl;
 import org.eclipse.oomph.setup.maven.MavenImportTask;
 import org.eclipse.oomph.setup.maven.MavenPackage;
+import org.eclipse.oomph.util.IOUtil;
 import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.StringUtil;
 
@@ -28,8 +30,11 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.resource.impl.BinaryResourceImpl;
+import org.eclipse.emf.ecore.resource.impl.BinaryResourceImpl.EObjectOutputStream;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -44,6 +49,10 @@ import org.eclipse.m2e.core.project.LocalProjectScanner;
 import org.eclipse.m2e.core.project.MavenProjectInfo;
 import org.eclipse.m2e.core.project.ProjectImportConfiguration;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -287,24 +296,108 @@ public class MavenImportTaskImpl extends SetupTaskImpl implements MavenImportTas
       return false;
     }
 
-    if (context.getTrigger() != Trigger.MANUAL)
+    if (context.getTrigger() == Trigger.MANUAL)
     {
-      for (IProject project : ROOT.getProjects())
+      return true;
+    }
+
+    IProgressMonitor monitor = context.getProgressMonitor(true);
+    monitor.beginTask("", 1);
+
+    try
+    {
+      Set<MavenProjectInfo> projectInfos = getProjectToImport(context, MonitorUtil.create(monitor, 1));
+
+      if (projectInfos.isEmpty())
       {
-        IPath projectFolder = project.getLocation();
-        for (SourceLocator sourceLocator : sourceLocators)
+        for (IProject project : ROOT.getProjects())
         {
-          Path rootFolder = new Path(sourceLocator.getRootFolder());
-          if (rootFolder.isPrefixOf(projectFolder))
+          IPath projectFolder = project.getLocation();
+          for (SourceLocator sourceLocator : sourceLocators)
           {
-            // In STARTUP trigger don't perform if there's already at least 1 project from the source locators
-            return false;
+            Path rootFolder = new Path(sourceLocator.getRootFolder());
+            if (rootFolder.isPrefixOf(projectFolder))
+            {
+              // In STARTUP trigger don't perform if there's already at least 1 project from the source locators
+              return false;
+            }
           }
         }
       }
     }
+    finally
+    {
+      monitor.done();
+    }
 
     return true;
+  }
+
+  @SuppressWarnings("unchecked")
+  private Set<MavenProjectInfo> getProjectToImport(SetupTaskContext context, IProgressMonitor monitor) throws InterruptedException
+  {
+    Set<MavenProjectInfo> result = new LinkedHashSet<MavenProjectInfo>();
+
+    EList<SourceLocator> sourceLocators = getSourceLocators();
+    if (!sourceLocators.isEmpty())
+    {
+      int size = sourceLocators.size();
+
+      monitor.beginTask("", size);
+      try
+      {
+        MavenModelManager modelManager = null;
+
+        for (SourceLocator sourceLocator : sourceLocators)
+        {
+          String key = getDigest(sourceLocator, context);
+          Set<MavenProjectInfo> sourceLocatorResult = (Set<MavenProjectInfo>)context.get(key);
+          Path rootFolder = new Path(sourceLocator.getRootFolder());
+          if (sourceLocatorResult == null && rootFolder.toFile().exists())
+          {
+            if (modelManager == null)
+            {
+              // create only if needed
+              modelManager = MavenPlugin.getMavenModelManager();
+            }
+            sourceLocatorResult = new LinkedHashSet<MavenProjectInfo>();
+            LocalProjectScanner projectScanner = new LocalProjectScanner(null, Collections.singletonList(sourceLocator.getRootFolder()), false, modelManager);
+            processMavenProject(sourceLocator, sourceLocatorResult, projectScanner, MonitorUtil.create(monitor, 1));
+          }
+          if (sourceLocatorResult != null && !sourceLocatorResult.isEmpty())
+          {
+            context.put(key, sourceLocatorResult);
+            result.addAll(sourceLocatorResult);
+          }
+        }
+      }
+      finally
+      {
+        monitor.done();
+      }
+    }
+    return result;
+  }
+
+  private String getDigest(SourceLocator sourceLocator, SetupTaskContext context)
+  {
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    try
+    {
+      EObjectOutputStream eObjectOutputStream = new BinaryResourceImpl.EObjectOutputStream(bytes, null);
+      eObjectOutputStream.saveEObject((InternalEObject)sourceLocator, BinaryResourceImpl.EObjectOutputStream.Check.NOTHING);
+      return XMLTypeFactory.eINSTANCE.convertBase64Binary(IOUtil.getSHA1(new ByteArrayInputStream(bytes.toByteArray())));
+    }
+    catch (IOException ex)
+    {
+      context.log(ex);
+    }
+    catch (NoSuchAlgorithmException ex)
+    {
+      context.log(ex);
+    }
+
+    return null;
   }
 
   public void perform(SetupTaskContext context) throws Exception
@@ -317,15 +410,7 @@ public class MavenImportTaskImpl extends SetupTaskImpl implements MavenImportTas
 
     try
     {
-      MavenModelManager modelManager = MavenPlugin.getMavenModelManager();
-
-      Set<MavenProjectInfo> projectInfos = new LinkedHashSet<MavenProjectInfo>();
-      for (SourceLocator sourceLocator : sourceLocators)
-      {
-        LocalProjectScanner projectScanner = new LocalProjectScanner(null, Collections.singletonList(sourceLocator.getRootFolder()), false, modelManager);
-        processMavenProject(sourceLocator, projectInfos, projectScanner, MonitorUtil.create(monitor, 1));
-      }
-
+      Set<MavenProjectInfo> projectInfos = getProjectToImport(context, MonitorUtil.create(monitor, size));
       if (projectInfos.isEmpty())
       {
         monitor.worked(size);
@@ -398,7 +483,7 @@ public class MavenImportTaskImpl extends SetupTaskImpl implements MavenImportTas
       IProject project = sourceLocator.loadProject(MavenProjectFactory.LIST, backendContainer, MonitorUtil.create(monitor, 1));
       if (project != null)
       {
-        if (sourceLocator.matches(project))
+        if (PredicatesUtil.matchesPredicates(project, sourceLocator.getPredicates()))
         {
           String projectName = project.getName();
           if (!ROOT.getProject(projectName).exists())
