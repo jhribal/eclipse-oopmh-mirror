@@ -244,13 +244,22 @@ public interface GitPackage extends EPackage
   int GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH = SetupPackage.SETUP_TASK_FEATURE_COUNT + 7;
 
   /**
+   * The feature id for the '<em><b>Remote Name Is Tag</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int GIT_CLONE_TASK__REMOTE_NAME_IS_TAG = SetupPackage.SETUP_TASK_FEATURE_COUNT + 8;
+
+  /**
    * The number of structural features of the '<em>Clone Task</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int GIT_CLONE_TASK_FEATURE_COUNT = SetupPackage.SETUP_TASK_FEATURE_COUNT + 8;
+  int GIT_CLONE_TASK_FEATURE_COUNT = SetupPackage.SETUP_TASK_FEATURE_COUNT + 9;
 
   /**
    * The meta object id for the '{@link org.eclipse.oomph.setup.git.impl.ConfigSubsectionImpl <em>Config Subsection</em>}' class.
@@ -471,6 +480,17 @@ public interface GitPackage extends EPackage
   EAttribute getGitCloneTask_RestrictToCheckoutBranch();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.oomph.setup.git.GitCloneTask#isRemoteNameIsTag <em>Remote Name Is Tag</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Remote Name Is Tag</em>'.
+   * @see org.eclipse.oomph.setup.git.GitCloneTask#isRemoteNameIsTag()
+   * @see #getGitCloneTask()
+   * @generated
+   */
+  EAttribute getGitCloneTask_RemoteNameIsTag();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.oomph.setup.git.ConfigSection <em>Config Section</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -652,6 +672,14 @@ public interface GitPackage extends EPackage
      * @generated
      */
     EAttribute GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH = eINSTANCE.getGitCloneTask_RestrictToCheckoutBranch();
+
+    /**
+     * The meta object literal for the '<em><b>Remote Name Is Tag</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute GIT_CLONE_TASK__REMOTE_NAME_IS_TAG = eINSTANCE.getGitCloneTask_RemoteNameIsTag();
 
     /**
      * The meta object literal for the '{@link org.eclipse.oomph.setup.git.impl.ConfigSectionImpl <em>Config Section</em>}' class.

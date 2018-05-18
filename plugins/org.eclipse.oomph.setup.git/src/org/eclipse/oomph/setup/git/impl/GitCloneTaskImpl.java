@@ -22,6 +22,7 @@ import org.eclipse.oomph.setup.git.ConfigSubsection;
 import org.eclipse.oomph.setup.git.GitCloneTask;
 import org.eclipse.oomph.setup.git.GitPackage;
 import org.eclipse.oomph.setup.impl.SetupTaskImpl;
+import org.eclipse.oomph.setup.log.ProgressLog.Severity;
 import org.eclipse.oomph.setup.util.FileUtil;
 import org.eclipse.oomph.util.MonitorUtil;
 import org.eclipse.oomph.util.OS;
@@ -94,6 +95,7 @@ import java.util.Set;
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#isRecursive <em>Recursive</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#getConfigSections <em>Config Sections</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#isRestrictToCheckoutBranch <em>Restrict To Checkout Branch</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.git.impl.GitCloneTaskImpl#isRemoteNameIsTag <em>Remote Name Is Tag</em>}</li>
  * </ul>
  *
  * @generated
@@ -249,6 +251,26 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
    * @ordered
    */
   protected boolean restrictToCheckoutBranch = RESTRICT_TO_CHECKOUT_BRANCH_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isRemoteNameIsTag() <em>Remote Name Is Tag</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isRemoteNameIsTag()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean REMOTE_NAME_IS_TAG_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isRemoteNameIsTag() <em>Remote Name Is Tag</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isRemoteNameIsTag()
+   * @generated
+   * @ordered
+   */
+  protected boolean remoteNameIsTag = REMOTE_NAME_IS_TAG_EDEFAULT;
 
   private boolean workDirExisted;
 
@@ -455,6 +477,31 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
    * <!-- end-user-doc -->
    * @generated
    */
+  public boolean isRemoteNameIsTag()
+  {
+    return remoteNameIsTag;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setRemoteNameIsTag(boolean newRemoteNameIsTag)
+  {
+    boolean oldRemoteNameIsTag = remoteNameIsTag;
+    remoteNameIsTag = newRemoteNameIsTag;
+    if (eNotificationRequired())
+    {
+      eNotify(new ENotificationImpl(this, Notification.SET, GitPackage.GIT_CLONE_TASK__REMOTE_NAME_IS_TAG, oldRemoteNameIsTag, remoteNameIsTag));
+    }
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -517,6 +564,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return getConfigSections();
       case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
         return isRestrictToCheckoutBranch();
+      case GitPackage.GIT_CLONE_TASK__REMOTE_NAME_IS_TAG:
+        return isRemoteNameIsTag();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -557,6 +606,9 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
         setRestrictToCheckoutBranch((Boolean)newValue);
         return;
+      case GitPackage.GIT_CLONE_TASK__REMOTE_NAME_IS_TAG:
+        setRemoteNameIsTag((Boolean)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -595,6 +647,9 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
         setRestrictToCheckoutBranch(RESTRICT_TO_CHECKOUT_BRANCH_EDEFAULT);
         return;
+      case GitPackage.GIT_CLONE_TASK__REMOTE_NAME_IS_TAG:
+        setRemoteNameIsTag(REMOTE_NAME_IS_TAG_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -625,6 +680,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
         return configSections != null && !configSections.isEmpty();
       case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
         return restrictToCheckoutBranch != RESTRICT_TO_CHECKOUT_BRANCH_EDEFAULT;
+      case GitPackage.GIT_CLONE_TASK__REMOTE_NAME_IS_TAG:
+        return remoteNameIsTag != REMOTE_NAME_IS_TAG_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
@@ -642,7 +699,7 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
       return super.toString();
     }
 
-    StringBuffer result = new StringBuffer(super.toString());
+    StringBuilder result = new StringBuilder(super.toString());
     result.append(" (location: ");
     result.append(location);
     result.append(", remoteName: ");
@@ -657,6 +714,8 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     result.append(recursive);
     result.append(", restrictToCheckoutBranch: ");
     result.append(restrictToCheckoutBranch);
+    result.append(", remoteNameIsTag: ");
+    result.append(remoteNameIsTag);
     result.append(')');
     return result.toString();
   }
@@ -791,6 +850,7 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
     {
       String checkoutBranch = getCheckoutBranch();
       String remoteName = getRemoteName();
+      boolean remoteNameIsTag = isRemoteNameIsTag();
       String remoteURI = getRemoteURI();
 
       IProgressMonitor monitor = context.getProgressMonitor(true);
@@ -798,6 +858,10 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
 
       try
       {
+        if (remoteNameIsTag)
+        {
+          context.log("use remoteTag should be set", false, Severity.INFO);
+        }
         if (!bypassCloning)
         {
           if (cachedGit == null)
@@ -821,12 +885,22 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
 
           if (!hasCheckout)
           {
-            createBranch(context, cachedGit, checkoutBranch, remoteName);
-            monitor.worked(1);
+            if (remoteNameIsTag)
+            {
+              createTag(context, cachedGit, remoteName);
+              monitor.worked(1);
 
-            checkout(context, cachedGit, checkoutBranch);
-            monitor.worked(1);
+              checkout(context, cachedGit, remoteName);
+              monitor.worked(1);
+            }
+            else
+            {
+              createBranch(context, cachedGit, checkoutBranch, remoteName);
+              monitor.worked(1);
 
+              checkout(context, cachedGit, checkoutBranch);
+              monitor.worked(1);
+            }
             resetHard(context, cachedGit);
             monitor.worked(1);
           }
@@ -1233,6 +1307,21 @@ public class GitCloneTaskImpl extends SetupTaskImpl implements GitCloneTask
 
     StoredConfig config = git.getRepository().getConfig();
     config.setBoolean(ConfigConstants.CONFIG_BRANCH_SECTION, checkoutBranch, ConfigConstants.CONFIG_KEY_REBASE, true);
+    config.save();
+  }
+
+  private static void createTag(SetupTaskContext context, Git git, String checkoutTag) throws Exception
+  {
+    context.log("_Creating local tag " + checkoutTag);
+
+    CreateBranchCommand command = git.branchCreate();
+    command.setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM);
+    command.setName(checkoutTag);
+    command.setStartPoint("refs/tags/" + checkoutTag);
+    command.call();
+
+    StoredConfig config = git.getRepository().getConfig();
+    config.setBoolean(ConfigConstants.CONFIG_BRANCH_SECTION, checkoutTag, ConfigConstants.CONFIG_KEY_REBASE, true);
     config.save();
   }
 

@@ -66,6 +66,7 @@ public class GitCloneTaskItemProvider extends SetupTaskItemProvider
       addCheckoutBranchPropertyDescriptor(object);
       addRecursivePropertyDescriptor(object);
       addRestrictToCheckoutBranchPropertyDescriptor(object);
+      addRemoteNameIsTagPropertyDescriptor(object);
     }
     return itemPropertyDescriptors;
   }
@@ -169,6 +170,20 @@ public class GitCloneTaskItemProvider extends SetupTaskItemProvider
   }
 
   /**
+   * This adds a property descriptor for the Remote Name Is Tag feature.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected void addRemoteNameIsTagPropertyDescriptor(Object object)
+  {
+    itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+        getString("_UI_GitCloneTask_remoteNameIsTag_feature"),
+        getString("_UI_PropertyDescriptor_description", "_UI_GitCloneTask_remoteNameIsTag_feature", "_UI_GitCloneTask_type"),
+        GitPackage.Literals.GIT_CLONE_TASK__REMOTE_NAME_IS_TAG, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+  }
+
+  /**
    * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
    * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
    * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
@@ -264,6 +279,7 @@ public class GitCloneTaskItemProvider extends SetupTaskItemProvider
       case GitPackage.GIT_CLONE_TASK__CHECKOUT_BRANCH:
       case GitPackage.GIT_CLONE_TASK__RECURSIVE:
       case GitPackage.GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH:
+      case GitPackage.GIT_CLONE_TASK__REMOTE_NAME_IS_TAG:
         fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
         return;
       case GitPackage.GIT_CLONE_TASK__CONFIG_SECTIONS:

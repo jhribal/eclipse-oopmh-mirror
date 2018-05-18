@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.setup.git.impl;
 
+import org.eclipse.oomph.base.BasePackage;
 import org.eclipse.oomph.setup.SetupPackage;
 import org.eclipse.oomph.setup.git.ConfigProperty;
 import org.eclipse.oomph.setup.git.ConfigSection;
@@ -107,12 +108,13 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
     }
 
     // Obtain or create and register package
-    GitPackageImpl theGitPackage = (GitPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof GitPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI)
-        : new GitPackageImpl());
+    Object registeredGitPackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+    GitPackageImpl theGitPackage = registeredGitPackage instanceof GitPackageImpl ? (GitPackageImpl)registeredGitPackage : new GitPackageImpl();
 
     isInited = true;
 
     // Initialize simple dependencies
+    BasePackage.eINSTANCE.eClass();
     SetupPackage.eINSTANCE.eClass();
 
     // Create package meta-data objects
@@ -217,6 +219,16 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
   public EAttribute getGitCloneTask_RestrictToCheckoutBranch()
   {
     return (EAttribute)gitCloneTaskEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getGitCloneTask_RemoteNameIsTag()
+  {
+    return (EAttribute)gitCloneTaskEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -341,6 +353,7 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
     createEAttribute(gitCloneTaskEClass, GIT_CLONE_TASK__RECURSIVE);
     createEReference(gitCloneTaskEClass, GIT_CLONE_TASK__CONFIG_SECTIONS);
     createEAttribute(gitCloneTaskEClass, GIT_CLONE_TASK__RESTRICT_TO_CHECKOUT_BRANCH);
+    createEAttribute(gitCloneTaskEClass, GIT_CLONE_TASK__REMOTE_NAME_IS_TAG);
 
     configSectionEClass = createEClass(CONFIG_SECTION);
     createEReference(configSectionEClass, CONFIG_SECTION__SUBSECTIONS);
@@ -410,6 +423,8 @@ public class GitPackageImpl extends EPackageImpl implements GitPackage
         IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getGitCloneTask_RestrictToCheckoutBranch(), ecorePackage.getEBoolean(), "restrictToCheckoutBranch", "false", 0, 1, GitCloneTask.class,
         !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getGitCloneTask_RemoteNameIsTag(), ecorePackage.getEBoolean(), "remoteNameIsTag", "false", 0, 1, GitCloneTask.class, !IS_TRANSIENT,
+        !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(configSectionEClass, ConfigSection.class, "ConfigSection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getConfigSection_Subsections(), getConfigSubsection(), null, "subsections", null, 0, -1, ConfigSection.class, !IS_TRANSIENT, !IS_VOLATILE,

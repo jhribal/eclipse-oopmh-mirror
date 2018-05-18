@@ -31,6 +31,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#isRecursive <em>Recursive</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#getConfigSections <em>Config Sections</em>}</li>
  *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#isRestrictToCheckoutBranch <em>Restrict To Checkout Branch</em>}</li>
+ *   <li>{@link org.eclipse.oomph.setup.git.GitCloneTask#isRemoteNameIsTag <em>Remote Name Is Tag</em>}</li>
  * </ul>
  *
  * @see org.eclipse.oomph.setup.git.GitPackage#getGitCloneTask()
@@ -244,5 +245,32 @@ public interface GitCloneTask extends SetupTask
    * @generated
    */
   void setRestrictToCheckoutBranch(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Remote Name Is Tag</b></em>' attribute.
+   * The default value is <code>"false"</code>.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Remote Name Is Tag</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Remote Name Is Tag</em>' attribute.
+   * @see #setRemoteNameIsTag(boolean)
+   * @see org.eclipse.oomph.setup.git.GitPackage#getGitCloneTask_RemoteNameIsTag()
+   * @model default="false"
+   * @generated
+   */
+  boolean isRemoteNameIsTag();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.oomph.setup.git.GitCloneTask#isRemoteNameIsTag <em>Remote Name Is Tag</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Remote Name Is Tag</em>' attribute.
+   * @see #isRemoteNameIsTag()
+   * @generated
+   */
+  void setRemoteNameIsTag(boolean value);
 
 } // GitCloneTask
