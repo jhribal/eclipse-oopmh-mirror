@@ -179,7 +179,7 @@
       <repositoryList
           name="Photon">
         <repository
-            url="http://download.eclipse.org/eclipse/updates/4.8-I-builds"/>
+            url="http://download.eclipse.org/eclipse/updates/4.8"/>
       </repositoryList>
       <repositoryList
           name="Oxygen">
@@ -242,7 +242,7 @@
       <repositoryList
           name="Photon">
         <repository
-            url="http://download.eclipse.org/eclipse/updates/4.8-I-builds"/>
+            url="http://download.eclipse.org/eclipse/updates/4.8"/>
       </repositoryList>
       <repositoryList
           name="Oxygen">
