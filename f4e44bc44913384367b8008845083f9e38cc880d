@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ffa055aa_35a85322",
+        "filename": "plugins/org.eclipse.oomph.setup.targlets/src/org/eclipse/oomph/setup/targlets/impl/TargletTaskImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 1167,
+      "author": {
+        "id": 1007
+      },
+      "writtenOn": "2018-07-05T13:15:19Z",
+      "side": 1,
+      "message": "should be activateTarget",
+      "range": {
+        "startLine": 1167,
+        "startChar": 41,
+        "endLine": 1167,
+        "endChar": 45
+      },
+      "revId": "f4e44bc44913384367b8008845083f9e38cc880d",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
