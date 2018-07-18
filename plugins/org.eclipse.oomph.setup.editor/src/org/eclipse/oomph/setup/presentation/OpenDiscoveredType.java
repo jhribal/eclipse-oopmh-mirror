@@ -148,7 +148,7 @@ import java.util.zip.ZipInputStream;
  */
 public class OpenDiscoveredType extends OomphDialog
 {
-  public static final String TITLE = "Open Dicovered Type";
+  public static final String TITLE = "Open Discovered Type";
 
   public static final String MESSAGE = "Search Git repositories by entering the fully qualified name of a Java class or package";
 
@@ -1409,29 +1409,29 @@ public class OpenDiscoveredType extends OomphDialog
      */
     private enum Type
     {
-      PLACEHOLDER, //
-      ROOT, //
-      PACKAGE
+    PLACEHOLDER, //
+    ROOT, //
+    PACKAGE
+    {
+      @Override
+      public String getText(String name)
       {
-        @Override
-        public String getText(String name)
-        {
-          int index = name.lastIndexOf('.');
-          return index == -1 ? name : name.substring(index + 1);
-        }
-      },
-      CLASS
+        int index = name.lastIndexOf('.');
+        return index == -1 ? name : name.substring(index + 1);
+      }
+    },
+    CLASS
+    {
+      @Override
+      public String getText(String name)
       {
-        @Override
-        public String getText(String name)
-        {
-          int index = name.lastIndexOf('.');
-          return index == -1 ? name : name.substring(index + 1);
-        }
-      },
-      FOLDER_LINK, //
-      PACKAGE_LINK, //
-      CLASS_LINK;
+        int index = name.lastIndexOf('.');
+        return index == -1 ? name : name.substring(index + 1);
+      }
+    },
+    FOLDER_LINK, //
+    PACKAGE_LINK, //
+    CLASS_LINK;
 
       public String getText(String name)
       {
