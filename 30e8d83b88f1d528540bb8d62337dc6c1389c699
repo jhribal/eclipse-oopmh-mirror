@@ -16,6 +16,24 @@
       "revId": "30e8d83b88f1d528540bb8d62337dc6c1389c699",
       "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88d5867c_36bff833",
+        "filename": "plugins/org.eclipse.oomph.setup.editor/src/org/eclipse/oomph/setup/presentation/OpenDiscoveredType.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1412,
+      "author": {
+        "id": 440
+      },
+      "writtenOn": "2018-08-21T18:53:41Z",
+      "side": 1,
+      "message": "That\u0027s what the formatter settings of that project produce running on 2018-09 M2. Since the formatter has been reimplemented like 2 years (?) ago, such changes can happen even with unchanged formatter profiles.\n\nI have reverted that save-action formatting in the second patch set. Sorry for not noticing it myself in the first place, Ed.",
+      "parentUuid": "52710627_c194b14a",
+      "revId": "30e8d83b88f1d528540bb8d62337dc6c1389c699",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
     }
   ]
 }
