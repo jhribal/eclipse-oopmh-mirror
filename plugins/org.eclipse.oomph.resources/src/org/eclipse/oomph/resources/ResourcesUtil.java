@@ -275,6 +275,7 @@ public final class ResourcesUtil
     IPath defaultDefaultLocation = root.getLocation();
     if (isPrefixOf(parentPath, defaultDefaultLocation) && isPrefixOf(defaultDefaultLocation, parentPath))
     {
+      projectName = locationPath.lastSegment();
       locationPath = null;
     }
 
