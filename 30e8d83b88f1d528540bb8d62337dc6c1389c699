@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "52710627_c194b14a",
+        "filename": "plugins/org.eclipse.oomph.setup.editor/src/org/eclipse/oomph/setup/presentation/OpenDiscoveredType.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1412,
+      "author": {
+        "id": 1220
+      },
+      "writtenOn": "2018-08-21T18:21:32Z",
+      "side": 1,
+      "message": "What happened to the formatting in this section?",
+      "revId": "30e8d83b88f1d528540bb8d62337dc6c1389c699",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
