@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8752602_efceff82",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 270217
+      },
+      "writtenOn": "2020-04-21T09:53:42Z",
+      "side": 0,
+      "message": "Still not sure about this line:\nhttps://git.eclipse.org/r/plugins/gitiles/oomph/org.eclipse.oomph/+/d5a1a811da32db5ccf54edb14edc5548c1672b84/plugins/org.eclipse.oomph.ui/src/org/eclipse/oomph/internal/ui/FindAndReplaceTarget.java#382\n\nIt seems like this label is iternalized in FindReplaceDialog:\nhttps://git.eclipse.org/c/platform/eclipse.platform.text.git/tree/org.eclipse.ui.workbench.texteditor/src/org/eclipse/ui/texteditor/EditorMessages.properties#n106\nand this logic will only work for english language. In other cases this label simply will not be replaced and there will remain an analog of the label \"Selected lines\" for the current locale (different from english one).\n\nIf you follow the current logic, you need to have access to the field EditorMessages#FindReplace_SelectedRangeRadioButton_label for proper processing, which I don\u0027t know how to organize correctly. So I just left the labels in this place without NON-NLS comments.",
+      "revId": "90252cb625c8302dfd5dc2ca1383b138d68bf6ab",
+      "serverId": "97ee7c02-f12f-4043-b43e-dea463d88b31",
+      "unresolved": false
+    }
+  ]
+}
