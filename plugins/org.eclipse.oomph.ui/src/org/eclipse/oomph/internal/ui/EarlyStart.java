@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IStartup;
 
 import java.util.LinkedHashMap;
@@ -27,13 +28,13 @@ import java.util.Map;
  */
 public class EarlyStart implements IStartup
 {
-  public static final String EXTENSION_POINT = "org.eclipse.oomph.ui.deferredEarlyStart";
+  public static final String EXTENSION_POINT = "org.eclipse.oomph.ui.deferredEarlyStart"; //$NON-NLS-1$
 
-  public static final boolean DEFERR = "true".equals(PropertiesUtil.getProperty(EXTENSION_POINT, "true"));
+  public static final boolean DEFERR = "true".equals(PropertiesUtil.getProperty(EXTENSION_POINT, "true")); //$NON-NLS-1$//$NON-NLS-2$
 
-  private static final String PRIORITY_PROPERTY = EXTENSION_POINT + ".priority";
+  private static final String PRIORITY_PROPERTY = EXTENSION_POINT + ".priority"; //$NON-NLS-1$
 
-  private static final String SCHEDULE_PROPERTY = EXTENSION_POINT + ".schedule";
+  private static final String SCHEDULE_PROPERTY = EXTENSION_POINT + ".schedule"; //$NON-NLS-1$
 
   private static final int PRIORITY;
 
@@ -42,16 +43,16 @@ public class EarlyStart implements IStartup
   static
   {
     Map<String, Integer> priorities = new LinkedHashMap<String, Integer>();
-    priorities.put("INTERACTIVE", Job.INTERACTIVE);
-    priorities.put("SHORT", Job.SHORT);
-    priorities.put("LONG", Job.LONG);
-    priorities.put("BUILD", Job.BUILD);
-    priorities.put("DECORATE", Job.DECORATE);
-    String priorityProperty = PropertiesUtil.getProperty(PRIORITY_PROPERTY, "DECORATE");
+    priorities.put("INTERACTIVE", Job.INTERACTIVE); //$NON-NLS-1$
+    priorities.put("SHORT", Job.SHORT); //$NON-NLS-1$
+    priorities.put("LONG", Job.LONG); //$NON-NLS-1$
+    priorities.put("BUILD", Job.BUILD); //$NON-NLS-1$
+    priorities.put("DECORATE", Job.DECORATE); //$NON-NLS-1$
+    String priorityProperty = PropertiesUtil.getProperty(PRIORITY_PROPERTY, "DECORATE"); //$NON-NLS-1$
     Integer priority = priorities.get(priorityProperty);
     if (priority == null)
     {
-      UIPlugin.INSTANCE.log("The value '" + priorityProperty + "' of the property " + PRIORITY_PROPERTY + " must be one of " + priorities.keySet());
+      UIPlugin.INSTANCE.log(NLS.bind(Messages.EarlyStart_valueMustBeOneOf, new Object[] { priorityProperty, PRIORITY_PROPERTY, priorities.keySet() }));
       PRIORITY = Job.DECORATE;
     }
     else
@@ -59,20 +60,20 @@ public class EarlyStart implements IStartup
       PRIORITY = priority;
     }
 
-    String scheduleProperty = PropertiesUtil.getProperty(SCHEDULE_PROPERTY, "5000");
+    String scheduleProperty = PropertiesUtil.getProperty(SCHEDULE_PROPERTY, "5000"); //$NON-NLS-1$
     long schedule;
     try
     {
       schedule = Long.parseLong(scheduleProperty);
       if (schedule < 0L)
       {
-        UIPlugin.INSTANCE.log("The value '" + scheduleProperty + "' of the property " + SCHEDULE_PROPERTY + " must be a non-negative long value");
+        UIPlugin.INSTANCE.log(NLS.bind(Messages.EarlyStart_valueMustBeNonNegative, scheduleProperty, SCHEDULE_PROPERTY));
         schedule = 5000;
       }
     }
     catch (RuntimeException ex)
     {
-      UIPlugin.INSTANCE.log("The value '" + scheduleProperty + "' of the property " + SCHEDULE_PROPERTY + " must be a non-negative long value");
+      UIPlugin.INSTANCE.log(NLS.bind(Messages.EarlyStart_valueMustBeNonNegative, scheduleProperty, SCHEDULE_PROPERTY));
       schedule = 5000L;
     }
 
@@ -83,7 +84,7 @@ public class EarlyStart implements IStartup
   {
     if (DEFERR)
     {
-      Job job = new Job("Deferred Early Start")
+      Job job = new Job(Messages.EarlyStart_jobName)
       {
         @Override
         protected IStatus run(IProgressMonitor monitor)
@@ -108,7 +109,7 @@ public class EarlyStart implements IStartup
     {
       try
       {
-        IStartup startup = (IStartup)configurationElement.createExecutableExtension("class");
+        IStartup startup = (IStartup)configurationElement.createExecutableExtension("class"); //$NON-NLS-1$
         startup.earlyStartup();
       }
       catch (Throwable throwable)
