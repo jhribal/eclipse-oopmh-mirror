@@ -76,6 +76,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -113,7 +114,7 @@ import java.util.Set;
  */
 public abstract class SetupWizard extends Wizard implements IPageChangedListener
 {
-  public static final String HELP_FOLDER = "/org.eclipse.oomph.setup.doc/html/user/wizard/";
+  public static final String HELP_FOLDER = "/org.eclipse.oomph.setup.doc/html/user/wizard/"; //$NON-NLS-1$
 
   static boolean ecfWorkAround;
 
@@ -191,7 +192,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
 
   private void initUI()
   {
-    setDefaultPageImageDescriptor(SetupUIPlugin.INSTANCE.getImageDescriptor("install_wiz.png"));
+    setDefaultPageImageDescriptor(SetupUIPlugin.INSTANCE.getImageDescriptor("install_wiz.png")); //$NON-NLS-1$
     setNeedsProgressMonitor(false);
   }
 
@@ -229,7 +230,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
       return trigger.toString();
     }
 
-    return "ALL";
+    return "ALL"; //$NON-NLS-1$
   }
 
   public void setTriggerName(String triggerName)
@@ -358,10 +359,10 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
         if (!resource.isLoaded())
         {
           URI uri = resource.getURI();
-          if ("zip".equals(uri.fileExtension()))
+          if ("zip".equals(uri.fileExtension())) //$NON-NLS-1$
           {
             configuration = SetupFactory.eINSTANCE.createConfiguration();
-            reloadIndex(URI.createURI("archive:" + uri + "!/"));
+            reloadIndex(URI.createURI("archive:" + uri + "!/")); //$NON-NLS-1$ //$NON-NLS-2$
             return configuration;
           }
           else if (SetupContext.INDEX_SETUP_NAME.equals(uri.lastSegment()))
@@ -812,7 +813,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
       Resource resource = it.next();
       if (!excludedResources.contains(resource) && (updatedResources == null || updatedResources.contains(resource)))
       {
-        if ("ecore".equals(resource.getURI().fileExtension()))
+        if ("ecore".equals(resource.getURI().fileExtension())) //$NON-NLS-1$
         {
           it.remove();
           ecoreChanged = true;
@@ -834,7 +835,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
     {
       for (Resource resource : retainedResources)
       {
-        if ("ecore".equals(resource.getURI().fileExtension()))
+        if ("ecore".equals(resource.getURI().fileExtension())) //$NON-NLS-1$
         {
           resources.remove(resource);
         }
@@ -982,7 +983,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
       {
         if (otherChildShell.isVisible() && excludedShell != otherChildShell && (otherChildShell.getStyle() & SWT.APPLICATION_MODAL) != 0)
         {
-          if (otherChildShell.getData("IndexLoaderDialogShell") != null)
+          if (otherChildShell.getData("IndexLoaderDialogShell") != null) //$NON-NLS-1$
           {
             otherChildShell.setVisible(false);
           }
@@ -1015,7 +1016,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
       }
       else
       {
-        dialogShell.setData("IndexLoaderDialogShell", progressMonitorDialog);
+        dialogShell.setData("IndexLoaderDialogShell", progressMonitorDialog); //$NON-NLS-1$
         dialogShell.setVisible(true);
       }
     }
@@ -1093,7 +1094,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
             for (Resource resource : resourceSet.getResources())
             {
               URI uri = resource.getURI();
-              if (!"ecore".equals(uri.fileExtension()))
+              if (!"ecore".equals(uri.fileExtension())) //$NON-NLS-1$
               {
                 uris.add(resource.getURI());
               }
@@ -1190,14 +1191,14 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
                               if (uri.isArchive())
                               {
                                 String authority = uri.authority();
-                                if (authority.startsWith("http:") || authority.startsWith("https:"))
+                                if (authority.startsWith("http:") || authority.startsWith("https:")) //$NON-NLS-1$ //$NON-NLS-2$
                                 {
                                   URI archiveURI = URI.createURI(authority.substring(0, authority.length() - 1));
                                   CollectionUtil.add(uriMap, eClass, archiveURI);
                                   CollectionUtil.add(resourceMap, archiveURI, resource);
                                 }
                               }
-                              else if ("http".equals(scheme) || "https".equals(scheme))
+                              else if ("http".equals(scheme) || "https".equals(scheme)) //$NON-NLS-1$ //$NON-NLS-2$
                               {
                                 // Group the URIs by object type so we can reload "the most import" types of objects first.
                                 CollectionUtil.add(uriMap, eClass, uri);
@@ -1209,7 +1210,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
                           {
                             URI uri = uriConverter.normalize(resource.getURI());
                             String scheme = uri.scheme();
-                            if ("https".equals(scheme))
+                            if ("https".equals(scheme)) //$NON-NLS-1$
                             {
                               // Group the URIs by object type so we can reload "the most import" types of objects first.
                               CollectionUtil.add(uriMap, SetupPackage.Literals.PROJECT, uri);
@@ -1457,7 +1458,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
    */
   public static class Importer extends SetupWizard implements IImportWizard
   {
-    public static final String WIZARD_ID = "org.eclipse.oomph.setup.ui.ImportWizard";
+    public static final String WIZARD_ID = "org.eclipse.oomph.setup.ui.ImportWizard"; //$NON-NLS-1$
 
     private URI projectURI;
 
@@ -1465,7 +1466,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
     {
       setTrigger(Trigger.MANUAL);
       setSetupContext(SetupContext.create(getResourceSet()));
-      setWindowTitle("Eclipse Importer");
+      setWindowTitle(Messages.SetupWizard_importer_title);
     }
 
     public void setProject(URI projectURI)
@@ -1481,7 +1482,7 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
     @Override
     public String getHelpPath()
     {
-      return HELP_FOLDER + "DocImportWizard.html";
+      return HELP_FOLDER + "DocImportWizard.html"; //$NON-NLS-1$
     }
 
     public void init(IWorkbench workbench, IStructuredSelection selection)
@@ -1526,9 +1527,9 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
     {
       public ExistingProcessPage(String title)
       {
-        super("ExistingProcess");
+        super("ExistingProcess"); //$NON-NLS-1$
         setTitle(title);
-        setErrorMessage("The " + title + " cannot be opened because another setup process is already active.");
+        setErrorMessage(NLS.bind(Messages.SetupWizard_ExistingProcessPage_errorMessage, title));
       }
 
       public void createControl(Composite parent)
@@ -1542,29 +1543,29 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
 
         Label explanation = new Label(container, SWT.WRAP);
         explanation.setLayoutData(explanationGridData);
-        explanation.setText("Another setup process is already active. If the dialog of that other process is minimized you can see it in the status bar:");
+        explanation.setText(Messages.SetupWizard_ExistingProcessPage_anotherSetupProcessAlreadyActive);
 
         Label image = new Label(container, SWT.BORDER);
         image.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-        image.setImage(SetupUIPlugin.INSTANCE.getSWTImage("existing_process.png"));
+        image.setImage(SetupUIPlugin.INSTANCE.getSWTImage("existing_process.png")); //$NON-NLS-1$
 
         new Label(container, SWT.NONE);
         new Label(container, SWT.NONE);
 
         Label suggestion = new Label(container, SWT.WRAP);
         suggestion.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, false));
-        suggestion.setText("Complete that other process before importing projects.");
+        suggestion.setText(Messages.SetupWizard_ExistingProcessPage_completeOtherProcessBeforeImporting);
 
         Button button = new Button(container, SWT.NONE);
         button.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
-        button.setText("Open Existing Setup Process");
+        button.setText(Messages.SetupWizard_ExistingProcessPage_openExistingSetupButton_text);
         button.addSelectionListener(new SelectionAdapter()
         {
           @Override
           public void widgetSelected(SelectionEvent e)
           {
             String title = getTitle();
-            String message = "Meanwhile the other setup process has finished.";
+            String message = Messages.SetupWizard_ExistingProcessPage_existingProcessFinished;
 
             Shell currentShell = getShell();
             Shell parentShell = (Shell)currentShell.getParent();
@@ -1580,7 +1581,8 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
               }
               else
               {
-                if (MessageDialog.openQuestion(parentShell, title, message + "\nDo you want to open the " + title + " again?"))
+                if (MessageDialog.openQuestion(parentShell, title,
+                    message + '\n' + NLS.bind(Messages.SetupWizard_ExistingProcessPage_doYouWantToOpenAgain, title)))
                 {
                   try
                   {
@@ -1631,26 +1633,26 @@ public abstract class SetupWizard extends Wizard implements IPageChangedListener
     {
       setTrigger(manual ? Trigger.MANUAL : Trigger.STARTUP);
       setSetupContext(SetupContext.create(getResourceSet()));
-      setWindowTitle("Eclipse Updater");
+      setWindowTitle(Messages.SetupWizard_updater_title);
     }
 
     public Updater(SetupTaskPerformer performer)
     {
       super(performer);
       openInBackground = true;
-      setWindowTitle("Eclipse Updater");
+      setWindowTitle(Messages.SetupWizard_updater_title);
     }
 
     public Updater(SetupContext setupContext)
     {
       super(setupContext);
-      setWindowTitle("Eclipse Updater");
+      setWindowTitle(Messages.SetupWizard_updater_title);
     }
 
     @Override
     public String getHelpPath()
     {
-      return HELP_FOLDER + "DocUpdateWizard.html";
+      return HELP_FOLDER + "DocUpdateWizard.html"; //$NON-NLS-1$
     }
 
     @Override
