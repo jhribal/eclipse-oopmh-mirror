@@ -27,7 +27,10 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -233,15 +236,15 @@ public class LaunchTaskImpl extends SetupTaskImpl implements LaunchTask
   {
     String launcher = getLauncher();
     ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-    ILaunchConfiguration targetLaunchConfiguration = null;
-    for (ILaunchConfiguration launchConfiguration : launchManager.getLaunchConfigurations())
+    ILaunchConfiguration targetLaunchConfiguration = getLaunchConfiguration(launcher, launchManager);
+
+    if (targetLaunchConfiguration == null)
     {
-      String name = launchConfiguration.getName();
-      if (name.equals(launcher))
-      {
-        targetLaunchConfiguration = launchConfiguration;
-        break;
-      }
+      context.log("Launcher not found wait until projects import job is finished.");
+      IJobManager jobManager = Job.getJobManager();
+      jobManager.join(org.eclipse.core.internal.events.NotificationManager.class, context.getProgressMonitor(true));
+      context.log("projects import job is finished so we look if we now find the Launcher");
+      targetLaunchConfiguration = getLaunchConfiguration(launcher, launchManager);
     }
 
     if (targetLaunchConfiguration == null)
@@ -325,5 +328,20 @@ public class LaunchTaskImpl extends SetupTaskImpl implements LaunchTask
     {
       launchPromptForErrorPreference.set(oldValue);
     }
+  }
+
+  private ILaunchConfiguration getLaunchConfiguration(String launcher, ILaunchManager launchManager) throws CoreException
+  {
+    ILaunchConfiguration targetLaunchConfiguration = null;
+    for (ILaunchConfiguration launchConfiguration : launchManager.getLaunchConfigurations())
+    {
+      String name = launchConfiguration.getName();
+      if (name.equals(launcher))
+      {
+        targetLaunchConfiguration = launchConfiguration;
+        break;
+      }
+    }
+    return targetLaunchConfiguration;
   }
 } // LaunchTaskImpl
