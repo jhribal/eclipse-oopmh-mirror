@@ -58,6 +58,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
@@ -96,15 +97,13 @@ import java.util.regex.Pattern;
  */
 public class VariablePage extends SetupWizardPage implements SetupPrompter
 {
-  private static final String BASIC_DESCRIPTION = "Enter values for the required variables.";
+  private static final String BASIC_DESCRIPTION = Messages.VariablePage_description_basic;
 
-  private static final String AUGMENTED_DESCRIPTION = BASIC_DESCRIPTION + "  Bold variables may conditionally affect the set of required variables.";
+  private static final String AUGMENTED_DESCRIPTION = BASIC_DESCRIPTION + "  " + Messages.VariablePage_description_addition; //$NON-NLS-1$
 
-  private static final String SETUP_TASK_ANALYSIS_TITLE = "Setup Task Analysis";
+  private static final URI INSTALLATION_ID_URI = URI.createURI("#~installation.id"); //$NON-NLS-1$
 
-  private static final URI INSTALLATION_ID_URI = URI.createURI("#~installation.id");
-
-  private static final URI WORKSPACE_ID_URI = URI.createURI("#~workspace.id");
+  private static final URI WORKSPACE_ID_URI = URI.createURI("#~workspace.id"); //$NON-NLS-1$
 
   private Composite composite;
 
@@ -153,8 +152,8 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
 
   public VariablePage()
   {
-    super("VariablePage");
-    setTitle("Variables");
+    super("VariablePage"); //$NON-NLS-1$
+    setTitle(Messages.VariablePage_title);
     setDescription(BASIC_DESCRIPTION);
   }
 
@@ -205,7 +204,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
   @Override
   protected void createCheckButtons(ButtonBar buttonBar)
   {
-    final Button fullPromptButton = buttonBar.addCheckButton("Show all variables", "", false, "fullPrompt");
+    final Button fullPromptButton = buttonBar.addCheckButton(Messages.VariablePage_fullPromptButton_text, "", false, "fullPrompt"); //$NON-NLS-1$ //$NON-NLS-2$
     fullPrompt = fullPromptButton.getSelection();
     fullPromptButton.addSelectionListener(new SelectionAdapter()
     {
@@ -217,7 +216,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
       }
     });
 
-    AccessUtil.setKey(fullPromptButton, "showAll");
+    AccessUtil.setKey(fullPromptButton, "showAll"); //$NON-NLS-1$
   }
 
   private synchronized boolean updateFields()
@@ -324,11 +323,11 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
                   if (choiceValue != null)
                   {
                     // Expand the choice into a pattern where the variables expand to ".*" and the rest of the value is quoted as literal.
-                    StringBuffer result = new StringBuffer("\\Q");
+                    StringBuffer result = new StringBuffer("\\Q"); //$NON-NLS-1$
                     Matcher matcher = StringExpander.STRING_EXPANSION_PATTERN.matcher(choiceValue);
                     while (matcher.find())
                     {
-                      matcher.appendReplacement(result, "\\\\E.*\\\\Q");
+                      matcher.appendReplacement(result, "\\\\E.*\\\\Q"); //$NON-NLS-1$
                     }
 
                     matcher.appendTail(result);
@@ -487,19 +486,19 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
         for (VariableTask variable : fieldHolder.getVariables())
         {
           String name = variable.getName();
-          if (name.startsWith("@<id>"))
+          if (name.startsWith("@<id>")) //$NON-NLS-1$
           {
             EAttribute eAttribute = SetupTaskPerformer.getAttributeRuleVariableData(variable);
             if (eAttribute != null)
             {
               EClass eContainingClass = eAttribute.getEContainingClass();
-              name = eContainingClass.getEPackage().getName() + "." + eContainingClass.getName() + "." + eAttribute.getName();
+              name = eContainingClass.getEPackage().getName() + "." + eContainingClass.getName() + "." + eAttribute.getName(); //$NON-NLS-1$ //$NON-NLS-2$
             }
           }
 
-          AccessUtil.setKey(label, name + ".label");
-          AccessUtil.setKey(control, name + ".control");
-          AccessUtil.setKey(helper, name + ".helper");
+          AccessUtil.setKey(label, name + ".label"); //$NON-NLS-1$
+          AccessUtil.setKey(control, name + ".control"); //$NON-NLS-1$
+          AccessUtil.setKey(helper, name + ".helper"); //$NON-NLS-1$
 
           break;
         }
@@ -543,7 +542,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
 
       setButtonState(IDialogConstants.NEXT_ID, false);
 
-      performerCreationJob = new PerformerCreationJob(SETUP_TASK_ANALYSIS_TITLE)
+      performerCreationJob = new PerformerCreationJob(Messages.VariablePage_setupTaskAnalysis_title)
       {
         @Override
         protected SetupTaskPerformer createPerformer() throws Exception
@@ -554,10 +553,9 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
         @Override
         protected Dialog createDialog()
         {
-          return createDialog(getShell(), SETUP_TASK_ANALYSIS_TITLE, null, "Analyzing the needed setup tasks has taken more than "
-              + (System.currentTimeMillis() - getStart()) / 1000
-              + " seconds.  The Next button will be disabled, though animated, until it completes.  You may continue to modify the values of the variables.",
-              MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0);
+          return createDialog(getShell(), Messages.VariablePage_setupTaskAnalysis_title, null,
+              NLS.bind(Messages.VariablePage_setupTaskAnalysis_message, (System.currentTimeMillis() - getStart()) / 1000), MessageDialog.INFORMATION,
+              new String[] { IDialogConstants.OK_LABEL }, 0);
         }
 
         @Override
@@ -728,7 +726,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
       Resource installationResource = installation.eResource();
       URI installationResourceURI = installationResource.getURI();
       installationResource
-          .setURI(URI.createFileURI(new File(performer.getProductConfigurationLocation(), "org.eclipse.oomph.setup/installation.setup").toString()));
+          .setURI(URI.createFileURI(new File(performer.getProductConfigurationLocation(), "org.eclipse.oomph.setup/installation.setup").toString())); //$NON-NLS-1$
 
       Workspace workspace = performer.getWorkspace();
       Resource workspaceResource = null;
@@ -738,7 +736,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
         workspaceResource = workspace.eResource();
         workspaceResourceURI = workspaceResource.getURI();
         workspaceResource
-            .setURI(URI.createFileURI(new File(performer.getWorkspaceLocation(), ".metadata/.plugins/org.eclipse.oomph.setup/workspace.setup").toString()));
+            .setURI(URI.createFileURI(new File(performer.getWorkspaceLocation(), ".metadata/.plugins/org.eclipse.oomph.setup/workspace.setup").toString())); //$NON-NLS-1$
       }
 
       Installation copiedInstallation = EcoreUtil.copy(installation);
@@ -790,7 +788,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
     if (fieldHolder != null && (updating || fieldHolder.isDirty()))
     {
       String value = fieldHolder.getValue();
-      if (!"".equals(value))
+      if (!"".equals(value)) //$NON-NLS-1$
       {
         return value;
       }
@@ -835,7 +833,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
         if (fieldHolder != null)
         {
           String value = fieldHolder.getValue();
-          if (!"".equals(value))
+          if (!"".equals(value)) //$NON-NLS-1$
           {
             variable.setValue(value);
           }
@@ -846,7 +844,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
         }
         else if (unusedVariables.contains(variable.getName()))
         {
-          variable.setValue(" ");
+          variable.setValue(" "); //$NON-NLS-1$
         }
         else
         {
@@ -937,7 +935,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
     {
       if (field == null)
       {
-        throw new IllegalStateException("Can't set the value of a disposed field");
+        throw new IllegalStateException("Can't set the value of a disposed field"); //$NON-NLS-1$
       }
 
       field.setFocus();
@@ -955,11 +953,11 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
 
     public void clearValue()
     {
-      initialValue = "";
+      initialValue = ""; //$NON-NLS-1$
 
       if (field != null)
       {
-        field.setValue("", false, false);
+        field.setValue("", false, false); //$NON-NLS-1$
       }
     }
 
@@ -967,7 +965,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
     {
       if (field == null)
       {
-        throw new IllegalStateException("Can't set the value of a disposed field");
+        throw new IllegalStateException("Can't set the value of a disposed field"); //$NON-NLS-1$
       }
 
       initialValue = null;
@@ -1009,7 +1007,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
         }
 
         String value = field.getValue();
-        if (!"".equals(value))
+        if (!"".equals(value)) //$NON-NLS-1$
         {
           variable.setValue(value);
         }
@@ -1066,7 +1064,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
 
           if (allAuthenticators.isEmpty())
           {
-            dispose(PreferencesUtil.encrypt(" "));
+            dispose(PreferencesUtil.encrypt(" ")); //$NON-NLS-1$
           }
         }
       }
@@ -1124,7 +1122,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
     @Override
     public String toString()
     {
-      return field == null ? "<disposed>" : field.toString();
+      return field == null ? "<disposed>" : field.toString(); //$NON-NLS-1$
     }
   }
 
@@ -1344,14 +1342,14 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
       String name = variable.getName();
       if (variable.getAnnotation(AnnotationConstants.ANNOTATION_GLOBAL_VARIABLE) != null)
       {
-        return URI.createURI("#" + name);
+        return URI.createURI("#" + name); //$NON-NLS-1$
       }
 
       Resource resource = variable.eResource();
       URI uri;
       if (resource == null)
       {
-        uri = URI.createURI("#");
+        uri = URI.createURI("#"); //$NON-NLS-1$
       }
       else
       {
@@ -1366,7 +1364,7 @@ public class VariablePage extends SetupWizardPage implements SetupPrompter
         }
       }
 
-      uri = uri.appendFragment(uri.fragment() + "~" + name);
+      uri = uri.appendFragment(uri.fragment() + "~" + name); //$NON-NLS-1$
       return uri;
     }
 
