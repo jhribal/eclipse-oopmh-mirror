@@ -39,13 +39,14 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 
 /**
  * @author Eike Stepper
  */
 public class SelfUpdate
 {
-  public static final String SELF_HOSTING = "Self Hosting";
+  public static final String SELF_HOSTING = Messages.SelfUpdate_SelfHosting_label;
 
   public static String getProductVersion()
   {
@@ -99,7 +100,7 @@ public class SelfUpdate
       Version version = iu.getVersion();
       if (buildID != null && version.getSegmentCount() > 3)
       {
-        label = version.getSegment(0) + "." + version.getSegment(1) + "." + version.getSegment(2);
+        label = version.getSegment(0) + "." + version.getSegment(1) + "." + version.getSegment(2); //$NON-NLS-1$ //$NON-NLS-2$
       }
       else
       {
@@ -108,7 +109,7 @@ public class SelfUpdate
 
       if (buildID != null)
       {
-        label += " Build " + buildID;
+        label += " Build " + buildID; //$NON-NLS-1$
       }
 
       return label;
@@ -140,10 +141,10 @@ public class SelfUpdate
     String shellText = shell.getText();
     if (!StringUtil.isEmpty(shellText))
     {
-      shellText += " ";
+      shellText += " "; //$NON-NLS-1$
     }
 
-    final UICallback callback = new UICallback(shell, shellText + "Update");
+    final UICallback callback = new UICallback(shell, MessageFormat.format(Messages.SelfUpdate_Update_title, shellText));
     callback.runInProgressDialog(false, new IRunnable()
     {
       public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException

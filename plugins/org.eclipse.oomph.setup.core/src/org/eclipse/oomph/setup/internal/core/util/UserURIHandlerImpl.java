@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -45,9 +46,9 @@ import java.util.regex.Pattern;
  */
 public class UserURIHandlerImpl extends URIHandlerImpl implements URIResolver
 {
-  private static final String FEATURE_PATTERN_SUFFIX = "='([^']*)'";
+  private static final String FEATURE_PATTERN_SUFFIX = "='([^']*)'"; //$NON-NLS-1$
 
-  private static final Pattern CLASS_PATTERN = Pattern.compile("class" + FEATURE_PATTERN_SUFFIX);
+  private static final Pattern CLASS_PATTERN = Pattern.compile("class" + FEATURE_PATTERN_SUFFIX); //$NON-NLS-1$
 
   public UserURIHandlerImpl()
   {
@@ -72,7 +73,7 @@ public class UserURIHandlerImpl extends URIHandlerImpl implements URIResolver
     if (!uriConverter.exists(normalizedURI, options))
     {
       Resource resource = create(uri, normalizedURI);
-      if (resource != null && normalizedURI.lastSegment().equals("${setup.filename}"))
+      if (resource != null && normalizedURI.lastSegment().equals("${setup.filename}")) //$NON-NLS-1$
       {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         resource.save(out, options);
@@ -157,12 +158,12 @@ public class UserURIHandlerImpl extends URIHandlerImpl implements URIResolver
       String decodedQuery = URI.decode(query);
 
       Matcher classMatcher = CLASS_PATTERN.matcher(decodedQuery);
-      URI classURI = URI.createURI(classMatcher.find() ? classMatcher.group(1) : SetupPackage.eNS_URI + "#//Project");
+      URI classURI = URI.createURI(classMatcher.find() ? classMatcher.group(1) : SetupPackage.eNS_URI + "#//Project"); //$NON-NLS-1$
 
       EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(classURI.trimFragment().toString());
       if (ePackage == null)
       {
-        throw new IllegalArgumentException("No package registered for " + classURI);
+        throw new IllegalArgumentException(MessageFormat.format(Messages.UserURIHandlerImpl_NoPackage_exception, classURI));
       }
 
       EObject eObject = ePackage.eResource().getEObject(classURI.fragment());
@@ -190,7 +191,7 @@ public class UserURIHandlerImpl extends URIHandlerImpl implements URIResolver
           ProductCatalog productCatalog = (ProductCatalog)instance;
           EList<SetupTask> setupTasks = productCatalog.getSetupTasks();
           InstallationTask installationTask = SetupFactory.eINSTANCE.createInstallationTask();
-          installationTask.setID("installation");
+          installationTask.setID("installation"); //$NON-NLS-1$
           setupTasks.add(installationTask);
         }
 
@@ -198,7 +199,7 @@ public class UserURIHandlerImpl extends URIHandlerImpl implements URIResolver
       }
       else
       {
-        throw new IllegalArgumentException("No class registered for " + classURI);
+        throw new IllegalArgumentException(MessageFormat.format(Messages.UserURIHandlerImpl_NoClass_exception, classURI));
       }
 
       return saveResource(resource);
@@ -217,7 +218,7 @@ public class UserURIHandlerImpl extends URIHandlerImpl implements URIResolver
 
   private static Resource saveResource(Resource resource)
   {
-    if (resource.getURI().lastSegment().equals("${setup.filename}"))
+    if (resource.getURI().lastSegment().equals("${setup.filename}")) //$NON-NLS-1$
     {
       return resource;
     }

@@ -42,6 +42,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -196,7 +197,7 @@ public class ReleaseManager implements IReleaseManager
       BundleDescription description = pluginModel.getBundleDescription();
       if (description == null)
       {
-        throw new IllegalStateException("No bundle description for " + pluginModel.getInstallLocation());
+        throw new IllegalStateException(MessageFormat.format(Messages.ReleaseManager_NoDescription_exception, pluginModel.getInstallLocation()));
       }
 
       String name = description.getSymbolicName();
@@ -220,7 +221,7 @@ public class ReleaseManager implements IReleaseManager
 
     String name = feature.getId();
     String versionValue = feature.getVersion();
-    Version version = new Version(StringUtil.isEmpty(versionValue) ? "1.0.0.qualifier" : versionValue);
+    Version version = new Version(StringUtil.isEmpty(versionValue) ? "1.0.0.qualifier" : versionValue); //$NON-NLS-1$
     IElement element = new Element(Type.FEATURE, name, version);
 
     if (withContent)
@@ -279,7 +280,7 @@ public class ReleaseManager implements IReleaseManager
 
     String name = product.getId();
     String versionValue = product.getVersion();
-    Version version = new Version(StringUtil.isEmpty(versionValue) ? "1.0.0.qualifier" : versionValue);
+    Version version = new Version(StringUtil.isEmpty(versionValue) ? "1.0.0.qualifier" : versionValue); //$NON-NLS-1$
     IElement element = new Element(Type.PRODUCT, name, version);
     List<IElement> children = element.getChildren();
 
@@ -288,7 +289,7 @@ public class ReleaseManager implements IReleaseManager
       String featureVersion = versionable.getVersion();
       if (StringUtil.isEmpty(featureVersion))
       {
-        featureVersion = "0.0.0";
+        featureVersion = "0.0.0"; //$NON-NLS-1$
       }
 
       Element child = new Element(IElement.Type.FEATURE, versionable.getId(), featureVersion);
@@ -305,7 +306,7 @@ public class ReleaseManager implements IReleaseManager
       String pluginVersion = versionable.getVersion();
       if (StringUtil.isEmpty(pluginVersion))
       {
-        pluginVersion = "0.0.0";
+        pluginVersion = "0.0.0"; //$NON-NLS-1$
       }
 
       Element child = new Element(IElement.Type.PLUGIN, versionable.getId(), pluginVersion, versionable.isFragment());
@@ -329,7 +330,7 @@ public class ReleaseManager implements IReleaseManager
       case PLUGIN:
       {
         IPluginModelBase model = PluginRegistry.findModel(name);
-        if (name.endsWith(".source") && model != null && model.getUnderlyingResource() == null)
+        if (name.endsWith(".source") && model != null && model.getUnderlyingResource() == null) //$NON-NLS-1$
         {
           return null;
         }
@@ -363,7 +364,7 @@ public class ReleaseManager implements IReleaseManager
           }
         }
 
-        if (name.endsWith(".source") && featureModel.getUnderlyingResource() == null)
+        if (name.endsWith(".source") && featureModel.getUnderlyingResource() == null) //$NON-NLS-1$
         {
           return null;
         }
@@ -386,7 +387,7 @@ public class ReleaseManager implements IReleaseManager
       }
       default:
       {
-        throw new IllegalStateException("Unknown element type " + element);
+        throw new IllegalStateException(MessageFormat.format(Messages.ReleaseManager_UnknownElement_exception, element));
       }
     }
   }

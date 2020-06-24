@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.util.Collections;
 
 /**
@@ -45,7 +46,7 @@ import java.util.Collections;
  */
 public class ResourceCopyTaskImpl extends SetupTaskImpl implements ResourceCopyTask
 {
-  public static final String OPTION_ZIP_CACHE = "OPTION_ZIP_CACHE";
+  public static final String OPTION_ZIP_CACHE = "OPTION_ZIP_CACHE"; //$NON-NLS-1$
 
   /**
    * The default value of the '{@link #isForce() <em>Force</em>}' attribute.
@@ -303,11 +304,11 @@ public class ResourceCopyTaskImpl extends SetupTaskImpl implements ResourceCopyT
     }
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (force: ");
+    result.append(" (force: "); //$NON-NLS-1$
     result.append(force);
-    result.append(", sourceURL: ");
+    result.append(", sourceURL: "); //$NON-NLS-1$
     result.append(sourceURL);
-    result.append(", targetURL: ");
+    result.append(", targetURL: "); //$NON-NLS-1$
     result.append(targetURL);
     result.append(')');
     return result.toString();
@@ -335,7 +336,7 @@ public class ResourceCopyTaskImpl extends SetupTaskImpl implements ResourceCopyT
     if (uri.isArchive())
     {
       String authority = uri.authority();
-      if (authority != null && authority.endsWith("!"))
+      if (authority != null && authority.endsWith("!")) //$NON-NLS-1$
       {
         URI archiveURI = URI.createURI(authority.substring(0, authority.length() - 1));
         archiveURI.appendQuery(uri.query());
@@ -415,44 +416,44 @@ public class ResourceCopyTaskImpl extends SetupTaskImpl implements ResourceCopyT
           URI archiveURI = getArchiveURI(normalizedSourceURI);
           if (isFile(archiveURI))
           {
-            context.log("Unzipping resource " + normalizedSourceURI + " to " + normalizedTargetURI);
+            context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_UnzippingResource_message, normalizedSourceURI, normalizedTargetURI));
             ZIPUtil.unzip(new File(archiveURI.toFileString()), new File(normalizedTargetURI.toFileString()));
           }
           else
           {
-            File tempZipFile = File.createTempFile("archive", "zip");
-            context.log("Downloading resource " + uriConverter.normalize(archiveURI) + " to temp file " + tempZipFile);
+            File tempZipFile = File.createTempFile("archive", "zip"); //$NON-NLS-1$ //$NON-NLS-2$
+            context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_DownloadingResource_message, uriConverter.normalize(archiveURI), tempZipFile));
             copy(uriConverter, archiveURI, URI.createFileURI(tempZipFile.getAbsolutePath()));
 
-            context.log("Unzipping temp file " + tempZipFile + " to " + normalizedTargetURI);
+            context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_UnzippingTempFile_message, tempZipFile, normalizedTargetURI));
             ZIPUtil.unzip(tempZipFile, new File(normalizedTargetURI.toFileString()));
           }
         }
         else if (isFile(normalizedTargetURI) && isFile(normalizedSourceURI))
         {
-          context.log("Copying folder " + normalizedSourceURI + " to " + normalizedTargetURI);
+          context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_CopyingFolder_message, normalizedSourceURI, normalizedTargetURI));
           IOUtil.copyTree(new File(normalizedSourceURI.toFileString()), new File(normalizedTargetURI.toFileString()));
         }
         else
         {
-          context.log("Unsupported copying folder " + normalizedSourceURI + " to " + normalizedTargetURI);
+          context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_UnsupportedCopyingFolder_message, normalizedSourceURI, normalizedTargetURI));
         }
       }
       else if (uriConverter.exists(sourceURI, null))
       {
         URI targetResourceURI = targetURI.appendSegment(sourceURI.lastSegment());
-        context.log("Copying resource " + normalizedSourceURI + " to " + uriConverter.normalize(targetResourceURI));
+        context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_CopyingResource_message, normalizedSourceURI, uriConverter.normalize(targetResourceURI)));
         copy(uriConverter, sourceURI, targetResourceURI);
       }
     }
     else if (uriConverter.exists(sourceURI, null))
     {
-      context.log("Copying resource " + normalizedSourceURI + " to " + normalizedTargetURI);
+      context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_CopyingResource_message, normalizedSourceURI, normalizedTargetURI));
       copy(uriConverter, sourceURI, targetURI);
     }
     else
     {
-      context.log("Cannot copy non-existing " + normalizedSourceURI + " to " + normalizedTargetURI);
+      context.log(MessageFormat.format(Messages.ResourceCopyTaskImpl_CannotCopy_message, normalizedSourceURI, normalizedTargetURI));
     }
   }
 } // ResourceCopyTaskImpl

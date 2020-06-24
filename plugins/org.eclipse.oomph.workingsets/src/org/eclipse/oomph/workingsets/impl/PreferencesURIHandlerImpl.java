@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
   @Override
   public boolean canHandle(URI uri)
   {
-    return "preference".equals(uri.scheme());
+    return "preference".equals(uri.scheme()); //$NON-NLS-1$
   }
 
   protected static class PreferenceAccessor
@@ -99,7 +100,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
       @Override
       public void close() throws IOException
       {
-        accessor.put(new String(toByteArray(), "UTF-8"));
+        accessor.put(new String(toByteArray(), "UTF-8")); //$NON-NLS-1$
       }
     };
   }
@@ -111,7 +112,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
     String value = new PreferenceAccessor(preferencePath).get();
     if (value == null)
     {
-      throw new IOException("No preference value available for " + preferencePath);
+      throw new IOException(MessageFormat.format(Messages.PreferencesURIHandlerImpl_NoPreferenceAvailable_exception, preferencePath));
     }
     return new URIConverter.ReadableInputStream(value);
   }

@@ -21,6 +21,7 @@ import org.eclipse.equinox.p2.core.spi.IAgentServiceFactory;
 import org.eclipse.equinox.p2.engine.IProfileRegistry;
 
 import java.io.File;
+import java.text.MessageFormat;
 
 /**
  * Instantiates default instances of {@link IProfileRegistry}.
@@ -30,7 +31,7 @@ import java.io.File;
 @SuppressWarnings("restriction")
 public class LazyProfileRegistryComponent implements IAgentServiceFactory
 {
-  public static final String PROP_LAZY_PROFILE_REGISTRY = "oomph.p2.lazy.profile.registry";
+  public static final String PROP_LAZY_PROFILE_REGISTRY = "oomph.p2.lazy.profile.registry"; //$NON-NLS-1$
 
   public Object createService(IProvisioningAgent agent)
   {
@@ -43,12 +44,12 @@ public class LazyProfileRegistryComponent implements IAgentServiceFactory
     }
     catch (RuntimeException ex)
     {
-      throw new RuntimeException("Problem creating registry directory for '" + location + "'", ex);
+      throw new RuntimeException(MessageFormat.format(Messages.LazyProfileRegistryComponent_ProblemCreatingDirecgtory_exception, location), ex);
     }
 
     SimpleProfileRegistry registry = null;
 
-    boolean isLazySupported = !"false".equals(PropertiesUtil.getProperty(PROP_LAZY_PROFILE_REGISTRY));
+    boolean isLazySupported = !"false".equals(PropertiesUtil.getProperty(PROP_LAZY_PROFILE_REGISTRY)); //$NON-NLS-1$
     if (isLazySupported)
     {
       try

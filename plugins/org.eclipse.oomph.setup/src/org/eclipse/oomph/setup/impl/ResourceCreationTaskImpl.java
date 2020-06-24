@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.MessageFormat;
 
 /**
  * <!-- begin-user-doc -->
@@ -372,11 +373,11 @@ public class ResourceCreationTaskImpl extends SetupTaskImpl implements ResourceC
     }
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (content: ");
+    result.append(" (content: "); //$NON-NLS-1$
     result.append(line);
-    result.append(", targetURL: ");
+    result.append(", targetURL: "); //$NON-NLS-1$
     result.append(targetURL);
-    result.append(", encoding: ");
+    result.append(", encoding: "); //$NON-NLS-1$
     result.append(encoding);
     result.append(')');
     return result.toString();
@@ -405,15 +406,15 @@ public class ResourceCreationTaskImpl extends SetupTaskImpl implements ResourceC
     URI targetURI = createResolvedURI(getTargetURL());
     URIConverter uriConverter = context.getURIConverter();
 
-    context.log("Creating " + uriConverter.normalize(targetURI));
+    context.log(MessageFormat.format(Messages.ResourceCreationTaskImpl_Creating_message, uriConverter.normalize(targetURI)));
 
     String content = getContent();
     OutputStream outputStream = uriConverter.createOutputStream(targetURI);
     String encoding = getEncoding();
-    if ("base64".equals(encoding))
+    if ("base64".equals(encoding)) //$NON-NLS-1$
     {
       // Remove all whitespace.
-      content = content.replaceAll("\\s", "");
+      content = content.replaceAll("\\s", ""); //$NON-NLS-1$ //$NON-NLS-2$
       byte[] bytes = XMLTypeFactory.eINSTANCE.createBase64Binary(content);
       outputStream.write(bytes);
     }

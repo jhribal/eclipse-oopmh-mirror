@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileLock;
+import java.text.MessageFormat;
 
 /**
  * @author Eike Stepper
@@ -54,7 +55,7 @@ public final class LockFile
         lock = stream.getChannel().tryLock();
         if (lock == null)
         {
-          throw new IOException(file + " could not be locked");
+          throw new IOException(MessageFormat.format(Messages.LockFile_CannotLock_exception, file));
         }
       }
       catch (IOException ex)

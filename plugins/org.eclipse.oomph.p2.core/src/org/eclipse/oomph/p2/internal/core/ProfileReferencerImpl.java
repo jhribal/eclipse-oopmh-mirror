@@ -13,6 +13,7 @@ package org.eclipse.oomph.p2.internal.core;
 import org.eclipse.oomph.p2.P2Exception;
 
 import java.io.File;
+import java.text.MessageFormat;
 
 /**
  * @author Eike Stepper
@@ -31,12 +32,12 @@ public class ProfileReferencerImpl extends PersistentMap<Boolean> implements Pro
     {
       if (directory && !file.isDirectory())
       {
-        throw new P2Exception("Not a directory: " + file);
+        throw new P2Exception(MessageFormat.format(Messages.ProfileReferencerImpl_NotDirectory_exception, file));
       }
 
       if (!directory && file.isDirectory())
       {
-        throw new P2Exception("Not a file: " + file);
+        throw new P2Exception(MessageFormat.format(Messages.ProfileReferencerImpl_NotFile_exception, file));
       }
     }
 

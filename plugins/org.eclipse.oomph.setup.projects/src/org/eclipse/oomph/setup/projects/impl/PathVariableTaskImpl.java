@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 import java.net.URI;
+import java.text.MessageFormat;
 
 /**
  * <!-- begin-user-doc -->
@@ -242,9 +243,9 @@ public class PathVariableTaskImpl extends SetupTaskImpl implements PathVariableT
     }
 
     StringBuilder result = new StringBuilder(super.toString());
-    result.append(" (name: ");
+    result.append(" (name: "); //$NON-NLS-1$
     result.append(name);
-    result.append(", uRI: ");
+    result.append(", uRI: "); //$NON-NLS-1$
     result.append(uRI);
     result.append(')');
     return result.toString();
@@ -273,7 +274,7 @@ public class PathVariableTaskImpl extends SetupTaskImpl implements PathVariableT
   {
     String name = getName();
     String uri = getURI();
-    context.log("Setting path variable " + name + " = " + uri);
+    context.log(MessageFormat.format(Messages.PathVariableTaskImpl_SettingPathVariable_message, name, uri));
 
     IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
     pathVariableManager.setURIValue(name, uri == null ? null : new URI(uri));

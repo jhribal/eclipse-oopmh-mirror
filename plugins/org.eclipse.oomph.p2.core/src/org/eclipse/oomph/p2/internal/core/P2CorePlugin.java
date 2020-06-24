@@ -30,6 +30,7 @@ import org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapt
 import org.osgi.framework.BundleContext;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,20 +56,20 @@ public final class P2CorePlugin extends OomphPlugin
 
   public static File getUserStateFolder(File userHome)
   {
-    File folder = new File(userHome, ".eclipse/org.eclipse.oomph.p2");
+    File folder = new File(userHome, ".eclipse/org.eclipse.oomph.p2"); //$NON-NLS-1$
 
     try
     {
       // TODO Remove this legacy migration for 1.0 release
       if (!folder.exists())
       {
-        File oldFolder = new File(folder.getAbsolutePath() + ".core");
+        File oldFolder = new File(folder.getAbsolutePath() + ".core"); //$NON-NLS-1$
         if (oldFolder.isDirectory())
         {
           IOUtil.copyTree(oldFolder, folder);
 
-          String message = "The '" + folder.getName() + "' folder is used instead of this folder!";
-          IOUtil.writeFile(new File(oldFolder, "readme.txt"), message.getBytes());
+          String message = MessageFormat.format(Messages.P2CorePlugin_OldFolder_message, folder.getName());
+          IOUtil.writeFile(new File(oldFolder, "readme.txt"), message.getBytes()); //$NON-NLS-1$
         }
       }
     }

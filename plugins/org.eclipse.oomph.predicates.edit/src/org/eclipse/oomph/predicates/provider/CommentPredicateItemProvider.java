@@ -20,6 +20,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -69,7 +70,8 @@ public class CommentPredicateItemProvider extends PredicateItemProvider
   protected void addPatternPropertyDescriptor(Object object)
   {
     itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-        getString("_UI_CommentPredicate_pattern_feature"), getString("_UI_CommentPredicate_pattern_description"),
+        getString("_UI_CommentPredicate_pattern_feature"), //$NON-NLS-1$
+        getString("_UI_CommentPredicate_pattern_description"), //$NON-NLS-1$
         PredicatesPackage.Literals.COMMENT_PREDICATE__PATTERN, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
   }
 
@@ -82,7 +84,7 @@ public class CommentPredicateItemProvider extends PredicateItemProvider
   @Override
   public Object getImage(Object object)
   {
-    return overlayImage(object, getResourceLocator().getImage("full/obj16/CommentPredicate"));
+    return overlayImage(object, getResourceLocator().getImage("full/obj16/CommentPredicate")); //$NON-NLS-1$
   }
 
   /**
@@ -106,7 +108,8 @@ public class CommentPredicateItemProvider extends PredicateItemProvider
   public String getText(Object object)
   {
     String label = ((CommentPredicate)object).getPattern();
-    return label == null || label.length() == 0 ? getString("_UI_CommentPredicate_type") : "Comment like " + label;
+    return label == null || label.length() == 0 ? getString("_UI_CommentPredicate_type") //$NON-NLS-1$
+        : MessageFormat.format(Messages.CommentPredicateItemProvider_CommentLike_label, label);
   }
 
   /**

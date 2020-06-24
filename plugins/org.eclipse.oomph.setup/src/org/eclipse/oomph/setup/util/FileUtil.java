@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,7 @@ public final class FileUtil
 
   public static File rename(File from) throws IOException, InterruptedException
   {
-    File to = new File(from.getParentFile(), from.getName() + "." + System.currentTimeMillis());
+    File to = new File(from.getParentFile(), from.getName() + "." + System.currentTimeMillis()); //$NON-NLS-1$
     rename(from, to);
     return to;
   }
@@ -54,12 +55,12 @@ public final class FileUtil
       }
     }
 
-    throw new IOException("Could not rename '" + from.getAbsolutePath() + "' to '" + to.getAbsolutePath() + "'");
+    throw new IOException(MessageFormat.format(Messages.FileUtil_CouldNotRename_exception, from.getAbsolutePath(), to.getAbsolutePath()));
   }
 
   public static void deleteAsync(final File file) throws IOException, InterruptedException
   {
-    new Job("Deleting old files")
+    new Job(Messages.FileUtil_DeletingOldFilesJob_name)
     {
       @Override
       protected IStatus run(IProgressMonitor monitor)
@@ -94,10 +95,10 @@ public final class FileUtil
 
     if (verbose)
     {
-      String message = "";
+      String message = ""; //$NON-NLS-1$
       if (file.isDirectory() && size > 1)
       {
-        message = "Deleting files in " + file.getAbsolutePath();
+        message = MessageFormat.format(Messages.FileUtil_DeletingFilesIn_task, file.getAbsolutePath());
       }
 
       monitor.beginTask(message, size);
@@ -113,7 +114,7 @@ public final class FileUtil
         if (verbose)
         {
           String childPath = child.getAbsolutePath();
-          monitor.setTaskName("Deleting file " + childPath);
+          monitor.setTaskName(MessageFormat.format(Messages.FileUtil_DeletingFile_task, childPath));
         }
 
         doDelete(child);
@@ -141,7 +142,7 @@ public final class FileUtil
       Thread.sleep(5);
     }
 
-    throw new IOException("Could not delete '" + file.getAbsolutePath() + "'");
+    throw new IOException(MessageFormat.format(Messages.FileUtil_CouldNotDelete_exception, file.getAbsolutePath()));
   }
 
   private static List<File> listAllFiles(File file)

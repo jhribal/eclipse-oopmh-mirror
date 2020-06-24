@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IProjectNatureDescriptor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -76,7 +77,7 @@ public class NaturePredicateItemProvider extends PredicateItemProvider
   protected void addNaturePropertyDescriptor(Object object)
   {
     itemPropertyDescriptors.add(new ItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-        getString("_UI_NaturePredicate_nature_feature"), getString("_UI_NaturePredicate_nature_description"),
+        getString("_UI_NaturePredicate_nature_feature"), getString("_UI_NaturePredicate_nature_description"), //$NON-NLS-1$ //$NON-NLS-2$
         PredicatesPackage.Literals.NATURE_PREDICATE__NATURE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null)
     {
       @Override
@@ -101,7 +102,7 @@ public class NaturePredicateItemProvider extends PredicateItemProvider
   @Override
   public Object getImage(Object object)
   {
-    return overlayImage(object, getResourceLocator().getImage("full/obj16/NaturePredicate"));
+    return overlayImage(object, getResourceLocator().getImage("full/obj16/NaturePredicate")); //$NON-NLS-1$
   }
 
   /**
@@ -125,7 +126,8 @@ public class NaturePredicateItemProvider extends PredicateItemProvider
   public String getText(Object object)
   {
     String label = ((NaturePredicate)object).getNature();
-    return label == null || label.length() == 0 ? getString("_UI_NaturePredicate_type") : "Has nature " + label;
+    return label == null || label.length() == 0 ? getString("_UI_NaturePredicate_type") //$NON-NLS-1$
+        : MessageFormat.format(Messages.NaturePredicateItemProvider_HasNature_label, label);
   }
 
   /**

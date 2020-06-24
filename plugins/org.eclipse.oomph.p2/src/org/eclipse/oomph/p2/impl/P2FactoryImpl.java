@@ -32,6 +32,8 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
+import java.text.MessageFormat;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Factory</b>.
@@ -95,7 +97,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
       case P2Package.REPOSITORY:
         return createRepository();
       default:
-        throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+        throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
@@ -120,7 +122,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
       case P2Package.VERSION_RANGE:
         return createVersionRangeFromString(eDataType, initialValue);
       default:
-        throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+        throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
@@ -145,7 +147,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
       case P2Package.VERSION_RANGE:
         return convertVersionRangeToString(eDataType, instanceValue);
       default:
-        throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+        throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
@@ -276,7 +278,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
     RepositoryType result = RepositoryType.get(initialValue);
     if (result == null)
     {
-      throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+      throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     return result;
   }
@@ -301,7 +303,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
     VersionSegment result = VersionSegment.get(initialValue);
     if (result == null)
     {
-      throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+      throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     return result;
   }
@@ -326,7 +328,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
     RequirementType result = RequirementType.get(initialValue);
     if (result == null)
     {
-      throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+      throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     return result;
   }
@@ -390,7 +392,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 
     if (!version.isOSGiCompatible())
     {
-      throw new P2Exception("Version not OSGi-compatible: " + version);
+      throw new P2Exception(MessageFormat.format(Messages.P2FactoryImpl_IncompatibleVersion_exception, version));
     }
 
     org.osgi.framework.Version osgiVersion = new org.osgi.framework.Version(version.toString());
@@ -412,7 +414,7 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
             compatible ? Version.createOSGi(major + 1, 0, 0) : Version.createOSGi(major, minor, micro + 1), false);
 
       default:
-        throw new P2Exception("Invalid segment: " + segment);
+        throw new P2Exception(MessageFormat.format(Messages.P2FactoryImpl_InvalidSegment_exception, segment));
     }
   }
 

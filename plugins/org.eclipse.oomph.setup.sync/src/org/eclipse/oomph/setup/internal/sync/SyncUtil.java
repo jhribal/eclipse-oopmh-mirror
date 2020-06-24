@@ -41,6 +41,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 
 /**
  * @author Eike Stepper
@@ -54,16 +55,16 @@ public final class SyncUtil
   {
   }
 
-  private static final String PROP_HTTP_AUTH_NTLM_DOMAIN = "http.auth.ntlm.domain";
+  private static final String PROP_HTTP_AUTH_NTLM_DOMAIN = "http.auth.ntlm.domain"; //$NON-NLS-1$
 
-  private static final String ENV_USER_DOMAIN = "USERDOMAIN";
+  private static final String ENV_USER_DOMAIN = "USERDOMAIN"; //$NON-NLS-1$
 
-  private static final String DOUBLE_BACKSLASH = "\\\\";
+  private static final String DOUBLE_BACKSLASH = "\\\\"; //$NON-NLS-1$
 
   public static ResourceSet createResourceSet()
   {
     ResourceSet resourceSet = new ResourceSetImpl();
-    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new BaseResourceFactoryImpl());
+    resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("*", new BaseResourceFactoryImpl()); //$NON-NLS-1$
     return resourceSet;
   }
 
@@ -113,7 +114,7 @@ public final class SyncUtil
     {
       if (!file.delete())
       {
-        throw new IOException("Could not delete file " + file);
+        throw new IOException(MessageFormat.format(Messages.SyncUtil_CouldNotDelete_exception, file));
       }
     }
   }
@@ -142,7 +143,7 @@ public final class SyncUtil
         String password = proxy.getPassword();
         String workstation = getWorkstation();
         String domain = getUserDomain(proxyUserID);
-        return executor.auth(new AuthScope(proxyHost, AuthScope.ANY_REALM, "ntlm"), new NTCredentials(userID, password, workstation, domain))
+        return executor.auth(new AuthScope(proxyHost, AuthScope.ANY_REALM, "ntlm"), new NTCredentials(userID, password, workstation, domain)) //$NON-NLS-1$
             .auth(new AuthScope(proxyHost, AuthScope.ANY_REALM, AuthScope.ANY_SCHEME), new UsernamePasswordCredentials(userID, password));
       }
     }

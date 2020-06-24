@@ -32,6 +32,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.text.MessageFormat;
 
 /**
  * <!-- begin-user-doc -->
@@ -97,7 +98,7 @@ public abstract class XMLProjectFactoryImpl extends ProjectFactoryImpl implement
     }
     catch (Exception ex)
     {
-      String message = "Problem parsing " + (xmlFile != null ? xmlFile : xmlFilePath);
+      String message = MessageFormat.format(Messages.XMLProjectFactoryImpl_ProblemParsing_exception, xmlFile != null ? xmlFile : xmlFilePath);
       ResourcesPlugin.INSTANCE.log(new Exception(message, ex));
     }
 

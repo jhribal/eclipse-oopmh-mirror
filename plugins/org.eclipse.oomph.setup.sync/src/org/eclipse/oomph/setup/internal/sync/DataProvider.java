@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EClass;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.text.MessageFormat;
 
 /**
  * @author Eike Stepper
@@ -76,7 +77,7 @@ public interface DataProvider
 
     public NotFoundException(URI uri)
     {
-      super("Not found: " + uri);
+      super(MessageFormat.format(Messages.DataProvider_NotFound_exception, uri));
     }
   }
 
@@ -89,7 +90,7 @@ public interface DataProvider
 
     public NotCurrentException(URI uri)
     {
-      super("Not current: " + uri);
+      super(MessageFormat.format(Messages.DataProvider_NotCurrent_exception, uri));
     }
   }
 }

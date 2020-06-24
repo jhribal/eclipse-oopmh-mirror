@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
 
@@ -69,7 +70,8 @@ public class ProjectConfigURIHandlerImpl extends URIHandlerImpl
 
       return new ProjectConfigInput();
     }
-    throw new IOException("No preference value available for ");
+
+    throw new IOException(MessageFormat.format(Messages.ProjectConfigURIHandlerImpl_Unavailable_exception, uri));
   }
 
   @Override
@@ -94,20 +96,20 @@ public class ProjectConfigURIHandlerImpl extends URIHandlerImpl
         @Override
         public void write(int b) throws IOException
         {
-          throw new IOException("Write not supported");
+          throw new IOException(Messages.ProjectConfigURIHandlerImpl_WriteNotSupported_exception);
         }
       }
 
       return new ProjectConfigOutput();
     }
 
-    throw new IOException("Output not supported");
+    throw new IOException(Messages.ProjectConfigURIHandlerImpl_OutputNotSupported_exception);
   }
 
   @Override
   public void delete(URI uri, Map<?, ?> options) throws IOException
   {
-    throw new IOException("Delete not supported");
+    throw new IOException(Messages.ProjectConfigURIHandlerImpl_DeleteNotSupported_exception);
   }
 
   @Override

@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
 
@@ -52,13 +53,13 @@ public final class DownloadUtil
 
   public static File downloadURL(String url, ProgressLog progress)
   {
-    String normalizedURL = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+    String normalizedURL = url.endsWith("/") ? url.substring(0, url.length() - 1) : url; //$NON-NLS-1$
 
     try
     {
       String name = encodeFilename(url);
-      File tmp = File.createTempFile(name + "-", ".part");
-      File file = new File(tmp.getParentFile(), name + ".zip");
+      File tmp = File.createTempFile(name + "-", ".part"); //$NON-NLS-1$ //$NON-NLS-2$
+      File file = new File(tmp.getParentFile(), name + ".zip"); //$NON-NLS-1$
       if (!file.exists())
       {
         try
@@ -121,7 +122,7 @@ public final class DownloadUtil
             int result = ((HttpURLConnection)connection).getResponseCode();
             if (result >= HTTP_ERROR_BASE_CODE)
             {
-              throw new IOException("HTTP error " + result);
+              throw new IOException(MessageFormat.format(Messages.DownloadUtil_HTTPError_exception, result));
             }
           }
 
@@ -135,7 +136,7 @@ public final class DownloadUtil
         catch (SocketTimeoutException ex)
         {
           exception = ex;
-          progress.log("Connection timed out. Retrying in 2 seconds...");
+          progress.log(Messages.DownloadUtil_ConnectionTimeout_message);
 
           try
           {
@@ -172,7 +173,7 @@ public final class DownloadUtil
         }
         catch (SocketTimeoutException ex)
         {
-          progress.log("Timeout during read after " + (System.currentTimeMillis() - startRead) + " millis");
+          progress.log(MessageFormat.format(Messages.DownloadUtil_TimeoutDuringRead_message, System.currentTimeMillis() - startRead));
           throw ex;
         }
 
@@ -182,13 +183,13 @@ public final class DownloadUtil
         int percent = Math.round(factor * read);
         if (percent != lastPercent)
         {
-          progress.log("Downloading " + fileName + " (" + percent + "%)");
+          progress.log(MessageFormat.format(Messages.DownloadUtil_Downloading_message, fileName, percent));
         }
       }
     }
     catch (IOException ex)
     {
-      throw new RuntimeException("Problem downloading '" + url + "'", ex);
+      throw new RuntimeException(MessageFormat.format(Messages.DownloadUtil_ProblemDownloading_message, url), ex);
     }
     finally
     {

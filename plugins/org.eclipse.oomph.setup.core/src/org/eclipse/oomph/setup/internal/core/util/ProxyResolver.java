@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
 
   public void begin(IProgressMonitor monitor)
   {
-    final String taskName = "Resolving";
+    final String taskName = Messages.ProxyResolver_Resolving_task;
     super.begin(taskName, monitor);
   }
 
@@ -68,8 +69,8 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
   protected void run(String taskName, final IProgressMonitor monitor)
   {
     final EList<Resource> resources = resourceSet.getResources();
-    monitor.setTaskName("Resolving");
-    monitor.subTask("Resolving proxies of " + resources.size() + " resources");
+    monitor.setTaskName(Messages.ProxyResolver_Resolving_task);
+    monitor.subTask(MessageFormat.format(Messages.ProxyResolver_ResolvingProxies_task, resources.size()));
 
     Adapter adapter = new AdapterImpl()
     {
@@ -80,7 +81,7 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
         {
           Resource resource = (Resource)notification.getNewValue();
           schedule(resource);
-          monitor.subTask("Resolving proxies of " + resources.size() + " resources");
+          monitor.subTask(MessageFormat.format(Messages.ProxyResolver_ResolvingProxies_task, resources.size()));
         }
       }
     };
@@ -111,7 +112,7 @@ public class ProxyResolver extends WorkerPool<ProxyResolver, Resource, ProxyReso
 
     private ResolveJob(ProxyResolver proxyResolver, Resource resource, int id, boolean secondary)
     {
-      super("Resolver", proxyResolver, resource, id, secondary);
+      super(Messages.ProxyResolver_Resolver_job, proxyResolver, resource, id, secondary);
       resourceSet = getWorkPool().getResourceSet();
     }
 

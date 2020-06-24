@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
   @Override
   public boolean canHandle(URI uri)
   {
-    return "preference".equals(uri.scheme());
+    return "preference".equals(uri.scheme()); //$NON-NLS-1$
   }
 
   protected static class PreferenceAccessor
@@ -70,7 +71,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
       String[] segments = uri.segments();
       int last = segments.length - 1;
 
-      if ("secure".equals(segments[0]))
+      if ("secure".equals(segments[0])) //$NON-NLS-1$
       {
         ISecurePreferences node = PreferencesUtil.getSecurePreferences();
         for (int i = 1; i < last; ++i)
@@ -81,7 +82,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
         preferences = null;
         securePreferences = node;
 
-        isEncrypted = !"encrypted=false".equals(uri.query());
+        isEncrypted = !"encrypted=false".equals(uri.query()); //$NON-NLS-1$
       }
       else
       {
@@ -212,13 +213,13 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
     String value = new PreferenceAccessor(preferencePath).get();
     if (value == null)
     {
-      throw new IOException("No preference value available for " + preferencePath);
+      throw new IOException("No preference value available for " + preferencePath); //$NON-NLS-1$
     }
     return new URIConverter.ReadableInputStream(value);
   }
 
   @Override
-  public OutputStream createOutputStream(URI uri, Map<?, ?> options) throws IOException
+  public OutputStream createOutputStream(final URI uri, Map<?, ?> options) throws IOException
   {
     if (uri.segmentCount() == 1)
     {
@@ -282,7 +283,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
         @Override
         public void write(int b) throws IOException
         {
-          throw new IOException("Streamed output not supported");
+          throw new IOException(MessageFormat.format(Messages.PreferencesURIHandlerImpl_UnsupportedStreaming_exception, uri));
         }
       }
 
@@ -298,7 +299,7 @@ public class PreferencesURIHandlerImpl extends URIHandlerImpl
         super.close();
         accessor.put(toString());
       }
-    }, "UTF-8");
+    }, "UTF-8"); //$NON-NLS-1$
   }
 
   @Override

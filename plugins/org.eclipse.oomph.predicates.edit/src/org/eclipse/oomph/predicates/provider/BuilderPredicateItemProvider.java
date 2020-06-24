@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -79,7 +80,7 @@ public class BuilderPredicateItemProvider extends PredicateItemProvider
   protected void addBuilderPropertyDescriptor(Object object)
   {
     itemPropertyDescriptors.add(new ItemPropertyDescriptor(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-        getString("_UI_BuilderPredicate_builder_feature"), getString("_UI_BuilderPredicate_builder_description"),
+        getString("_UI_BuilderPredicate_builder_feature"), getString("_UI_BuilderPredicate_builder_description"), //$NON-NLS-1$ //$NON-NLS-2$
         PredicatesPackage.Literals.BUILDER_PREDICATE__BUILDER, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null)
     {
       @Override
@@ -119,7 +120,7 @@ public class BuilderPredicateItemProvider extends PredicateItemProvider
   @Override
   public Object getImage(Object object)
   {
-    return overlayImage(object, getResourceLocator().getImage("full/obj16/BuilderPredicate"));
+    return overlayImage(object, getResourceLocator().getImage("full/obj16/BuilderPredicate")); //$NON-NLS-1$
   }
 
   /**
@@ -143,7 +144,7 @@ public class BuilderPredicateItemProvider extends PredicateItemProvider
   public String getText(Object object)
   {
     String label = ((BuilderPredicate)object).getBuilder();
-    return label == null || label.length() == 0 ? getString("_UI_BuilderPredicate_type") : "Has builder " + label;
+    return label == null || label.length() == 0 ? getString("_UI_BuilderPredicate_type") : MessageFormat.format(Messages.BuilderPredicateItemProvider_HasBuild_label, label); //$NON-NLS-1$
   }
 
   /**

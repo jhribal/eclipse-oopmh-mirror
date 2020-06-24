@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.text.MessageFormat;
 
 /**
  * Various static helper methods for dealing with Java reflection.
@@ -60,7 +61,7 @@ public final class ReflectUtil
     catch (InvocationTargetException ex)
     {
       Throwable cause = ex.getCause();
-      if (cause != null && "org.eclipse.core.runtime.OperationCanceledException".equals(cause.getClass().getName()))
+      if (cause != null && "org.eclipse.core.runtime.OperationCanceledException".equals(cause.getClass().getName())) //$NON-NLS-1$
       {
         throw (RuntimeException)cause;
       }
@@ -124,7 +125,7 @@ public final class ReflectUtil
     catch (InvocationTargetException ex)
     {
       Throwable cause = ex.getCause();
-      if (cause != null && "org.eclipse.core.runtime.OperationCanceledException".equals(cause.getClass().getName()))
+      if (cause != null && "org.eclipse.core.runtime.OperationCanceledException".equals(cause.getClass().getName())) //$NON-NLS-1$
       {
         throw (RuntimeException)cause;
       }
@@ -203,7 +204,7 @@ public final class ReflectUtil
       Field field = getField((Class<?>)target, fieldName);
       if (field == null)
       {
-        throw new ReflectionException("No field " + fieldName);
+        throw new ReflectionException(MessageFormat.format(Messages.ReflectUtil_NoField_exception, fieldName));
       }
 
       return getValue(field, null);
@@ -212,7 +213,7 @@ public final class ReflectUtil
     Field field = getField(target.getClass(), fieldName);
     if (field == null)
     {
-      throw new ReflectionException("No field " + fieldName);
+      throw new ReflectionException(MessageFormat.format(Messages.ReflectUtil_NoField_exception, fieldName));
     }
 
     return getValue(field, target);
