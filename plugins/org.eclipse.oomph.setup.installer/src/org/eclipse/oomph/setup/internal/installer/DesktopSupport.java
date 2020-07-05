@@ -10,6 +10,7 @@
  */
 package org.eclipse.oomph.setup.internal.installer;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -19,6 +20,12 @@ import java.io.IOException;
  */
 public interface DesktopSupport
 {
+
+  enum ShortcutType
+  {
+    DESKTOP, START_MENU, TASKBAR;
+  }
+
   /**
    * Pin the given launcher location to the task bar using the given launcher name
    */
@@ -26,6 +33,8 @@ public interface DesktopSupport
 
   /**
    * Creates a shortcut in the system menu for the given folder, group target, and shortcut name
+   * @return <code>true</code> if creation was performed, <code>false</code> otherwise
+   * @throws IOException if an unrecoverable error occurred that prevents the creation of the shortcut
    */
-  void createShortCut(String specialFolder, String groupName, String target, String shortcutName) throws IOException;
+  boolean createShortCut(ShortcutType type, String groupName, File executable, String shortcutName, String description, String id) throws IOException;
 }
